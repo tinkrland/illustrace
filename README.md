@@ -1,34 +1,66 @@
-# engine v0: one paragraph
+# illustrace
 
-stylebench says a style is measurable. this repo makes that falsifiable instead of rhetorical:
-a tiny analyzer that turns an image into numbers (palette, stroke width, stroke roughness,
-texture energy), one deterministic operator (palette transfer with strength), and controlled
-benchmark pairs where exactly one style factor changes. if the analyzer can tell the pairs
-apart, track b (parameter discovery) is real. if the operator transfers one factor without
-moving the others, "requested fidelity / non-target preservation" is a measurable engineering
-target instead of vibes.
+illustrace tackles the widespread assumption that art style is an undifferentiated latent blob by treating style as a hierarchical, measurable, and independently manipulable system of visual factors—validated against human judgment before a single transfer operator gets built.
 
-**read `research/STYLEBENCH_THESIS.md` first.** it's the formalized scope + roadmap (2026-09-08):
-explicitly stylized/illustrated 2d+3d only (no human/realism/anatomy for now), a hierarchical
-style representation (mark-making, shape, color, texture, rendering, edge language for 2d;
-geometry/construction/surface/color/shading/rendering for 3d), and a reordered pipeline —
-*validate candidate measurements against human judgment before building more transfer
-operators*, not the other way around. everything below is what exists; the thesis doc is
-what's next.
+or simply put, we basically think that "style similarity: 0.81" is a meaningless number, because style isn't *a* thing. it's mark-making, shape language, color, texture, rendering, edges—and until each of those can be measured, moved, and *proven* to have moved without dragging the others along, style transfer is vibes with a progress bar. true controllability comes from properly decomposing, validating, and **transferring only the factor you asked for** the way an artist actually thinks, rather than regurgitating a mush of latent features from a diffusion bucket.
 
-run:
-    python3 benchmarks/make_stimuli.py     # generates controlled pairs into data/generated/
-    python3 benchmarks/run_bench.py       # runs experiments, writes results/
+## the idea behind stylometrics
+we started with the well known concept in computational linguistics that is stylometry—the statistical analysis of *how* something is made, not *what* it depicts. while classic stylometry answers "who wrote this," illustrace aims to do that for pictures: can the visual construction rules of an illustration be turned into numbers that humans agree with?
 
-layout:
-    engine/analyzer.py       measurable style parameters
-    engine/operators.py      deterministic style operators (v0.1: soft palette transfer)
-    engine/metrics.py        benchmark numbers
-    benchmarks/              controlled stimulus generation + bench runner
-    research/                thesis, scope, roadmap docs
-    data/references/         reference illustrations for the next (architecture) stimulus set
-    xano/                    provisioning spec + client (mirrors every run to xano)
-    results/                 run records (json) + report
+instead of treating style transfer as one operation, it decomposes style into a factor space, measures each factor, and only transfers what was requested. it's essentially giving style transfer the computational equivalent of a controlled experiment—declare what must change, declare what must not, and produce a delta vector proving both.
 
-the engine starts embarrassingly small on purpose. research decides what deserves to become
-a learned operator later; nothing here is neural.
+the goal behind illustrace is the concept we refer to as stylometrics since it captures the entire thesis in a single word—style has to become measurable before it can become transferable. we aim to completely bypass the "just fine-tune a model on it" jargon and hit right at the core of what illustrace is keen on doing: giving visual style an explicit, inspectable, editable representation instead of a frozen one.
+
+## where this sits (honesty first)
+existing approaches demonstrate that visual characteristics can be extracted, represented, or conditioned independently — content/style disentanglement, reference-based generation, controllable image editing, multi-reference conditioning, artistic style transfer. illustrace does not claim to have invented style decomposition.
+
+the novel-ish angle is the particular benchmark + granularity + evaluation methodology + illustration-specific focus. stylebench investigates how reliably those characteristics can be **isolated, selectively transferred, recombined, and quantitatively evaluated in hand-illustrated imagery.**
+
+## what's the goal
+the goal is a shift in style transfer from single-scalar similarity (like "strength: 70%" on a mystery knob) to per-factor control with formal invariants. each transfer is an explicit vector—`{"stroke_roughness": 0.8, "palette": 0.0}`—and each run produces a delta vector across *all* factors: "moved 91% of the way toward the reference's stroke roughness while unrelated properties changed by less than 4%." that sentence is the actual scientific claim. collateral style change is a first-class measured thing, not a surprise.
+
+stylebench, the benchmark underneath, evaluates whether an image generation or image-editing system can:
+
+1. identify visual style attributes
+2. selectively transfer requested attributes
+3. preserve non-requested attributes
+4. preserve source content
+5. prevent reference-content leakage
+6. combine attributes from multiple references
+7. provide predictable control over transfer strength
+
+## baselines (a neutral benchmark, not a comparison page)
+stylebench evaluates multiple classes of existing reference-based image generation and editing systems — reference-transfer, diffusion-edit, multi-reference, component-conditioned. each system receives the same target image, reference image(s), requested component(s), component weights, and generation parameters, and outputs are evaluated with the same metrics. the benchmark does not assume that any particular architecture is correct.
+
+baselines are simply named `baseline_001`, `baseline_002`, `baseline_003` … and `illustrace_v0`. no competitor names anywhere — illustrace shouldn't be defined as "the thing that's better than x." it should be defined by the measurable problem it's solving.
+
+## pillars
+as defined thoroughly in the [thesis](/research/STYLEBENCH_THESIS.md), style is hierarchical, not flat:
+- **mark-making** — stroke width, variation, taper, jitter, edge roughness
+- **shape language** — angularity, roundness, simplification, exaggeration
+- **color language** — palette, saturation, value range, temperature
+- **texture language** — grain, frequency, directional texture
+- **rendering language** — flatness, gradients, shading complexity
+- **edge language** — hard/soft, clean/rough, outlined/unoutlined
+
+(and a full parallel decomposition for 3d: geometry, construction, surface, color, shading, rendering languages)
+
+we explicitly do **not** assume these are independent. discovering which factors are truly orthogonal is literally the benchmark's first job.
+
+## scope constraint
+for v1 and a long while, illustrace lives strictly in **intentionally stylized / illustrated assets**—hand illustration, graphic illustration, icons, sprites, low-poly, voxel, storybook 3d. no photorealism, no semirealism, no human identity, no anatomy, no unconstrained character generation, no product try-on, no mockups. this isn't a limitation, it's the laboratory: style in this domain is strongly designed, visible, and exaggerated, which makes "is this even measurable" tractable *before* touching the nastier problems of likeness and realism.
+
+and crucially: illustrace makes **presets, not static assets**. the goal is for generated pieces to stay editable — parametric, layered, figma-style adjustable — rather than baked into a render you can't take apart again.
+
+## what exists so far
+an embarrassingly small, fully deterministic engine (nothing neural yet, on purpose):
+- `engine/analyzer.py` — four candidate style measurements: palette, stroke width variation, edge direction entropy, texture energy. candidates, not validated factors yet.
+- `engine/operators.py` — one transfer operator: palette transfer with soft cluster membership and strength-as-distance-traveled.
+- `benchmarks/` — controlled stimulus pairs where exactly one style factor changes; if the analyzer can't tell them apart, nothing downstream matters.
+- `engine/metrics.py` — requested fidelity + non-target preservation, the first two invariants.
+- `xano/` — a queryable control plane mirroring every run.
+
+next up (in research-first order): rebuild stimuli on architecture/interior subjects from `data/references/`, then run the human-judgment validation benchmark — because a metric that doesn't track what a human calls "rougher linework" is just a number wearing a lab coat.
+
+## reference points (not affiliations)
+nothing here is a flagship of anything — illustrace is just a research project that thinks style should be measurable. a few good reference points it keeps around: *nova3d* for where parametric preset styles could eventually go, *openscad* for programmatic geometry done right, and classic *stylometry* (the computational linguistics kind) for the whole "measure how something is made" attitude.

@@ -60,8 +60,15 @@ stylebench v0
     ├── human identity / likeness
     ├── facial anatomy
     ├── realistic anatomy
-    └── unconstrained character generation
+    ├── unconstrained character generation
+    └── product try-on / mockup / product-shot use cases
 ```
+
+also a hard output constraint, not just an input one: illustrace produces **presets,
+not static assets**. generated pieces must remain editable — parametric, layered,
+figma-style adjustable — rather than baked into a render that can't be taken apart.
+this is the same belief as the parametric-preset-styles thread: style should survive
+edits, not just exist in a render.
 
 practical consequence for stimulus design: the frog stimuli (benchmarks/make_stimuli.py)
 are borderline — a face with eyes reads as "character" even though it's not human/realistic.
@@ -119,6 +126,46 @@ need a representation for "style" that survives edits, not just a baked render.
 | texture_energy                             | texture language: grain/frequency proxy  |
 
 these four are candidate measurements, not validated style factors yet — see below.
+
+## prior work and honest positioning
+
+we are not claiming to have invented style decomposition. there is substantial prior
+work across content/style disentanglement, reference-based generation, controllable
+image editing, multi-reference conditioning, style representations, and artistic
+style transfer. existing approaches demonstrate that visual characteristics can be
+extracted, represented, or conditioned independently.
+
+the novel-ish angle of this project is the **particular benchmark + granularity +
+evaluation methodology + illustration-specific focus**. precisely:
+
+> stylebench investigates how reliably those characteristics can be isolated,
+> selectively transferred, recombined, and quantitatively evaluated in
+> hand-illustrated imagery.
+
+competitive / prior-art observations are kept name-free in the project by design (see
+research/PRIOR_ART.md); adapters for systems under research live under
+`stylebench/baselines/{reference-transfer, diffusion-edit, multi-reference,
+component-conditioned, illustrace}`.
+
+## stylebench: the benchmark definition
+
+stylebench evaluates whether an image generation or image-editing system can:
+
+1. identify visual style attributes
+2. selectively transfer requested attributes
+3. preserve non-requested attributes
+4. preserve source content
+5. prevent reference-content leakage
+6. combine attributes from multiple references
+7. provide predictable control over transfer strength
+
+baseline systems are evaluated by class, not by name. each receives the same target
+image, reference image(s), requested component(s), component weights, and generation
+parameters; outputs are scored with the same metrics. the benchmark does not assume
+any particular architecture is correct. baselines are named simply `baseline_001`,
+`baseline_002`, `baseline_003`, ... and `illustrace_v0`. no competitor names appear
+anywhere in the project — illustrace should be defined by the measurable problem it
+is solving, not by what it's better than.
 
 ## the core research problem is factorization
 
