@@ -1,0 +1,155 @@
+{
+  "factors": [
+    "palette",
+    "stroke",
+    "texture"
+  ],
+  "palettes": {
+    "p1": {
+      "provenance": "ref_01.webp",
+      "roles": {
+        "bg": [
+          239,
+          183,
+          142
+        ],
+        "stroke": [
+          69,
+          37,
+          28
+        ],
+        "ground": [
+          104,
+          57,
+          44
+        ],
+        "wall": [
+          197,
+          102,
+          75
+        ],
+        "roof": [
+          243,
+          132,
+          61
+        ],
+        "window": [
+          156,
+          77,
+          54
+        ],
+        "door": [
+          150,
+          79,
+          59
+        ]
+      },
+      "measured": [
+        "#68392c",
+        "#c5664b",
+        "#45251c",
+        "#9c4d36",
+        "#f3843d",
+        "#efb78e"
+      ]
+    },
+    "p2": {
+      "provenance": "ref_02.png",
+      "roles": {
+        "bg": [
+          254,
+          254,
+          254
+        ],
+        "stroke": [
+          46,
+          49,
+          78
+        ],
+        "ground": [
+          100,
+          100,
+          127
+        ],
+        "wall": [
+          198,
+          199,
+          204
+        ],
+        "roof": [
+          168,
+          166,
+          178
+        ],
+        "window": [
+          228,
+          228,
+          230
+        ],
+        "door": [
+          149,
+          149,
+          165
+        ]
+      },
+      "measured": [
+        "#fefefe",
+        "#64647f",
+        "#2e314e",
+        "#c6c7cc",
+        "#a8a6b2",
+        "#e4e4e6"
+      ]
+    }
+  },
+  "images": [
+    {
+      "file": "A.png",
+      "palette": "p1",
+      "stroke": "clean",
+      "texture": "flat"
+    },
+    {
+      "file": "B.png",
+      "palette": "p2",
+      "stroke": "clean",
+      "texture": "flat"
+    },
+    {
+      "file": "C.png",
+      "palette": "p1",
+      "stroke": "rough",
+      "texture": "flat"
+    },
+    {
+      "file": "D.png",
+      "palette": "p1",
+      "stroke": "clean",
+      "texture": "textured"
+    },
+    {
+      "file": "E.png",
+      "palette": "p2",
+      "stroke": "rough",
+      "texture": "flat"
+    },
+    {
+      "file": "F.png",
+      "palette": "p1",
+      "stroke": "rough",
+      "texture": "textured"
+    },
+    {
+      "file": "G.png",
+      "palette": "p2",
+      "stroke": "clean",
+      "texture": "textured"
+    },
+    {
+      "file": "H.png",
+      "palette": "p2",
+      "stroke": "rough",
+      "texture": "textured"
+    }
+  ]
+}
