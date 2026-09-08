@@ -58,9 +58,17 @@ an embarrassingly small, fully deterministic engine (nothing neural yet, on purp
 - `engine/operators.py` — one transfer operator: palette transfer with soft cluster membership and strength-as-distance-traveled.
 - `benchmarks/` — controlled stimulus pairs where exactly one style factor changes; if the analyzer can't tell them apart, nothing downstream matters.
 - `engine/metrics.py` — requested fidelity + non-target preservation, the first two invariants.
+- `application/` — style composer, the practical tool that applies the research
 - `xano/` — a queryable control plane mirroring every run.
 
 next up (in research-first order): rebuild stimuli on architecture/interior subjects from `data/references/`, then run the human-judgment validation benchmark — because a metric that doesn't track what a human calls "rougher linework" is just a number wearing a lab coat.
+
+## the application layer
+research without a tool at the end is a hobby. `application/` holds **style composer** —
+the pilot application of stylebench: per-component transfer (stroke yes, composition no),
+independent strength sliders per component, multiple references mixed across components,
+and reusable presets that store *recipes, not rendered images*. the whole concept doc
+lives in [application/README.md](/application/README.md).
 
 ## reference points (not affiliations)
 nothing here is a flagship of anything — illustrace is just a research project that thinks style should be measurable. a few good reference points it keeps around: *nova3d* for where parametric preset styles could eventually go, *openscad* for programmatic geometry done right, and classic *stylometry* (the computational linguistics kind) for the whole "measure how something is made" attitude.
