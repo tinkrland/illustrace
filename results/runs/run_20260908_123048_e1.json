@@ -1,0 +1,75 @@
+{
+  "run_id": "20260908_123048_e1",
+  "experiment": "measurability_v0",
+  "subject": "controlled frog pairs",
+  "metrics": {
+    "palette distance A-B (palette-only change)": 0.095,
+    "palette distance A-C (stroke-only change)": 0.0,
+    "stroke width cv  A (clean)": 0.316,
+    "stroke width cv  C (rough)": 0.385,
+    "edge dir entropy A (clean)": 0.995,
+    "edge dir entropy C (rough)": 0.998,
+    "texture energy A": 46.69,
+    "texture energy C": 47.95
+  },
+  "verdict": "pass",
+  "profiles": {
+    "A": {
+      "palette": [
+        [
+          [
+            246,
+            240,
+            224
+          ],
+          0.96425
+        ]
+      ],
+      "palette_hex": [
+        "#f6f0e0"
+      ],
+      "stroke_width_mean": 4.47,
+      "stroke_width_cv": 0.316,
+      "edge_direction_entropy": 0.995,
+      "texture_energy": 46.69
+    },
+    "B": {
+      "palette": [
+        [
+          [
+            206,
+            228,
+            228
+          ],
+          0.96425
+        ]
+      ],
+      "palette_hex": [
+        "#cee4e4"
+      ],
+      "stroke_width_mean": 4.4,
+      "stroke_width_cv": 0.286,
+      "edge_direction_entropy": 0.996,
+      "texture_energy": 47.65
+    },
+    "C": {
+      "palette": [
+        [
+          [
+            246,
+            240,
+            224
+          ],
+          0.964125
+        ]
+      ],
+      "palette_hex": [
+        "#f6f0e0"
+      ],
+      "stroke_width_mean": 5.01,
+      "stroke_width_cv": 0.385,
+      "edge_direction_entropy": 0.998,
+      "texture_energy": 47.95
+    }
+  }
+}

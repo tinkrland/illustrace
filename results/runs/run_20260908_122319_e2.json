@@ -1,0 +1,41 @@
+{
+  "run_id": "20260908_122319_e2",
+  "experiment": "palette_transfer_v0",
+  "requested": "palette",
+  "target": "A_clean_p1",
+  "reference": "B_clean_p2",
+  "steps": [
+    {
+      "strength": 0.25,
+      "palette_dist_to_ref": 0.07124,
+      "fraction_closed": 0.25,
+      "content_preservation": 0.951,
+      "non_target_preservation": 0.665,
+      "strength_accuracy": 1.0
+    },
+    {
+      "strength": 0.5,
+      "palette_dist_to_ref": 0.04749,
+      "fraction_closed": 0.5,
+      "content_preservation": 0.951,
+      "non_target_preservation": 0.666,
+      "strength_accuracy": 1.0
+    },
+    {
+      "strength": 0.75,
+      "palette_dist_to_ref": 0.02375,
+      "fraction_closed": 0.75,
+      "content_preservation": 0.951,
+      "non_target_preservation": 0.665,
+      "strength_accuracy": 1.0
+    },
+    {
+      "strength": 1.0,
+      "palette_dist_to_ref": 0.0,
+      "fraction_closed": 1.0,
+      "content_preservation": 0.948,
+      "non_target_preservation": 0.666,
+      "strength_accuracy": 1.0
+    }
+  ]
+}
