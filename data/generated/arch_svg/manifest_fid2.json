@@ -1,0 +1,72 @@
+{
+  "images": [
+    {
+      "file": "fid2_width3",
+      "true_width": 3
+    },
+    {
+      "file": "fid2_width5",
+      "true_width": 5
+    },
+    {
+      "file": "fid2_width7",
+      "true_width": 7
+    },
+    {
+      "file": "fid2_width9",
+      "true_width": 9
+    },
+    {
+      "file": "fid2_taper60",
+      "taper": 0.6
+    },
+    {
+      "file": "fid2_taper30",
+      "taper": 0.3
+    },
+    {
+      "file": "fid2_taper15",
+      "taper": 0.15
+    },
+    {
+      "file": "fid2_pass1",
+      "passes": 1
+    },
+    {
+      "file": "fid2_pass2",
+      "passes": 2
+    },
+    {
+      "file": "fid2_light0",
+      "lighting": 0.0
+    },
+    {
+      "file": "fid2_light25",
+      "lighting": 0.25
+    },
+    {
+      "file": "fid2_light50",
+      "lighting": 0.5
+    },
+    {
+      "file": "fid2_light75",
+      "lighting": 0.75
+    },
+    {
+      "file": "fid2_pal25",
+      "lerp": 0.25
+    },
+    {
+      "file": "fid2_pal50",
+      "lerp": 0.5
+    },
+    {
+      "file": "fid2_pal75",
+      "lerp": 0.75
+    },
+    {
+      "file": "fid2_pal100",
+      "lerp": 1.0
+    }
+  ]
+}

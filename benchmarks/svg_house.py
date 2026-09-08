@@ -37,6 +37,7 @@ SIZE = 512
 RSCALE = 2  # raster supersample
 
 REF_WARM = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "data", "references", "ref_01.webp"))
+REF_COOL = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "data", "references", "ref_02.png"))
 
 # ---- geometry (the intent — one source of truth, same as arch set)
 GEO = {
@@ -73,8 +74,47 @@ def jitter_polyline(pts, sigma, seed):
     return out
 
 
-def derive_roles():
-    im = Image.open(REF_WARM).convert("RGB"); im.thumbnail((512, 512))
+def resample(pts, step=6):
+    """densify a polyline to ~step-px samples (outline baking needs density)."""
+    out = []
+    for j in range(len(pts) - 1):
+        x0, y0 = pts[j]; x1, y1 = pts[j + 1]
+        seg = max(2, int(((x1 - x0) ** 2 + (y1 - y0) ** 2) ** 0.5 / step))
+        for f in range(seg):
+            t = f / seg
+            out.append((x0 + (x1 - x0) * t, y0 + (y1 - y0) * t))
+    out.append(pts[-1])
+    return out
+
+
+def bake_outline(pts, base_w, taper, sigma, seed):
+    """variable-width tapered stroke baked as a filled outline path
+    (perfect-freehand pattern). taper = fraction of length spent easing in/out."""
+    p = resample(jitter_polyline(pts, sigma, seed))
+    n = len(p)
+    L = [0.0]
+    for i in range(1, n):
+        L.append(L[-1] + ((p[i][0] - p[i - 1][0]) ** 2 + (p[i][1] - p[i - 1][1]) ** 2) ** 0.5)
+    total = L[-1] or 1.0
+    ts = [l / total for l in L]
+    left, right = [], []
+    for i, (x, y) in enumerate(p):
+        t = ts[i]
+        if i == 0: dx, dy = p[1][0] - x, p[1][1] - y
+        elif i == n - 1: dx, dy = x - p[i - 1][0], y - p[i - 1][1]
+        else: dx, dy = p[i + 1][0] - p[i - 1][0], p[i + 1][1] - p[i - 1][1]
+        nrm = (dx * dx + dy * dy) ** 0.5 or 1.0
+        nx, ny = -dy / nrm, dx / nrm
+        w = base_w * min(1.0, t / taper, (1 - t) / taper) if taper > 0 else base_w
+        w = max(w, 0.4)
+        left.append((x + nx * w / 2, y + ny * w / 2))
+        right.append((x - nx * w / 2, y - ny * w / 2))
+    ring = left + right[::-1]
+    return "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in ring) + " Z"
+
+
+def derive_roles(path=REF_WARM):
+    im = Image.open(path).convert("RGB"); im.thumbnail((512, 512))
     pal = kpalette(im, 6)
     colors = [(np.array(rgb, float), w) for rgb, w in pal]
     lum = lambda c: float(c @ [0.299, 0.587, 0.114])
@@ -132,9 +172,13 @@ def build_svg(roles, brush, textured=False, lighting=None, seed=7):
     <polygon points="226,392 244,392 270,470 200,470" class="fill-door" fill="{roles['door']}"/>
   </g>"""
 
-    strokes = "\n".join(
-        f'    <path class="stroke stroke-{name}" data-brush="{brush_label}" d="{stroke_d(name, brush, seed)}"/>'
-        for name, brush_label in [(k, "") for k in GEO])
+    if brush.get("taper"):
+        paths = [f'    <path class="stroke stroke-{name} baked-outline" data-brush="tapered" fill="{roles["stroke"]}" stroke="none" d="{bake_outline(GEO[name], brush["width"], brush["taper"], brush.get("jitter", 0.0), seed + sum(map(ord, name)))}"/>'
+                 for name in GEO]
+    else:
+        paths = [f'    <path class="stroke stroke-{name}" data-brush="linework" d="{stroke_d(name, brush, seed)}"/>'
+                 for name in GEO]
+    strokes = "\n".join(paths)
     strokes_block = f"""
   <g id="strokes" class="brush-{BRUSHES_LABEL}" stroke="{roles['stroke']}"
      stroke-width="{brush['width']}" stroke-linecap="{brush['caps']}"
@@ -167,8 +211,9 @@ def build_svg(roles, brush, textured=False, lighting=None, seed=7):
 BRUSHES_LABEL = "custom"
 
 
-def render(svg_str, out_png, grain_amp=0.0, seed=7):
-    """raster bake. grain approximated additively (cairosvg lacks feTurbulence)."""
+def render(svg_str, out_png, grain_amp=0.0, seed=7, lighting_apply=None):
+    """raster bake. grain approximated additively; lighting approximated as a
+    top-left warm gradient overlay (cairosvg lacks feTurbulence + blend modes)."""
     png = cairosvg.svg2png(bytestring=svg_str.encode(), output_width=SIZE * RSCALE,
                           output_height=SIZE * RSCALE)
     im = Image.open(__import__("io").BytesIO(png)).convert("RGB")
@@ -177,6 +222,15 @@ def render(svg_str, out_png, grain_amp=0.0, seed=7):
         rng = np.random.default_rng(seed)
         a = np.clip(a + rng.normal(0, grain_amp, a.shape[:2])[..., None], 0, 255).astype(np.uint8)
         im = Image.fromarray(a)
+    if lighting_apply is not None:
+        strength, color = lighting_apply
+        a = np.asarray(im, float)
+        h, w = a.shape[:2]
+        X, Y = np.meshgrid(np.arange(w), np.arange(h))
+        alpha = strength * np.clip(1 - (X / (w * 1.4) + Y / (h * 1.4)), 0, 1)
+        col = np.array(color, float)
+        a = a * (1 - alpha[..., None]) + col * alpha[..., None]
+        im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
     im = im.resize((SIZE, SIZE), Image.LANCZOS)
     im.save(out_png)
     return im
