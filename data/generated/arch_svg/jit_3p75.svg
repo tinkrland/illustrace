@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs></defs>
+  <rect x="0" y="0" width="512" height="512" class="fill-bg" fill="#efb78e"/>
+
+  <g id="fills">
+    <rect x="0" y="392" width="512" height="120" class="fill-ground" fill="#68392c"/>
+    <rect x="140" y="220" width="190" height="172" class="fill-wall" fill="#c5664b"/>
+    <polygon points="120,222 235,130 350,222" class="fill-roof" fill="#f3843d"/>
+    <rect x="290" y="150" width="28" height="60" class="fill-roof" fill="#f3843d"/>
+    <rect x="218" y="310" width="34" height="82" class="fill-door" fill="#964f3b"/>
+    <rect x="162" y="250" width="44" height="44" class="fill-window" fill="#9c4d36"/>
+    <rect x="288" y="250" width="44" height="44" class="fill-window" fill="#9c4d36"/>
+    <rect x="430" y="320" width="16" height="72" class="fill-door" fill="#964f3b"/>
+    <ellipse cx="438" cy="242" rx="46" ry="46" class="fill-ground" fill="#68392c"/>
+    <polygon points="226,392 244,392 270,470 200,470" class="fill-door" fill="#964f3b"/>
+  </g>
+
+  <g id="strokes" class="brush-custom" stroke="#45251c"
+     stroke-width="5" stroke-linecap="round"
+     stroke-linejoin="round" fill="none">
+    <path class="stroke stroke-walls" data-brush="" d="M 139.0 264.9 L 139.2 304.8 L 136.5 348.2 L 191.7 393.6 L 238.9 392.9 L 284.0 392.7 L 323.8 352.2 L 331.9 307.9 L 323.7 256.5 L 330.0 220.0"/>
+    <path class="stroke stroke-roof" data-brush="" d="M 147.8 200.9 L 176.7 174.8 L 202.8 152.2 L 267.9 154.6 L 296.4 176.9 L 322.7 199.7 L 350.0 222.0"/>
+    <path class="stroke stroke-chimney" data-brush="" d="M 289.0 166.9 L 289.2 178.8 L 286.5 194.2 L 301.2 211.6 L 307.9 210.9 L 312.5 210.7 L 311.8 198.2 L 319.9 181.9 L 311.7 158.5 L 318.0 150.0"/>
+    <path class="stroke stroke-door" data-brush="" d="M 217.0 332.4 L 217.2 349.8 L 214.5 370.7 L 230.7 393.6 L 238.9 392.9 L 245.0 392.7 L 245.8 374.7 L 253.9 352.9 L 245.7 324.0 L 252.0 310.0"/>
+    <path class="stroke stroke-window_l" data-brush="" d="M 161.0 262.9 L 161.2 270.8 L 158.5 282.2 L 177.2 295.6 L 187.9 294.9 L 196.5 294.7 L 199.8 286.2 L 207.9 273.9 L 199.7 254.5 L 191.7 248.2 L 185.1 249.8 L 175.0 247.6 L 162.0 250.0"/>
+    <path class="stroke stroke-window_r" data-brush="" d="M 287.0 262.9 L 287.2 270.8 L 284.5 282.2 L 303.2 295.6 L 313.9 294.9 L 322.5 294.7 L 325.8 286.2 L 333.9 273.9 L 325.7 254.5 L 317.7 248.2 L 311.1 249.8 L 301.0 247.6 L 288.0 250.0"/>
+    <path class="stroke stroke-tree_trunk" data-brush="" d="M 429.0 339.9 L 429.2 354.8 L 426.5 373.2 L 438.2 393.6 L 441.9 392.9 L 443.5 392.7 L 439.8 377.2 L 447.9 357.9 L 439.7 331.5 L 446.0 320.0"/>
+    <path class="stroke stroke-ground" data-brush="" d="M 127.0 393.9 L 255.2 390.8 L 380.5 391.2 L 512.0 392.0"/>
+  </g>
+
+</svg>

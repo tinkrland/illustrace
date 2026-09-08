@@ -1,0 +1,51 @@
+{
+  "images": [
+    {
+      "file": "jit_0p00",
+      "jitter": 0.0
+    },
+    {
+      "file": "jit_1p25",
+      "jitter": 1.25
+    },
+    {
+      "file": "jit_2p50",
+      "jitter": 2.5
+    },
+    {
+      "file": "jit_3p75",
+      "jitter": 3.75
+    },
+    {
+      "file": "grain_0",
+      "grain_amp": 0.0
+    },
+    {
+      "file": "grain_8",
+      "grain_amp": 8.0
+    },
+    {
+      "file": "grain_14",
+      "grain_amp": 14.0
+    },
+    {
+      "file": "showcase",
+      "brush": "sketchy",
+      "grain_amp": 10.0,
+      "lighting": {
+        "blend": "soft-light",
+        "strength": 0.45
+      }
+    }
+  ],
+  "roles": {
+    "bg": "#efb78e",
+    "stroke": "#45251c",
+    "ground": "#68392c",
+    "wall": "#c5664b",
+    "roof": "#f3843d",
+    "window": "#9c4d36",
+    "door": "#964f3b"
+  },
+  "ground_truth": {}
+}

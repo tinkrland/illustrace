@@ -57,6 +57,7 @@ an embarrassingly small, fully deterministic engine (nothing neural yet, on purp
 - `engine/analyzer.py` — four candidate style measurements: palette, stroke width variation, edge direction entropy, texture energy. candidates, not validated factors yet.
 - `engine/operators.py` — one transfer operator: palette transfer with soft cluster membership and strength-as-distance-traveled.
 - `benchmarks/` — controlled stimulus pairs where exactly one style factor changes; if the analyzer can't tell them apart, nothing downstream matters.
+- `benchmarks/svg_house.py` — the same house as a layered, parametric svg (brush recipes, texture filter, lighting overlay) — editable substrate + measurement-fidelity bench.
 - `engine/metrics.py` — requested fidelity + non-target preservation, the first two invariants.
 - `application/` — style composer, the practical tool that applies the research
 - `xano/` — a queryable control plane mirroring every run.
