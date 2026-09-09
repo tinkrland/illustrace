@@ -227,3 +227,48 @@ pre-registered predictions — they get tested, not trusted:
 **session meta:** glm-4-7-flash is a thinking model — completion budget must
 include reasoning tokens (content arrives empty at low max_tokens). sessions
 are uneven; use for ranking/critique passes, not final judgment.
+
+## research scientist session notes (nebius token factory, glm-5.2 — 2026-09-09)
+
+first glm-5.2 pass after the nebius token factory came online (openai-compatible,
+thinking model: budget ~1.8k reasoning tokens before content; fast, ~14s per pass).
+prompt: pilot survey findings + design batch 2 under a 5-minute-per-judge constraint.
+full output below, lightly formatted.
+
+### batch 2 (its proposal)
+
+5 judges, ~22 pairs, under 5 minutes. four blocks:
+
+- **taper block (8 pairs, jitter=0, grain=0):** heavy vs uniform (x2, L/R swapped);
+  light vs uniform; heavy vs light; heavy vs uniform+jitter=2 (cross-cue test);
+  heavy vs uniform at jitter=4. run half the block under the prompt "rougher" and
+  half under "more calligraphic" — the within-judge framing swap is the dimension
+  membership test. decision rule: if >=4/5 judges read heavy taper as smoother under
+  "rougher" AND discriminate it under "calligraphic", promote taper to its own
+  line-character axis; if it loads on neither, kill the candidate; if it loads on
+  "rougher" with opposite polarity, invert the axis (wrong polarity, right dimension).
+- **grain floor (6 pairs):** fixed finer steps 0v1, 0v2, 1v2, 2v4, 4v6, 6v8 —
+  no staircase (needs 20+ trials per axis per judge; unaffordable). fixed steps
+  replicate across judges and yield a psychometric curve directly. plus one ABX
+  "same or different?" trial at 0v1 to separate true perceptual floor from response
+  bias (d' separately from "which is more").
+- **lighting verify (4 pairs):** 2 brightness, 2 warmth, on the corrected prompt.
+- **catches (4):** identical pairs at non-round positions 4, 11, 17, 21.
+
+### cheap tricks it flagged (priority order)
+
+1. randomize L/R per judge (left bias runs 3-5 percent)
+2. reverse polarity on ~30 percent of pairs ("smoother" instead of "rougher") —
+   without this we measure response set, not perception
+3. catches at non-round positions (predictable positions get auto-clicked)
+4. ABX triplet catches ("which two are the same?") instead of identical pairs
+5. 3-level confidence only (guess/sure/certain); 5-level burns decision time
+6. log dwell time; flag sub-1.5s answers as noise, exclude from aggregates
+7. open with one anchor pair (extreme difference, not scored) for calibration
+
+### session meta
+
+glm-5.2 is a clear step up from glm-4-7-flash for design critique: structured,
+prioritized, concrete numbers. cost per pass ~2.4k completion tokens (trivial
+against the credit balance). still treat as advisory — humans sign off on
+survey instruments before they reach judges.
