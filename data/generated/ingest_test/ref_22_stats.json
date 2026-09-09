@@ -1,0 +1,46 @@
+{
+  "w": 735,
+  "h": 1012,
+  "k": 6,
+  "paper": [
+    255,
+    255,
+    255
+  ],
+  "fgPct": 70.7,
+  "zones": [
+    {
+      "hex": "#e4dfda",
+      "pctArea": 27.2,
+      "components": 459
+    },
+    {
+      "hex": "#86a5d0",
+      "pctArea": 8.3,
+      "components": 12
+    },
+    {
+      "hex": "#161111",
+      "pctArea": 13.1,
+      "components": 281
+    },
+    {
+      "hex": "#f2d8af",
+      "pctArea": 19.6,
+      "components": 119
+    },
+    {
+      "hex": "#b8aba7",
+      "pctArea": 26.1,
+      "components": 458
+    },
+    {
+      "hex": "#787370",
+      "pctArea": 5.9,
+      "components": 563
+    }
+  ],
+  "totalPaths": 1381,
+  "ms": 832,
+  "svgBytes": 356145
+}
