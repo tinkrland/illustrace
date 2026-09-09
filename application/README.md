@@ -172,6 +172,22 @@ presets can be combined, composing completely new visual identities:
 comic linework × muted editorial colors × watercolor texture × storybook rendering
 ```
 
+## who this is built for: execution, not inspiration
+
+style composer is built for people who already know, almost exactly, what they
+want. the picture already exists in their head; the tool's only job is to make
+that image come forth. we are outsourcing the *execution*, never the inspiration,
+never the thinking.
+
+that stance puts illustrace firmly against the "prompt and see what the ai
+makes" school of tools. no slot machine, no interpretive surprises, no "here's
+what i came up with." the user is not asking to be shown anything new. they are
+asking for a very fast, very obedient pair of hands, and the tool that surprises
+them is the tool that failed.
+
+this is why every control in this doc is explicit: which components transfer,
+how far each one moves, from which reference. surprise is a bug, not a feature.
+
 ## ideal users
 
 illustrators, concept artists, ui designers, graphic designers, editorial artists,
@@ -183,6 +199,9 @@ art directors.
 style is not one thing.
 
 style is the interaction of many independent visual systems.
+
+the intent is never in question. the user already knows what the picture should
+be; execution is all we do, and any surprise on the way out is a defect.
 
 illustrace lets artists work with those systems directly instead of forcing them into
 all-or-nothing style transfer.

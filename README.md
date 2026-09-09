@@ -102,7 +102,7 @@ content/style disentanglement, reference-based generation, controllable editing,
 
 ## what exists so far
 
-a fully deterministic engine, nothing neural, on purpose. current hard numbers: 87 tests passing, 46 candidate parameters in the registry, 5 validated, 4 controlled research runs.
+a fully deterministic engine, nothing neural, on purpose. current hard numbers: 94 tests passing, 46 parameters in the registry, 7 validated, 4 controlled research runs.
 
 - style measurements on raster and on vector-ground-truth fill regions (the scale-invariant construction), [here](/engine/analyzer.py) and [here](/engine/texture_gt.py)
 - one transfer operator so far, palette transfer with strength-as-distance-traveled, [here](/engine/operators.py)
@@ -113,7 +113,7 @@ a fully deterministic engine, nothing neural, on purpose. current hard numbers: 
 - control-plane toolkit mirroring every run, [here](/xano)
 - the run records: fidelity, granularity, anchor, texture ground truth, [here](/results)
 
-next in research-first order: the test-1 batch on remaining candidates (value_range, stroke_directionality, shape_complexity), then human-judgment validation, because a metric that doesn't track what a human calls "rougher linework" is just a number wearing a lab coat.
+the test-1 batch landed: value_range exact against the area mixture, stroke_directionality rotation-exact with a tie caveat, shape_complexity pinned to the vector source (raster proxies answered a 23% ground-truth change with 3%, which is the finding). next in research-first order: human-judgment validation, because a metric that doesn't track what a human calls "rougher linework" is just a number wearing a lab coat.
 
 ## where it breaks (honest)
 
