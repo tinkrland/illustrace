@@ -104,14 +104,14 @@ content/style disentanglement, reference-based generation, controllable editing,
 
 a fully deterministic engine, nothing neural, on purpose. current hard numbers: 87 tests passing, 46 candidate parameters in the registry, 5 validated, 4 controlled research runs.
 
-- `engine/analyzer.py` + `engine/texture_gt.py`: style measurements on raster and on vector-ground-truth fill regions (the scale-invariant construction)
-- `engine/operators.py`: one transfer operator so far, palette transfer with strength-as-distance-traveled
-- `engine/registry.py`: the parameter registry as code, renders `results/PARAMETER_MATRIX.md` with a status ladder (candidate → measurable → validated → controllable)
-- `benchmarks/`: controlled stimulus pairs where exactly one style factor changes, plus the parametric svg substrate (brush recipes, texture, lighting) that serves as ground truth
-- `research/STYLE_ONTOLOGY.md`: the ten-dimension decomposition, the granularity question, the metrology rules
-- `survey/`: pairwise forced-choice human-judgment app (catch pairs, confidence, ingest + validation), built and tested, validation runs pending
-- `xano/`: control-plane toolkit mirroring every run
-- `results/`: the run records: fidelity, granularity, anchor, texture ground truth
+- style measurements on raster and on vector-ground-truth fill regions (the scale-invariant construction), [here](/engine/analyzer.py) and [here](/engine/texture_gt.py)
+- one transfer operator so far, palette transfer with strength-as-distance-traveled, [here](/engine/operators.py)
+- the parameter registry as code, renders a status ladder (candidate → measurable → validated → controllable) into [the parameter matrix](/results/PARAMETER_MATRIX.md), registry lives [here](/engine/registry.py)
+- controlled stimulus pairs where exactly one style factor changes, plus the parametric svg substrate (brush recipes, texture, lighting) that serves as ground truth, [here](/benchmarks)
+- the ten-dimension decomposition, the granularity question, the metrology rules, [here](/research/STYLE_ONTOLOGY.md)
+- pairwise forced-choice human-judgment app (catch pairs, confidence, ingest + validation), built and tested, validation runs pending, [here](/survey)
+- control-plane toolkit mirroring every run, [here](/xano)
+- the run records: fidelity, granularity, anchor, texture ground truth, [here](/results)
 
 next in research-first order: the test-1 batch on remaining candidates (value_range, stroke_directionality, shape_complexity), then human-judgment validation, because a metric that doesn't track what a human calls "rougher linework" is just a number wearing a lab coat.
 
@@ -148,4 +148,10 @@ the full concept doc lives in [application/README.md](/application/README.md).
 
 ## reference points (not affiliations)
 
-nothing here is a flagship of anything. illustrace is a research project that thinks style should be measurable. reference points it keeps around: *nova3d* for where parametric preset styles could eventually go, *openscad* for programmatic geometry done right, and classic *stylometry* (the computational linguistics kind) for the whole "measure how something is made" attitude.
+nothing here is a flagship of anything. illustrace is a research project that thinks style should be measurable. it isn't part of a program or ecosystem — these are just reference points it keeps around, nothing more:
+
+| reference | why it's here |
+|---|---|
+| *nova3d* | where parametric preset styles could eventually go |
+| *openscad* | programmatic geometry done right |
+| classic *stylometry* | the computational linguistics kind, for the whole "measure how something is made" attitude |
