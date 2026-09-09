@@ -306,12 +306,21 @@ let confidence = null;    // 'a little' | 'pretty sure' | 'very sure'
 // so fetch("survey/stimuli.json") works from the root — but index.html is inside
 // survey/, so a relative fetch("stimuli.json") is correct.
 (async function boot() {
+  // served over http: fetch works normally.
+  // double-clicked (file://): fetch is blocked by the browser, so fall back to
+  // the embedded copy that make_package.py inlines for shareable builds.
   try {
     const resp = await fetch("stimuli.json");
     stimuli = await resp.json();
   } catch (e) {
-    alert("could not load stimuli.json: " + e);
-    return;
+    const el = document.getElementById("stimuli-data");
+    if (el) {
+      try { stimuli = JSON.parse(el.textContent); } catch (e2) {}
+    }
+    if (!stimuli) {
+      alert("could not load stimuli.json: " + e);
+      return;
+    }
   }
 })();
 
