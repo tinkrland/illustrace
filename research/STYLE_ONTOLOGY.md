@@ -73,15 +73,20 @@ layer. how the cottage is constructed visually belongs to style. composition,
 typography, ui elements, subject matter, objects, pose are disabled by default
 in any transfer.
 
-**typography/logos are an explicit non-goal, not just a disabled default.**
-lettering, brand marks, and logo-with-text-content work stay out of scope for
-illustrace entirely (liat, 2026-09-09) — separate from the "composition
-preserved by default" rule above, which is about not transferring content;
-this is about not building the capability at all. `research/OSS_TOOL_SCAN.md`
-has a credited-by-name section on same-project-team tooling (kqrla/fontasy,
-fontasy_fork, fontasy-mask — perms confirmed, adoptable): its vectorization
-and color-zone code gets lifted into illustrace's ingestion path, while the
-typography *output* stays a non-goal.
+**typology of typography (revised 2026-09-09, same day as the original
+non-goal):** the exclusion was never about words being out of bounds — it
+was about static output. with same-project-team tooling (kqrla/fontasy,
+fontasy_fork, fontasy-mask — perms confirmed, adoptable,
+`research/OSS_TOOL_SCAN.md`) the typography *output* problem is solved in
+the illustrace-native way: a font/glyph sheet *is* a parametric, editable
+preset — glyphs are vector paths, letter-spacing/kerning are parameters,
+color zones and texture are recipe layers. so word-bearing deliverables
+(lettering, brand marks, logos-with-text) are in scope **when the output
+is editable** (font files, glyph sheets, layered vector). what stays out
+is the *flattened static render* version — same rule as every other
+illustrace output: editable presets, not baked images. typography also
+stays a disabled-by-default *transfer* bucket (above): we don't copy the
+reference's type any more than we copy its composition.
 
 **02 spatial construction splits into a 2d-depth track and a 3d-positioning
 track — different problems, not one deferred item.** 2d depth cues

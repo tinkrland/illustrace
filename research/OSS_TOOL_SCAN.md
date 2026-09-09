@@ -64,8 +64,11 @@ teammate work on the same project — liat confirmed we have permission to use
 the code. all MIT. this is a different case from PRIOR_ART.md's competitor
 observations (those stay name-free); these are credited by name and citable.
 clones live outside the repo in the conversation workspace `vendor/` folder.
-typography/logo output remains an explicit illustrace non-goal; what's below
-is about lifting *technique and code* into our pipeline.
+typography output is in scope when editable (liat, 2026-09-09): fontasy's
+whole pipeline — glyphs as vector paths, kerning/spacing as parameters,
+color zones + texture as recipe layers — is the word-bearing case of
+illustrace's editable-preset principle. lettering/brand-mark deliverables
+come out as fonts/glyph sheets/layered vector, never flattened renders.
 
 **fontasy_fork is the adoptable one:**
 
@@ -115,5 +118,7 @@ philosophy illustrace runs on, arriving from the typography side.
 
 ## non-goals reminder
 
-no human identity/anatomy/realism subjects; inspos stay private; benchmarks
-stay name-neutral (see PRIOR_ART.md).
+no human identity/anatomy/realism subjects; no flattened-static-render
+outputs anywhere (typography included — words ship as editable fonts/
+vector, not baked images); inspos stay private; benchmarks stay
+name-neutral (see PRIOR_ART.md).

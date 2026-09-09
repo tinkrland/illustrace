@@ -164,6 +164,13 @@ users can save reusable style recipes. presets store:
 **not rendered images.** presets work like photoshop brushes, lightroom presets, or
 figma styles — recipes, not artifacts.
 
+this holds for word-bearing work too. lettering, wordmarks, and logo-with-text
+requests come out as editable assets — font files, glyph sheets, layered
+vector with per-glyph overrides — never as flattened images. a font is the
+purest form of the preset idea: glyphs as parametric vector paths, spacing as
+parameters, color and texture as recipe layers. (typography still transfers
+*off* by default — a reference's typeface is its content, not its style.)
+
 ## style recipes
 
 presets can be combined, composing completely new visual identities:
