@@ -79,18 +79,20 @@
     {
       "id": "q10",
       "dimension": "lighting",
-      "prompt": "which one feels more warmly lit?",
+      "prompt": "which one feels brighter / more strongly lit?",
       "left": "../data/generated/arch_svg/fid2_light0.png",
       "right": "../data/generated/arch_svg/fid2_light50.png",
-      "gt": "right"
+      "gt": "right",
+      "note": "prompt reworded after pilot: strength brightens the subject (133->138 central lum) but cools the cast (r-b 120->83), so 'warmly' was direction-inverted"
     },
     {
       "id": "q11",
       "dimension": "lighting",
-      "prompt": "which one feels more warmly lit?",
+      "prompt": "which one feels brighter / more strongly lit?",
       "left": "../data/generated/arch_svg/fid2_light0.png",
       "right": "../data/generated/arch_svg/fid2_light75.png",
-      "gt": "right"
+      "gt": "right",
+      "note": "prompt reworded after pilot: strength brightens the subject (133->138 central lum) but cools the cast (r-b 120->83), so 'warmly' was direction-inverted"
     },
     {
       "id": "q12",
