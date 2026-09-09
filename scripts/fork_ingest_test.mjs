@@ -21,6 +21,26 @@ function glyphToVectorPath(bin,w,h,bounds,labels,compIds){const{x1,y1,x2,y2}=bou
 function kMeansColors(px,k){if(px.length<k*3)return null;let cen=[];const step=Math.floor(px.length/k);for(let i=0;i<k;i++)cen.push(px[Math.min(i*step,px.length-1)].slice(0,3));const asgn=new Array(px.length);for(let iter=0;iter<12;iter++){for(let i=0;i<px.length;i++){let mn=Infinity,b=0;for(let c=0;c<k;c++){const dr=px[i][0]-cen[c][0],dg=px[i][1]-cen[c][1],db=px[i][2]-cen[c][2],d=dr*dr+dg*dg+db*db;if(d<mn){mn=d;b=c}}asgn[i]=b}const sums=Array.from({length:k},()=>[0,0,0,0]);for(let i=0;i<px.length;i++){const c=asgn[i];sums[c][0]+=px[i][0];sums[c][1]+=px[i][1];sums[c][2]+=px[i][2];sums[c][3]++}for(let c=0;c<k;c++)if(sums[c][3]>0)cen[c]=[sums[c][0]/sums[c][3],sums[c][1]/sums[c][3],sums[c][2]/sums[c][3]]}return{asgn,cen}}
 // ---------- end verbatim ----------
 
+// INGEST adaptation 3: optional lab-space clustering. rgb k-means on
+// continuous washes clusters paper-shades; lab separates chroma from
+// lightness so paint hues stay apart. conversion: srgb -> linear -> xyz -> lab.
+function srgbToLab(r,g,b){
+  const f=v=>{v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4)}
+  const R=f(r),G=f(g),B=f(b)
+  const X=(.4124*R+.3576*G+.1805*B)/.95047,Y=.2126*R+.7152*G+.0722*B,Z=(.0193*R+.1192*G+.9505*B)/1.08883
+  const t=v=>v>.008856?Math.cbrt(v):(7.787*v)+16/116
+  const fx=t(X),fy=t(Y),fz=t(Z)
+  return[116*fy-16,500*(fx-fy),200*(fy-fz)]
+}
+function labToRgb(L,a,bb){
+  const fy=(L+16)/116,fx=fy+a/500,fz=fy-bb/200
+  const t=v=>v**3>.008856?v**3:(v-16/116)/7.787
+  const X=t(fx)*.95047,Y=t(fy),Z=t(fz)*1.08883
+  const R=3.2406*X-1.5372*Y-.4986*Z,G=-.9689*X+1.8758*Y+.0415*Z,B=.0557*X-.204*Y+1.057*Z
+  const u=v=>v<=.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-.055
+  return[Math.max(0,Math.min(255,Math.round(u(R)*255))),Math.max(0,Math.min(255,Math.round(u(G)*255))),Math.max(0,Math.min(255,Math.round(u(B)*255)))]
+}
+
 // INGEST adaptation 1: paper-color background mask instead of the fork's
 // otsu ink threshold (a letter scan is dark-on-paper; an illustration is a
 // wash on paper). paper = median border color; fg = rgb distance from paper
@@ -41,7 +61,7 @@ function paperMask(d,w,h,tol){
   return{bin,paper:[pr,pg,pb]}
 }
 
-const [,,rawPath,wS,hS,kS,outSvg,outJson]=process.argv
+const [,,rawPath,wS,hS,kS,outSvg,outJson,spaceArg]=process.argv
 const w=+wS,h=+hS,k=+kS
 const buf=readFileSync(rawPath)
 const d=new Uint8Array(buf.buffer,buf.byteOffset,buf.length)  // raw rgba
@@ -57,7 +77,19 @@ console.log(`foreground px: ${fgN} (${(100*fgN/(w*h)).toFixed(1)}%), paper rgb $
 // k-means over foreground pixels (fork's clustering, verbatim math)
 const px=[]
 for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(bin[i]){const p=i*4;px.push([d[p],d[p+1],d[p+2],x,y])}}
-const{asgn,cen}=kMeansColors(px,k)
+const space=spaceArg||'rgb'
+let asgn,cen
+if(space==='lab'){
+  const lpx=px.map(p=>{const L=srgbToLab(p[0],p[1],p[2]);return[L[0],L[1],L[2],p[3],p[4]]})
+  const r=kMeansColors(lpx,k)
+  if(!r){console.error('lab kmeans failed');process.exit(1)}
+  asgn=r.asgn;cen=r.cen.map(c=>labToRgb(c[0],c[1],c[2]))
+}else{
+  const r=kMeansColors(px,k)
+  if(!r){console.error('rgb kmeans failed');process.exit(1)}
+  asgn=r.asgn;cen=r.cen
+}
+console.log(`cluster space: ${space}`)
 console.log(`k-means done in ${Date.now()-t0}ms`)
 for(let c=0;c<k;c++){const n=asgn.filter(a=>a===c).length;console.log(`  zone ${c}: rgb(${cen[c].map(v=>v|0)}) ${n}px`)}
 
@@ -92,7 +124,7 @@ for(const z of order)for(const p of z.paths)svg+=`<path d="${p.d}" fill="${z.hex
 svg+='</svg>'
 writeFileSync(outSvg,svg)
 
-const stats={w,h,k,paper,fgPct:+(100*fgN/(w*h)).toFixed(1),
+const stats={w,h,k,space,paper,fgPct:+(100*fgN/(w*h)).toFixed(1),
   zones:zones.map((z,i)=>({hex:z.hex,pctArea:+(100*z.npx/totalArea).toFixed(1),components:z.comps})),
   totalPaths:zones.reduce((a,z)=>a+z.paths.length,0),
   ms:Date.now()-t0,svgBytes:svg.length}

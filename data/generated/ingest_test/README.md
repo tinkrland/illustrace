@@ -39,3 +39,22 @@ continuous watercolor washes clusters paper-shade tones (a near-white
 files: `ref_20_zones.svg`, `ref_22_zones.svg` (editable vector output — open
 in any editor, each region a selectable path), `*_stats.json`,
 `contact_sheet.png` (reference vs reconstruction, both refs).
+
+## addendum: lab-space variant (same run)
+
+`--space lab` patch to the harness: same fork clustering math, but pixels
+clustered in cie-l\*a\*b\* (lightness separated from chroma).
+
+- ref_20 lab palette: olive #afb38b + warm orange #f2b684 emerge as real
+  paint zones — rgb-space had smeared those into grays. zone count 951 vs
+  1165 (cleaner component structure).
+- mean rgb l2 error barely moved (111.6 → 110.8) — the error isn't in the
+  palette anymore, it's structural: flat-filled regions can't reconstruct a
+  soft wash, whatever the clustering space.
+- conclusion holds and sharpens: **color zones are the right primitive for
+  flat/posterized classes (lab or rgb), and washes belong to the bucket-07
+  recipe layer, not geometry.** lab is the better default for palette
+  extraction even when zones are the target — it reports the paint hues
+  a human would name.
+- `ref_20_rgb_vs_lab.png` = three-way sheet (reference / rgb / lab).
+- `ref_20_zones_lab.svg`, `ref_20_stats_lab.json`.
