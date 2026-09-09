@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .DS_Store
 dist/
+survey/inbox/*
+!survey/inbox/.gitkeep
+survey/processed/*
+!survey/processed/.gitkeep
+survey/judgments_out.json
