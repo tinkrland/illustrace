@@ -78,10 +78,10 @@ lettering, brand marks, and logo-with-text-content work stay out of scope for
 illustrace entirely (liat, 2026-09-09) — separate from the "composition
 preserved by default" rule above, which is about not transferring content;
 this is about not building the capability at all. `research/OSS_TOOL_SCAN.md`
-has a credited-by-name section on a teammate's typography tooling
-(kqrla/fontasy, fontasy-mask) studied purely for technique cross-reference
-(vectorization pipeline, pattern-as-mask), not as a direction illustrace
-is heading in.
+has a credited-by-name section on same-project-team tooling (kqrla/fontasy,
+fontasy_fork, fontasy-mask — perms confirmed, adoptable): its vectorization
+and color-zone code gets lifted into illustrace's ingestion path, while the
+typography *output* stays a non-goal.
 
 **02 spatial construction splits into a 2d-depth track and a 3d-positioning
 track — different problems, not one deferred item.** 2d depth cues

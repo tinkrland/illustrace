@@ -57,38 +57,61 @@ workspace/branch endpoints and full workspace export — the control plane is
 programmable end to end, not just a data api. the repo's xano client was
 already provisioned through it; the toolkit task this week extends coverage.
 
-## teammate tools (credited by name — permitted, not competitor prior art)
+## teammate tools (same project team as liat/karla — adoptable, perms confirmed 2026-09-09)
 
-these are OSS by a teammate (kqrla / Jakob-Bock), explicitly ok to reference
-by name — different case from PRIOR_ART.md's competitor observations, which
-stay name-free on purpose. illustrace itself stays clear of logos/text-content
-work (typography, lettering, brand marks are out of scope), but the underlying
-techniques cross-reference our own pipeline:
+karla's repos (kqrla/fontasy, kqrla/fontasy_fork, kqrla/fontasy-mask) are
+teammate work on the same project — liat confirmed we have permission to use
+the code. all MIT. this is a different case from PRIOR_ART.md's competitor
+observations (those stay name-free); these are credited by name and citable.
+clones live outside the repo in the conversation workspace `vendor/` folder.
+typography/logo output remains an explicit illustrace non-goal; what's below
+is about lifting *technique and code* into our pipeline.
 
-- **kqrla/fontasy** — handwriting-to-font tool (figma plugin + web app).
-  its vectorization stage is structurally the same pipeline illustrace's
-  svg substrate already runs: moore boundary tracing (contour) → douglas-
-  peucker (simplify) → catmull-rom→cubic-bezier (smooth) → opentype.js
-  export. useful as a second implementation to check our own trace/simplify/
-  smooth stages against, not a component to adopt (different output target,
-  fonts vs illustration strokes).
-- **kqrla/fontasy-mask** — applies decorative pattern fills (gingham, polka,
-  stripes, checkered) plus edge-stitch and fabric-noise overlays as masks
-  onto letterforms, with recolorable swatches. the pattern-as-mask + edge
-  treatment + noise overlay structure maps directly onto ontology bucket
-  **07 surface + texture** (`research/STYLE_ONTOLOGY.md`) — worth studying
-  as a second surface-recipe implementation, kept general (any vector shape,
-  not just letterforms) for illustrace's use.
-- **kqrla/fontasy_fork** — fork/variant of fontasy, not yet reviewed in depth.
-- **Jakob-Bock/Rogo** (+ rework at lab.vanity-ibex.xyz/rogo_rework) — armin
-  hofmann-inspired generative tool: draw ropes between adjustable poles,
-  export as svg. no text/logo involvement at all — this is pure procedural
-  mark-making (bucket **05 mark-making**), closer to a generative-geometry
-  reference than fontasy/fontasy-mask. the pole/rope parameterization (pin,
-  resize, layer toggle, snap-to-grid) is a clean example of a small, fully
-  exposed parameter set driving varied line output — same spirit as
-  illustrace's brush-recipe sliders, worth a closer look if/when the mark-
-  making bucket needs a generative (not just baked-jitter) mode.
+**fontasy_fork is the adoptable one:**
+
+- **k-means color zones** (`kMeansColors` in web/index.html) — this is the
+  vtracer replacement we had penciled in under "modify: suppress color
+  merging, keep per-region paths". it clusters glyph pixels in rgb space
+  (2-8 clusters, 12 fixed iters), builds a per-cluster binary mask, traces
+  each mask through the same moore → douglas-peucker → catmull-rom pipeline,
+  and emits per-zone paths with per-zone mean color. zero dependencies,
+  ~40 lines. adopt for raster→vector ingestion where per-region paths and
+  recipe injection matter; exactly the structure the transfer engine needs.
+- **bead mode** — the "skip vectorization, preserve the raster crop" escape
+  hatch. this is the same pattern as the editable-presets thread's
+  "disposable glb": keep the parametric vector for what it's good at, drop
+  to raster when physical texture matters more than editability.
+- **texture modes** (clean/rough/crayon/pencil/chalk) — named presets over
+  continuous blur params. trivial implementation, but the
+  preset-name-over-continuous-slider pattern is exactly illustrace's recipe
+  design philosophy; a good minimal case study for bucket 09/10 naming.
+- **contour pipeline** (moore trace, dp simplify eps≈1.2-2, catmull-rom
+  tension 0.3-0.4, hole detection via flood-fill + winding reversal) —
+  battle-tested second implementation to cross-check our svg substrate's
+  trace/simplify/smooth stages, or lift directly (mit + team perms).
+
+**fontasy-mask** — pattern-fill-as-mask (composite `source-in`) + dashed
+edge-stitch + salt-and-pepper fabric grain overlay + recolorable palette
+swatches, with per-letter overrides. structurally identical to illustrace's
+layered substrate bake (fill recipe → edge treatment → grain layer, per-
+instance overrides as layers). its compositing chain is a clean reference
+for the surface/texture bucket (07) rendering path; the per-letter override
+model mirrors the editable-presets "overrides stored as layers" idea.
+
+**fontasy (base)** — the fork supersedes it for our purposes; original is
+the cleaner minimal read of the pipeline (650-line single file, jszip +
+opentype.js only, everything else hand-rolled including a woff sfnt wrapper).
+
+**rogo** (Jakob-Bock/Rogo, rework at lab.vanity-ibex.xyz) — also teammate
+work. hofmann-inspired rope/pole generative tool, svg export. pure
+procedural mark-making (bucket 05): small fully-exposed parameter set (pin,
+resize, layer toggle, snap) driving line output. candidate reference for a
+generative (not baked-jitter) mark-making mode if that bucket grows.
+
+fork roadmap items worth tracking as convergent signals: variable weight
+axis from stroke-thickness detection, kerning from inter-glyph spacing,
+"style transfer between fonts" — all the same measure-then-parameterize
+philosophy illustrace runs on, arriving from the typography side.
 
 ## non-goals reminder
 
