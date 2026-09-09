@@ -31,8 +31,8 @@ from engine.analyzer import palette
 SIZE = 512
 SS = 4  # supersampling
 
-REF_WARM = os.path.join(os.path.dirname(__file__), "..", "data", "references", "ref_01.webp")
-REF_COOL = os.path.join(os.path.dirname(__file__), "..", "data", "references", "ref_02.png")
+REF_WARM = os.path.join(os.path.dirname(__file__), "..", "data", "test_images", "ref_01.webp")
+REF_COOL = os.path.join(os.path.dirname(__file__), "..", "data", "test_images", "ref_02.png")
 
 
 def derive_roles(img, k=6):

@@ -36,8 +36,8 @@ from engine.analyzer import palette as kpalette
 SIZE = 512
 RSCALE = 2  # raster supersample
 
-REF_WARM = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "data", "references", "ref_01.webp"))
-REF_COOL = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "data", "references", "ref_02.png"))
+REF_WARM = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "data", "test_images", "ref_01.webp"))
+REF_COOL = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "data", "test_images", "ref_02.png"))
 
 # ---- geometry (the intent — one source of truth, same as arch set)
 GEO = {

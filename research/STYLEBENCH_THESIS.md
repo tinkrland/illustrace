@@ -74,7 +74,7 @@ practical consequence for stimulus design: the frog stimuli (benchmarks/make_sti
 are borderline — a face with eyes reads as "character" even though it's not human/realistic.
 architecture/interior subjects are cleaner: no anatomy, no identity, and still has all the
 style-bearing structure we care about (mark-making, shape language, color, texture, edges).
-8 reference illustrations pulled into `data/references/` (2026-09-08) as the target texture
+8 reference illustrations pulled into `data/test_images/` (2026-09-08) as the target texture
 for the next stimulus generation pass — riso-style streets, ink-line storybook houses,
 painterly warped houses, flat gouache row-houses, painted tree/bench, flat vector towns,
 cartoon night streets, flat vector institutional building. buildings/streets/interiors are
