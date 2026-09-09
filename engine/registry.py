@@ -120,9 +120,9 @@ _p("palette_distance", "color",
 
 # --- family 4: surface ----------------------------------------------------------
 _p("texture_energy", "surface",
-   "high-frequency luminance energy over interior fills",
-   status="measurable",
-   evidence="fixed-scale fidelity: grain 0->14 doubles energy, monotone. DEMOTED by anchor run 1: masked-mean construction is scale-brittle (interior mask collapses at 0.55 scale; set-crop grain-off hit the <100px guard, returned 0.0) — +41% granularity drift was largely metric artifact. rebuild on vector-ground-truth fill regions pending",
+   "per-region luminance sigma + gradient over vector-ground-truth fill interiors",
+   status="validated",
+   evidence="gt run 1: rebuilt per rule four — sigma linear in grain amp (1.94/4.85/7.16 at 0/8/14); anchor laws hold (canvas-anchored flat at -7%, subject-anchored linear 0.55 law within 4%). the rebuild also caught the corner-cutting jitter bug (vertices were being dropped)",
    metric="profile.texture_energy")
 _p("texture_scale", "surface",
    "micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms)",

@@ -4,7 +4,7 @@ status ladder: candidate -> measurable -> detector -> validated ->
 (transferable -> independently transferable -> controllable, tested next).
 
 **46 candidates** across 6 families —
-candidate: 36 detector: 2 measurable: 4 validated: 4
+candidate: 36 detector: 2 measurable: 3 validated: 5
 
 ## geometry (9)
 
@@ -53,7 +53,7 @@ candidate: 36 detector: 2 measurable: 4 validated: 4
 
 | parameter | status | granularity | operational definition | evidence |
 |---|---|---|---|---|
-| texture_energy | measurable | both | high-frequency luminance energy over interior fills | fixed-scale fidelity: grain 0->14 doubles energy, monotone. DEMOTED by anchor run 1: masked-mean construction is scale-brittle (interior mask collapses at 0.55 scale; set-crop grain-off hit the <100px guard, returned 0.0) — +41% granularity drift was largely metric artifact. rebuild on vector-ground-truth fill regions pending |
+| texture_energy | validated | both | per-region luminance sigma + gradient over vector-ground-truth fill interiors | gt run 1: rebuilt per rule four — sigma linear in grain amp (1.94/4.85/7.16 at 0/8/14); anchor laws hold (canvas-anchored flat at -7%, subject-anchored linear 0.55 law within 4%). the rebuild also caught the corner-cutting jitter bug (vertices were being dropped) |
 | texture_scale | measurable | both | micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms) | anchor run 1: subject-anchored grain implemented (noise in house-local coords) — wall blocks read -33..+3% of solo vs canvas-anchored +9..+24%: texture is a valid subject-level parameter; anchor is a declared recipe property |
 | texture_directionality | candidate | both | dominant texture orientation distribution | untested |
 | texture_regularity | candidate | both | periodicity/regularity of texture pattern | untested |

@@ -63,14 +63,14 @@ def jitter_polyline(pts, sigma, seed):
     if sigma <= 0:
         return list(pts)
     rng = random.Random(seed)
-    out = []
+    out = [pts[0]]
     for j in range(len(pts) - 1):
         x0, y0 = pts[j]
         x1, y1 = pts[j + 1]
         for f in (0.25, 0.5, 0.75):
             out.append((x0 + (x1 - x0) * f + rng.gauss(0, sigma),
                         y0 + (y1 - y0) * f + rng.gauss(0, sigma)))
-    out.append(pts[-1])
+        out.append(pts[j + 1])  # vertices stay — dropping them cut corners
     return out
 
 

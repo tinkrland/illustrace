@@ -1,0 +1,98 @@
+{
+ "fidelity": [
+  [
+   0.0,
+   1.94,
+   0.72
+  ],
+  [
+   8.0,
+   4.85,
+   7.11
+  ],
+  [
+   14.0,
+   7.16,
+   11.87
+  ]
+ ],
+ "solo": {
+  "regions": {
+   "wall_left": {
+    "sigma": 6.88,
+    "grad": 10.34
+   },
+   "wall_bottom": {
+    "sigma": 4.49,
+    "grad": 8.33
+   },
+   "wall_right": {
+    "sigma": 4.47,
+    "grad": 8.23
+   },
+   "roof": {
+    "sigma": 4.26,
+    "grad": 7.95
+   },
+   "door": {
+    "sigma": 10.17,
+    "grad": 10.16
+   }
+  },
+  "sigma": 5.61,
+  "grad": 8.71
+ },
+ "set_canvas_anchored": {
+  "regions": {
+   "wall_left": {
+    "sigma": 6.77,
+    "grad": 15.62
+   },
+   "wall_bottom": {
+    "sigma": 4.56,
+    "grad": 8.48
+   },
+   "wall_right": {
+    "sigma": 4.55,
+    "grad": 9.41
+   },
+   "roof": {
+    "sigma": 4.27,
+    "grad": 7.69
+   },
+   "door": {
+    "sigma": 7.67,
+    "grad": 11.76
+   }
+  },
+  "sigma": 5.21,
+  "grad": 9.57
+ },
+ "set_subject_anchored": {
+  "regions": {
+   "wall_left": {
+    "sigma": 6.34,
+    "grad": 13.05
+   },
+   "wall_bottom": {
+    "sigma": 2.28,
+    "grad": 4.36
+   },
+   "wall_right": {
+    "sigma": 2.26,
+    "grad": 5.03
+   },
+   "roof": {
+    "sigma": 2.31,
+    "grad": 4.24
+   },
+   "door": {
+    "sigma": 6.31,
+    "grad": 7.89
+   }
+  },
+  "sigma": 3.22,
+  "grad": 5.6
+ },
+ "scale": 0.55
+}

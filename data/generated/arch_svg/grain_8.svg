@@ -24,14 +24,14 @@
   <g id="strokes" class="brush-custom" stroke="#45251c"
      stroke-width="5" stroke-linecap="square"
      stroke-linejoin="round" fill="none">
-    <path class="stroke stroke-walls" data-brush="" d="M 140.0 220.0 L 140.0 392.0 L 330.0 392.0 L 330.0 220.0"/>
-    <path class="stroke stroke-roof" data-brush="" d="M 120.0 222.0 L 235.0 130.0 L 350.0 222.0"/>
-    <path class="stroke stroke-chimney" data-brush="" d="M 290.0 150.0 L 290.0 210.0 L 318.0 210.0 L 318.0 150.0"/>
-    <path class="stroke stroke-door" data-brush="" d="M 218.0 310.0 L 218.0 392.0 L 252.0 392.0 L 252.0 310.0"/>
-    <path class="stroke stroke-window_l" data-brush="" d="M 162.0 250.0 L 162.0 294.0 L 206.0 294.0 L 206.0 250.0 L 162.0 250.0"/>
-    <path class="stroke stroke-window_r" data-brush="" d="M 288.0 250.0 L 288.0 294.0 L 332.0 294.0 L 332.0 250.0 L 288.0 250.0"/>
-    <path class="stroke stroke-tree_trunk" data-brush="" d="M 430.0 320.0 L 430.0 392.0 L 446.0 392.0 L 446.0 320.0"/>
-    <path class="stroke stroke-ground" data-brush="" d="M 0.0 392.0 L 512.0 392.0"/>
+    <path class="stroke stroke-walls" data-brush="linework" d="M 140.0 220.0 L 140.0 392.0 L 330.0 392.0 L 330.0 220.0"/>
+    <path class="stroke stroke-roof" data-brush="linework" d="M 120.0 222.0 L 235.0 130.0 L 350.0 222.0"/>
+    <path class="stroke stroke-chimney" data-brush="linework" d="M 290.0 150.0 L 290.0 210.0 L 318.0 210.0 L 318.0 150.0"/>
+    <path class="stroke stroke-door" data-brush="linework" d="M 218.0 310.0 L 218.0 392.0 L 252.0 392.0 L 252.0 310.0"/>
+    <path class="stroke stroke-window_l" data-brush="linework" d="M 162.0 250.0 L 162.0 294.0 L 206.0 294.0 L 206.0 250.0 L 162.0 250.0"/>
+    <path class="stroke stroke-window_r" data-brush="linework" d="M 288.0 250.0 L 288.0 294.0 L 332.0 294.0 L 332.0 250.0 L 288.0 250.0"/>
+    <path class="stroke stroke-tree_trunk" data-brush="linework" d="M 430.0 320.0 L 430.0 392.0 L 446.0 392.0 L 446.0 320.0"/>
+    <path class="stroke stroke-ground" data-brush="linework" d="M 0.0 392.0 L 512.0 392.0"/>
   </g>
 
 </svg>
