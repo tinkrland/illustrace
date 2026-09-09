@@ -1,0 +1,222 @@
+---
+status: working ontology + research matrix — the taxonomy is itself a main output; every parameter carries evidence status, not pretend objectivity
+---
+
+# style ontology and research matrix
+
+the working thesis: **visual style is not one thing.** an illustration's style is
+the interaction of many semi-independent visual systems — linework, geometry,
+color, shading, texture, rendering — and style transfer fails today because
+tools treat it as a monolith to copy rather than systems to borrow from.
+
+this document defines the ontology illustrace studies: the decomposition, the
+parameter status ladder, the research matrix, and how each claim gets tested.
+it is the research contract for the engine: nothing becomes a "control" until
+it climbs the evidence ladder.
+
+## scope
+
+- intentionally stylized 2d illustration (later 3d): no realism, no human
+  identity/anatomy, no unconstrained character work.
+- asset classes decompose as **character / object / setting**. character design
+  is out of scope for now — the study starts with **objects and settings**,
+  single asset and composed set.
+- reference points (nova3d, openscad, etc.) stay reference points; the study
+  is standalone. style-transfer inspirations stay private by design (see
+  PRIOR_ART.md).
+
+## the granularity question (new, first-class)
+
+the same artist treats a single asset and a composed set differently: the
+palette, the coloring, the shading, the lighting of a lone chair is not the
+palette/coloring/shading/lighting of that chair in a room. so style parameters
+must be studied at two granularities:
+
+```
+asset-level profile   — one object or one setting element, isolated
+set-level profile     — the composed scene: relations, lighting, staging
+```
+
+testable claim (stylebench-able): for each parameter, is it **granularity
+stable** (asset and set readings agree) or **granularity dependent** (the set
+changes it)? parameters that are granularity dependent need set-context in
+their operational definition — an asset-level reading alone is not the style.
+the benchmark stimulus families therefore come in pairs: same asset rendered
+solo and inside its set, parameters otherwise identical.
+
+## the ontology (ten dimensions + cross-cutting layers)
+
+```
+01 content                 what is depicted — preserved by default, not style
+02 spatial construction    composition, staging, perspective, framing
+03 shape language          primitive vocabulary, curvature, angularity, simplification
+04 silhouette + geometry  silhouette statistics separate from internal construction
+05 mark-making             stroke geometry, width, taper, jitter, direction, density
+06 color + value           palette, value architecture, saturation, temperature, relationships
+07 surface + texture       micro/meso/macro texture, grain, material cues
+08 shading + illumination shading model, shadows, highlights, lighting field
+09 edge + rendering        edge profiles, rendering model, medium simulation
+10 medium + material      substrate behavior, pigment physics, material representation
+```
+
+cross-cutting measurement layers (not standalone categories):
+
+```
+frequency structure   — where visual information lives: low / mid / high band
+relationships         — relational readings: stroke width / subject height, shadow
+                        darkness / local value, texture scale / canvas resolution
+scale                 — every px-valued reading normalized against a canonical size
+```
+
+**subject is not style.** a cottage, tree, chair, flower belong to the content
+layer. how the cottage is constructed visually belongs to style. composition,
+typography, ui elements, subject matter, objects, pose are disabled by default
+in any transfer.
+
+## parameter status ladder
+
+```
+candidate parameter
+  → measurable parameter        (test 1: a machine can measure it)
+  → transferable parameter      (test 3: changing it is possible)
+  → independently transferable (test 3b: changing it leaves others intact)
+  → user-controllable parameter (human-usable control with a calibration curve)
+```
+
+those are not synonyms. "paper grain" is measurable and transferable but maybe
+not independent from texture. "whimsy" is maybe measurable, probably not
+directly controllable yet. the registry records where each parameter stands —
+and the engine only exposes controls at the top of the ladder.
+
+## the research matrix
+
+for every candidate parameter, the row is the experiment backlog:
+
+| parameter | operational definition | measurable? | human agreement | independent? | transferable? | scale-dependent? |
+|---|---|---|---|---|---|---|
+
+- **test 1 (machine):** fidelity sweeps on the parametric substrate — the
+  parameter is ground truth, so the metric must track it monotonically (and
+  linearly for slider-grade control; see the calibration note in
+  SVG_SUBSTRATE_RUN2).
+- **test 2 (human):** forced-choice pairwise judgments against the ground-truth
+  ordering (survey app); agreement rate above the catch-pair noise floor.
+- **test 3 (independence):** the confound test — change one parameter, measure
+  the others; leakage within noise = independent (the run-1 grain/stroke
+  confound is the cautionary tale).
+
+the machine-readable version is `engine/registry.py` — the single source of
+truth; `results/PARAMETER_MATRIX.md` renders from it.
+
+## measurement families
+
+six families, each with its own benchmark module:
+
+```
+family 1  geometry     shape complexity, curvature, angularity, symmetry,
+                        simplification, silhouette, exaggeration, proportion
+family 2  mark          stroke width, width variation, jitter (position/angle/
+                        width split), taper, directionality, continuity,
+                        density, contour hierarchy, contour completeness
+family 3  color         palette size/entropy, hue, value, saturation,
+                        temperature, contrast, color relationships
+family 4  surface       texture scale (micro/meso/macro), frequency,
+                        regularity, grain, material cues
+family 5  illumination  value architecture, shading bands, shadow system,
+                        highlight system, lighting field, occlusion
+family 6  presentation  edge profiles (hard/soft/lost/irregular), rendering
+                        model, medium simulation, visual density, negative space
+```
+
+## style profile shape
+
+the engine's target representation — never a bare embedding, never raw px:
+
+```json
+{
+  "mark": {
+    "stroke_width": {
+      "value": 0.018, "unit": "subject_height_ratio", "confidence": 0.94,
+      "granularity": ["asset", "set"]
+    },
+    "width_variation": { "value": 0.71, "confidence": 0.88 },
+    "roughness": {
+      "value": 0.82,
+      "frequency": { "low": 0.12, "mid": 0.67, "high": 0.21 }
+    }
+  }
+}
+```
+
+each component carries raw measurement, normalized measurement, confidence,
+scale, granularity stability, and dependencies. relationships are stored as
+ratios against canonical sizes — `outline_width / subject_height` transfers
+across resolutions; `4px` does not.
+
+## pipeline
+
+```
+reference → style encoder → style profile → select components
+→ transfer parameter relationships → reconstruct → measure output
+→ compare against requested delta → record in the control plane
+```
+
+the research question that governs everything: **what is the smallest useful
+set of measurable variables that explains the visual differences humans
+perceive as style, within intentionally stylized imagery?** the ai part gets
+substantially less mysterious once the representation is defined — models are
+then estimating and manipulating a defined object, not conjuring style.
+
+## study tooling
+
+- **substrate:** parametric svg stimulus generator — deterministic renders
+  from (geometry, recipes, seed); parameters are ground truth (svg_house).
+- **control plane:** xano (runs, judgments, experiments; schema-first).
+- **study infrastructure:** the adaption api — datasets for stimuli +
+  measured profiles + human judgments (csv/jsonl upload), adaptive data to
+  curate and normalize the reference sets, autoscientist for the later
+  operator-learning research loop. sdk: `adaption`, key: $ADAPTIONLABS_API_KEY.
+- **research scientist:** glm 4.7 via the model router for hypothesis
+  synthesis and experiment interpretation (pending router access fix).
+
+## current evidence (2026-09-09)
+
+climbed so far (substrate fidelity + honesty about failures):
+
+- stroke width: monotone + linear (0.78x stable bias) — slider-grade
+- jitter σ: monotone, saturating — ordinal, calibration curve pending
+- taper: monotone — good
+- double-pass: detectable via stroke_density, nonlinear (overlap)
+- grain amplitude: monotone (texture energy)
+- palette lerp: monotone, compressive at long range — calibration pending
+- lighting strength: monotone on mean luminance, fixed-support measurement;
+  the old contrast signal was a mask-drift artifact
+- lessons recorded: masks from reference renders, never per-image; calibration
+  curves before claiming linear control; wrong expectations get caught by
+  ground truth (taper direction)
+
+
+## research scientist session notes (tensormux, glm-4-7-flash — 2026-09-09)
+
+first synthesis session over the 46-candidate registry. recorded as
+pre-registered predictions — they get tested, not trusted:
+
+**next test-1 targets (mix of likely-pass and likely-informative-failure):**
+- stroke_directionality — computable straight from path segment angles; likely pass
+- value_range — trivially measurable; fundamental; likely pass
+- texture_scale — directly tied to substrate noise parameters; easy parametric control
+- shape_complexity — highest noise risk; a failure here would expose the substrate's
+  inability to decouple geometry from stroke density (informative either way)
+
+**pre-registered test-3 confound predictions:**
+- stroke_density <-> shape_complexity — density is partly a proxy for complexity
+- palette_size <-> value_range — bigger palettes tend to need wider value spread
+- stroke_width <-> lighting_strength — thick-outline styles often couple to strong
+  directional lighting or flat shading (stylistic correlation, not causation —
+  the substrate can decouple them, the world just tends not to)
+- texture_scale <-> texture_energy — scaling a pattern changes its band energy;
+  likely inseparable in output statistics
+
+**session meta:** glm-4-7-flash is a thinking model — completion budget must
+include reasoning tokens (content arrives empty at low max_tokens). sessions
+are uneven; use for ranking/critique passes, not final judgment.

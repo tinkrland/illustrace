@@ -56,6 +56,8 @@ and crucially: illustrace makes **presets, not static assets**. the goal is for 
 an embarrassingly small, fully deterministic engine (nothing neural yet, on purpose):
 - `engine/analyzer.py` — four candidate style measurements: palette, stroke width variation, edge direction entropy, texture energy. candidates, not validated factors yet.
 - `engine/operators.py` — one transfer operator: palette transfer with soft cluster membership and strength-as-distance-traveled.
+- `research/STYLE_ONTOLOGY.md` — the decomposition: ten dimensions, the parameter status ladder, the research matrix, and the granularity question (asset vs set)
+- `engine/registry.py` — the parameter registry as code (renders `results/PARAMETER_MATRIX.md`)
 - `benchmarks/` — controlled stimulus pairs where exactly one style factor changes; if the analyzer can't tell them apart, nothing downstream matters.
 - `benchmarks/svg_house.py` — the same house as a layered, parametric svg (brush recipes, texture filter, lighting overlay) — editable substrate + measurement-fidelity bench.
 - `engine/metrics.py` — requested fidelity + non-target preservation, the first two invariants.
