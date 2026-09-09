@@ -163,3 +163,33 @@ python -m unittest tests.test_survey_ingest -v
 
 tests cover: normalization, gt joins, catch-pair null scores, invalid records
 skipped with reasons, dry-run behaviour, and summary aggregation.
+
+## batch 2 (2026-09-09)
+
+batch 2 is spec-driven end to end (research/VALIDATION_LOOP.md in practice):
+
+- **preregistration:** `survey/specs/batch_2.json` declares every question,
+  its ground truth, catch positions, pass criteria, and adaptive rules before
+  any judge sees it. the glm-5.2 scientist session reviewed the draft; its
+  corrections (grain floor reallocated to the 0-8/8-14 brackets, taper
+  roughness polarity inverted per the pilot refutation, lighting JND pairs)
+  are folded in and cited in the spec.
+- **build:** `python3 survey/build_batch.py` renders any missing stimuli via
+  the svg substrate and writes `survey/stimuli.json` (v2). `--dry-run`
+  validates the spec against existing images only.
+- **mechanics:** every question carries an honest "no difference / can't
+  tell" option, so identical-pair catches become implicit attention checks
+  ("no difference" is the correct answer) and "no difference" on scored pairs
+  is recorded as a perceptual-floor signal, not an incident. one same/different
+  question (grain 0 vs 8) separates detection from "which is more". catch
+  pairs sit at fixed display positions (5, 12, 19) with dimension-consistent
+  prompts so they blend in. left/right randomization per judge stays.
+- **analysis:** `python3 survey/analyze_batch.py results_*.json` scores
+  answers against the spec, excludes judges who miss more than one catch,
+  computes per-question agreement, per-dimension agreement with bootstrap
+  95% CIs, applies the verdict rules (taper promotion/split/kill, grain floor
+  bracket, lighting validation), and flags 50/50 splits as stimulus failures
+  to regenerate next batch. `--demo` runs synthetic judges offline.
+- **legacy:** the pilot stimuli are archived at
+  `survey/specs/stimuli_batch1.json`; `ingest()` takes a `stimuli_path` for
+  scoring old records.

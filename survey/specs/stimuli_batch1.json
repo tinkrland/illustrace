@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "about": "illustrace stylebench human-judgment validation. ground truth comes from parametric svg stimuli: the gt side is the one with the provably higher parameter.",
+  "questions": [
+    {
+      "id": "q01",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher / more hand-drawn?",
+      "left": "../data/generated/arch_svg/jit_0p00.png",
+      "right": "../data/generated/arch_svg/jit_1p25.png",
+      "gt": "right"
+    },
+    {
+      "id": "q02",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher / more hand-drawn?",
+      "left": "../data/generated/arch_svg/jit_1p25.png",
+      "right": "../data/generated/arch_svg/jit_2p50.png",
+      "gt": "right"
+    },
+    {
+      "id": "q03",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher / more hand-drawn?",
+      "left": "../data/generated/arch_svg/jit_2p50.png",
+      "right": "../data/generated/arch_svg/jit_3p75.png",
+      "gt": "right"
+    },
+    {
+      "id": "q04",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher / more hand-drawn?",
+      "left": "../data/generated/arch_svg/jit_2p50.png",
+      "right": "../data/generated/arch_svg/jit_2p50.png",
+      "gt": null,
+      "note": "catch pair (identical images) \u2014 records noise, no ground truth"
+    },
+    {
+      "id": "q05",
+      "dimension": "texture",
+      "prompt": "which one feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_0.png",
+      "right": "../data/generated/arch_svg/grain_8.png",
+      "gt": "right"
+    },
+    {
+      "id": "q06",
+      "dimension": "texture",
+      "prompt": "which one feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_8.png",
+      "right": "../data/generated/arch_svg/grain_14.png",
+      "gt": "right"
+    },
+    {
+      "id": "q07",
+      "dimension": "texture",
+      "prompt": "which one feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_8.png",
+      "right": "../data/generated/arch_svg/grain_8.png",
+      "gt": null,
+      "note": "catch pair (identical images) \u2014 records noise, no ground truth"
+    },
+    {
+      "id": "q08",
+      "dimension": "line_weight",
+      "prompt": "which line feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width3.png",
+      "right": "../data/generated/arch_svg/fid2_width9.png",
+      "gt": "right"
+    },
+    {
+      "id": "q09",
+      "dimension": "color_temperature",
+      "prompt": "which color mood feels cooler?",
+      "left": "../data/generated/arch_svg/fid2_pal25.png",
+      "right": "../data/generated/arch_svg/fid2_pal100.png",
+      "gt": "right"
+    },
+    {
+      "id": "q10",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "../data/generated/arch_svg/fid2_light0.png",
+      "right": "../data/generated/arch_svg/fid2_light50.png",
+      "gt": "right",
+      "note": "prompt reworded after pilot: strength brightens the subject (133->138 central lum) but cools the cast (r-b 120->83), so 'warmly' was direction-inverted"
+    },
+    {
+      "id": "q11",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "../data/generated/arch_svg/fid2_light0.png",
+      "right": "../data/generated/arch_svg/fid2_light75.png",
+      "gt": "right",
+      "note": "prompt reworded after pilot: strength brightens the subject (133->138 central lum) but cools the cast (r-b 120->83), so 'warmly' was direction-inverted"
+    },
+    {
+      "id": "q12",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher / more hand-drawn?",
+      "left": "../data/generated/arch_svg/fid2_taper15.png",
+      "right": "../data/generated/arch_svg/fid2_taper60.png",
+      "gt": "right",
+      "note": "taper ease 0.15 (near-uniform) vs 0.60 (heavy taper = varied widths read as rougher)"
+    }
+  ]
+}

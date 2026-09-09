@@ -272,3 +272,25 @@ glm-5.2 is a clear step up from glm-4-7-flash for design critique: structured,
 prioritized, concrete numbers. cost per pass ~2.4k completion tokens (trivial
 against the credit balance). still treat as advisory — humans sign off on
 survey instruments before they reach judges.
+
+## adaption study-infrastructure scout (2026-09-09)
+
+- **datasets (adaptive data):** upload flow is initiate -> s3 put -> complete
+  (verified: s3 accepts, but adaption's storage-verify endpoint returned 503
+  all day; re-runnable at research/adaption/upload_preferences.py). pilot
+  judgments are exported as 10 preference pairs at
+  research/adaption/pilot_preference_pairs.jsonl — chosen = the image the
+  judge said matched the trait prompt, rejected = the other. augment()
+  takes training_type=preference_pairs + domain/general row counts; estimates
+  require a real dataset id, so the estimate runs after the upload lands.
+- **autoscientist:** the loop trains against a dataset with
+  training_method=instruction|alignment, data_format=chat, target_win_rate,
+  max_iterations. 18 supported models, including VLM-capable variants
+  (gemma-3-27b-it-VLM, gemma-4-31b-it-VLM, nemotron-3-nano-omni) — meaning a
+  style-judge can be fine-tuned directly on image preference pairs once
+  enough human judgments accumulate. that is the operator-learning loop the
+  validation thread is building toward: humans validate the metrics, then the
+  trained judge scales the measurement.
+- **ladder:** the plan holds — humans sign off on instruments and metrics;
+  glm-5.2 preregisters and interprets; the autoscientist loop only executes
+  once its training data (human preference pairs) exists at real n.

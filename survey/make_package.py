@@ -21,10 +21,11 @@ JUDGE_README = """illustrace stylebench - human judgment survey
 
 1. unzip this folder somewhere
 2. open index.html by double-clicking it (any modern browser)
-3. enter a name or nickname, answer the 12 pairwise questions
+3. enter a name or nickname, answer the pairwise questions
    (each asks which of two images feels more like the described trait -
    there are no wrong answers, go with your gut, and use the confidence
-   buttons honestly)
+   buttons honestly. if a pair genuinely looks identical to you, the
+   "no difference / can't tell" button is the honest answer - use it)
 4. at the end, download the results file (json or csv, either is fine)
 5. send that file back
 
@@ -44,15 +45,25 @@ def build():
         stimuli = json.load(f)
 
     used = set()
-    for q in stimuli["questions"]:
-        for side in ("left", "right"):
-            name = os.path.basename(q[side])
-            src = os.path.join(IMG_DIR, name)
-            if not os.path.exists(src):
-                raise SystemExit("missing image: " + src)
+
+    def ship(name):
+        src = os.path.join(IMG_DIR, name)
+        if not os.path.exists(src):
+            raise SystemExit("missing image: " + src)
+        if name not in used:
             shutil.copy2(src, os.path.join(PKG_DIR, "images", name))
             used.add(name)
-            q[side] = "images/" + name
+
+    def rewrite(p):
+        name = os.path.basename(p)
+        ship(name)
+        return "images/" + name
+
+    for q in stimuli["questions"]:
+        for side in ("left", "right"):
+            q[side] = rewrite(q[side])
+    for c in stimuli.get("catches", []):
+        c["image"] = rewrite(c["image"])
 
     # index.html: inline stimuli before the main script, with the id boot falls
     # back to when fetch fails (file://)

@@ -153,6 +153,14 @@
   }
   .image-choice.selected .choice-label { color: #4a7cfa; font-weight: 600; }
 
+  .nodiff-row {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .nodiff-row .btn.selected { background: #333; color: #fff; }
+  #response-buttons { text-align: center; margin-bottom: 1.5rem; display: none; }
+  #response-buttons button { margin: 0 0.4rem; }
+  #response-buttons button.selected { background: #4a7cfa; color: #fff; }
   .confidence-row {
     text-align: center;
     margin-bottom: 1.5rem;
@@ -225,8 +233,9 @@
   <div class="intro-card">
     <h1>illustrace stylebench — style perception survey</h1>
     <p>
-      you'll see <strong>12 pairs of architectural illustration images</strong>.
-      for each pair, click the one that better matches the description above it.
+      you'll see <strong><span id="intro-count">a series of</span> architectural illustration pairs</strong>.
+      for each pair, click the one that better matches the description above it —
+      or, if the two honestly look identical to you, say "no difference".
       then rate your confidence. the whole session takes about 3–5 minutes.
     </p>
     <div class="consent-box">
@@ -258,6 +267,10 @@
   </div>
   <div class="image-pair" id="image-pair">
     <!-- populated by renderQuestion() -->
+  </div>
+  <div id="response-buttons"></div>
+  <div class="nodiff-row" id="nodiff-row">
+    <button class="btn btn-secondary" id="btn-nodiff" onclick="chooseNoDifference()">no difference / can't tell</button>
   </div>
   <div class="confidence-row" id="confidence-row">
     <label>how confident are you?</label>
@@ -352,28 +365,51 @@ function startSurvey() {
   startedAt = new Date().toISOString();
   answers = [];
 
-  // build per-question display objects with randomized left/right
-  questions = stimuli.questions.map(q => {
-    // coin flip: swap left/right?
-    const swapped = Math.random() < 0.5;
-    return {
-      id: q.id,
-      dimension: q.dimension,
-      prompt: q.prompt,
-      // display_left/display_right are what the judge sees
-      display_left:  swapped ? q.right : q.left,
-      display_right: swapped ? q.left  : q.right,
-      // originals kept for gt scoring in ingest
-      orig_left: q.left,
-      orig_right: q.right,
-      gt: q.gt,           // "left" | "right" | null (in original frame)
-      note: q.note || null,
-    };
-  });
+  // build display sequence: anchor first, scored shuffled, catches at fixed display positions
+  questions = buildSequence();
+  document.getElementById("intro-count").textContent = questions.length;
 
   currentIdx = 0;
   show("screen-survey");
   renderQuestion();
+}
+
+function buildSequence() {
+  const anchor = stimuli.questions.filter(q => q.kind === "anchor");
+  const rest = shuffle(stimuli.questions.filter(q => q.kind !== "anchor"));
+  const catchAt = {};
+  for (const c of (stimuli.catches || [])) catchAt[c.position] = c;
+  const total = stimuli.questions.length + (stimuli.catches || []).length;
+
+  const seq = anchor.slice();
+  while (seq.length < total) {
+    const pos = seq.length + 1;  // 1-indexed display position of the next question
+    const c = catchAt[pos];
+    if (c) {
+      seq.push({
+        id: c.id, kind: "catch", dimension: "attention", prompt: c.prompt,
+        display_left: c.image, display_right: c.image,
+        orig_left: c.image, orig_right: c.image,
+        gt: "identical", scored: false, note: "catch pair (identical images)",
+      });
+      continue;
+    }
+    const q = pendingNext(rest, catchAt, pos);
+    seq.push(q);
+  }
+  return seq;
+}
+
+function pendingNext(rest, catchAt, pos) {
+  const q = rest.shift();
+  const swapped = Math.random() < 0.5;
+  return {
+    id: q.id, kind: q.kind, dimension: q.dimension, prompt: q.prompt,
+    display_left:  swapped ? q.right : q.left,
+    display_right: swapped ? q.left  : q.right,
+    orig_left: q.left, orig_right: q.right,
+    gt: q.gt, scored: q.scored !== false, note: q.note || null,
+  };
 }
 
 // ── render ───────────────────────────────────────────────────────
@@ -381,35 +417,49 @@ function renderQuestion() {
   const q = questions[currentIdx];
   const total = questions.length;
 
-  // progress
   document.getElementById("progress-text").textContent =
     "question " + (currentIdx + 1) + " of " + total;
   document.getElementById("progress-bar").style.width =
     ((currentIdx / total) * 100) + "%";
 
-  // header
-  document.getElementById("dimension-badge").textContent = q.dimension.replace("_", " ");
+  const badge = document.getElementById("dimension-badge");
+  badge.textContent = (q.kind === "anchor") ? "warm-up" : q.dimension.replace("_", " ");
   document.getElementById("question-prompt").textContent = q.prompt;
 
-  // images — paths are relative to survey/index.html location
-  // stimuli.json stores "../data/generated/arch_svg/foo.png" (relative to survey/)
-  // that is correct as-is for img src when served from survey/
   const pair = document.getElementById("image-pair");
   pair.innerHTML = "";
+  const clickable = q.kind !== "same_different";
 
   ["display_left", "display_right"].forEach(side => {
     const path = q[side];
     const file = basename(path);
     const div = document.createElement("div");
     div.className = "image-choice";
-    div.dataset.file = file;
     div.innerHTML = `<img src="${path}" alt="${file}" loading="lazy">
                      <div class="choice-label">${side === "display_left" ? "option A" : "option B"}</div>`;
-    div.addEventListener("click", () => selectChoice(file, div));
+    if (clickable) div.addEventListener("click", () => selectChoice(file, div));
     pair.appendChild(div);
   });
 
-  // reset ephemeral state
+  // same/different questions: buttons instead of image clicks
+  const resp = document.getElementById("response-buttons");
+  if (q.kind === "same_different") {
+    resp.style.display = "block";
+    resp.innerHTML = "";
+    [["they look the same", "same"], ["they look different", "different"]].forEach(([label, val]) => {
+      const b = document.createElement("button");
+      b.className = "btn btn-secondary";
+      b.textContent = label;
+      b.onclick = () => selectChoice(val, b);
+      resp.appendChild(b);
+    });
+  } else {
+    resp.style.display = "none";
+    resp.innerHTML = "";
+  }
+
+  document.getElementById("nodiff-row").style.display = (q.kind === "same_different") ? "none" : "block";
+
   chosenFile = null;
   confidence = null;
   document.getElementById("confidence-row").classList.remove("visible");
@@ -422,7 +472,21 @@ function renderQuestion() {
 function selectChoice(file, el) {
   chosenFile = file;
   document.querySelectorAll(".image-choice").forEach(c => c.classList.remove("selected"));
-  el.classList.add("selected");
+  document.querySelectorAll("#response-buttons button").forEach(b => b.classList.remove("selected"));
+  // clicking an image / same-different button clears any "no difference" pick
+  const nd = document.getElementById("btn-nodiff");
+  if (nd) nd.classList.remove("selected");
+  if (el && el.classList.contains("image-choice")) el.classList.add("selected");
+  if (el && el.id !== "btn-nodiff" && el.tagName === "BUTTON") el.classList.add("selected");
+  document.getElementById("confidence-row").classList.add("visible");
+  maybeEnableNext();
+}
+
+function chooseNoDifference() {
+  chosenFile = "identical";
+  document.querySelectorAll(".image-choice").forEach(c => c.classList.remove("selected"));
+  document.querySelectorAll("#response-buttons button").forEach(b => b.classList.remove("selected"));
+  document.getElementById("btn-nodiff").classList.add("selected");
   document.getElementById("confidence-row").classList.add("visible");
   maybeEnableNext();
 }
@@ -446,6 +510,8 @@ function nextQuestion() {
 
   answers.push({
     question_id:  q.id,
+    kind:         q.kind || "pair",
+    scored:       q.scored !== false,
     dimension:    q.dimension,
     prompt:       q.prompt,
     left_file:    basename(q.display_left),

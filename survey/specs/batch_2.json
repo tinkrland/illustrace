@@ -1,0 +1,279 @@
+{
+  "batch": "batch_2",
+  "version": 2,
+  "date_preregistered": "2026-09-09",
+  "goal": "resolve taper dimension membership, bracket the grain perceptual floor, verify the corrected lighting prompt",
+  "scientist_session": "glm-5.2 via nebius token factory, 2026-09-09 (draft critique: grain fine-steps reallocated to the 0-8 and 8-14 brackets, taper roughness polarity inverted to match the pilot refutation, lighting JND pairs added)",
+  "judges_target": 5,
+  "session_shape": {
+    "total_questions": 22,
+    "blocks": {
+      "anchor": 1,
+      "jitter_replicate": 3,
+      "taper_framing": 4,
+      "grain_floor": 7,
+      "lighting_verify": 4,
+      "catches": 3
+    },
+    "catch_positions_display_order": [
+      5,
+      12,
+      19
+    ]
+  },
+  "images_new": [
+    {
+      "file": "grain_11",
+      "recipe": "build_svg(roles, clean, textured=True) + render grain_amp=11",
+      "params": {
+        "grain_amp": 11
+      }
+    },
+    {
+      "file": "b2_jit2",
+      "recipe": "build_svg(rw, dict(clean, width=7, taper=0.15, jitter=2.0))",
+      "params": {
+        "jitter": 2.0,
+        "taper": 0.15,
+        "width": 7
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "b2a",
+      "kind": "anchor",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher / more hand-drawn?",
+      "left": "jit_0p00.png",
+      "right": "jit_3p75.png",
+      "gt": "right",
+      "scored": false,
+      "note": "warm-up, extreme difference, not scored"
+    },
+    {
+      "id": "b2j1",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "jit_0p00.png",
+      "right": "jit_1p25.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2j2",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels smoother?",
+      "left": "jit_0p00.png",
+      "right": "jit_1p25.png",
+      "gt": "left",
+      "note": "polarity reversal: same stimulus pair as b2j1, inverted prompt"
+    },
+    {
+      "id": "b2j3",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "jit_0p00.png",
+      "right": "jit_3p75.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2t1",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "fid2_taper15.png",
+      "right": "fid2_taper60.png",
+      "gt": "left",
+      "note": "hypothesis inverted per pilot: uniform width reads as rougher, heavy calligraphic taper reads as smoother"
+    },
+    {
+      "id": "b2t2",
+      "kind": "pair",
+      "dimension": "line_character",
+      "prompt": "which linework feels more calligraphic / has more varied stroke width?",
+      "left": "fid2_taper15.png",
+      "right": "fid2_taper60.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2t3",
+      "kind": "pair",
+      "dimension": "line_character",
+      "prompt": "which linework feels more calligraphic / has more varied stroke width?",
+      "left": "fid2_taper15.png",
+      "right": "fid2_taper30.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2t4",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "b2_jit2.png",
+      "right": "fid2_taper60.png",
+      "gt": "left",
+      "note": "cross-cue: uniform width + jitter 2.0 vs heavy taper, does jitter roughness dominate"
+    },
+    {
+      "id": "b2g1",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "grain_0.png",
+      "right": "grain_8.png",
+      "gt": "right",
+      "note": "pilot retest: this pair was missed at n=1"
+    },
+    {
+      "id": "b2g2",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "grain_8.png",
+      "right": "grain_14.png",
+      "gt": "right",
+      "note": "pilot retest: this pair was a confident hit"
+    },
+    {
+      "id": "b2g3",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "grain_8.png",
+      "right": "grain_11.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2g4",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "grain_11.png",
+      "right": "grain_14.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2g5",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "grain_0.png",
+      "right": "grain_11.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2g6",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "grain_0.png",
+      "right": "grain_14.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2g7",
+      "kind": "same_different",
+      "dimension": "texture",
+      "prompt": "do these two images look the same or different?",
+      "left": "grain_0.png",
+      "right": "grain_8.png",
+      "gt": "different",
+      "note": "d-prime separation: same/different judgment on the pair the pilot missed under which-is-more"
+    },
+    {
+      "id": "b2l1",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "fid2_light0.png",
+      "right": "fid2_light50.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2l2",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "fid2_light25.png",
+      "right": "fid2_light75.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2l3",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "fid2_light0.png",
+      "right": "fid2_light75.png",
+      "gt": "right"
+    },
+    {
+      "id": "b2l4",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "fid2_light50.png",
+      "right": "fid2_light75.png",
+      "gt": "right",
+      "note": "JND probe at the small 0.5-0.75 delta"
+    }
+  ],
+  "catches": [
+    {
+      "id": "b2c1",
+      "image": "grain_8.png",
+      "position": 5,
+      "prompt": "which image feels more textured / grainy?",
+      "dimension": "texture"
+    },
+    {
+      "id": "b2c2",
+      "image": "fid2_taper30.png",
+      "position": 12,
+      "prompt": "which linework feels more calligraphic / has more varied stroke width?",
+      "dimension": "line_character"
+    },
+    {
+      "id": "b2c3",
+      "image": "jit_2p50.png",
+      "position": 19,
+      "prompt": "which linework feels rougher?",
+      "dimension": "roughness"
+    }
+  ],
+  "pass_criteria": {
+    "jitter": ">=4/5 judges correct on b2j1 and b2j3, and b2j2 (polarity) within each other's confidence bands. failing this invalidates the session substrate",
+    "taper": {
+      "roughness_polarity": ">=4/5 judges select fid2_taper15 (uniform) as rougher on b2t1 -> polarity confirmed (heavy taper = smoother)",
+      "line_character": ">=4/5 judges select the heavy-taper side on b2t2 and b2t3 -> taper discriminable under calligraphic framing",
+      "cross_cue": ">=4/5 judges select b2_jit2 (jitter) as rougher on b2t4 -> jitter roughness dominates when cues conflict",
+      "verdict_rule": "line_character pass + roughness polarity pass -> promote taper to its own line_character axis with smoother polarity on roughness; line_character pass + roughness split (2/3) -> standalone axis, remove from roughness composite; both fail -> kill the taper candidate"
+    },
+    "grain": {
+      "anchor_pass": "5/5 judges correct on b2g6 (0v14, extreme delta)",
+      "jnd_floor": "lowest 0-v-X pair with >=4/5 agreement gives the floor bracket; if 0v8 fails while 0v11 passes, floor is between 8 and 11",
+      "local_jnd": "8v11 and 11v14 agreement gives the JND in the working range",
+      "d_prime": "b2g7 must yield >=4/5 'different' -> pilot miss was a which-is-more artifact, not a perceptual floor"
+    },
+    "lighting": ">=4/5 correct on b2l1 and b2l2 (corrected prompt validated); b2l4 agreement estimates the brightness JND near the top of the range",
+    "general": "any scored pair with a 50/50 judge split is a stimulus failure, not human noise: regenerate at higher parameter delta in the next batch"
+  },
+  "adaptive_rules": {
+    "catch_fail": "a judge answering >1 catch pair with a side choice instead of 'no difference' is excluded from aggregates; recruit a replacement to hold n=5",
+    "grain_fail": "if 8v11 fails but 8v14 passes, the psychometric floor is between 11 and 14: next batch probes 11v13 and 12v14",
+    "lighting_fail": "if 0.5v0.75 passes but 0.25v0.75 fails, lighting JND is above 0.25: next batch probes 0.5v1.0 (capped at substrate max)",
+    "stimulus_fail": "50/50 splits get regenerated at higher contrast next batch and logged as stimulus-quality data",
+    "convergence": "two consecutive batches with agreement values inside each other's bootstrap CIs at target n ends the loop for that dimension; the plateau is the metric's honest ceiling"
+  },
+  "registry_consequences": {
+    "taper_promote": "taper -> validated under line_character, controllable_track",
+    "taper_split": "taper -> measurable only, removed from roughness composite",
+    "taper_kill": "taper -> demoted with evidence",
+    "lighting_pass": "lighting_strength -> validated (brightness axis)",
+    "lighting_fail": "lighting_strength -> stays measurable, prompt/JND work queued",
+    "grain_pass": "texture_energy -> validated with floor bracket recorded"
+  }
+}

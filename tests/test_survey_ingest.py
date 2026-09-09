@@ -307,6 +307,10 @@ class TestBuildSummary(unittest.TestCase):
         self.assertIn("line_weight", summary["per_dimension_agreement"])
 
 
+_PILOT_STIMULI = os.path.join(os.path.dirname(__file__), "..", "survey",
+                              "specs", "stimuli_batch1.json")
+
+
 class TestIngestIntegration(unittest.TestCase):
     """full pipeline test using a temp file for the results JSON."""
 
@@ -327,7 +331,7 @@ class TestIngestIntegration(unittest.TestCase):
         ]
         path = self._write_results(_make_results(answers))
         try:
-            records, summary, skipped = ingest(path, dry_run=True)
+            records, summary, skipped = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         self.assertEqual(len(records), 4)
@@ -337,7 +341,7 @@ class TestIngestIntegration(unittest.TestCase):
         answers = [_make_answer("q01", "jit_1p25.png")]
         path = self._write_results(_make_results(answers))
         try:
-            records, _, _ = ingest(path, dry_run=True)
+            records, _, _ = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         self.assertEqual(records[0]["score"], 1)
@@ -346,7 +350,7 @@ class TestIngestIntegration(unittest.TestCase):
         answers = [_make_answer("q01", "jit_0p00.png")]  # wrong
         path = self._write_results(_make_results(answers))
         try:
-            records, _, _ = ingest(path, dry_run=True)
+            records, _, _ = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         self.assertEqual(records[0]["score"], 0)
@@ -355,7 +359,7 @@ class TestIngestIntegration(unittest.TestCase):
         answers = [_make_answer("q04", "jit_2p50.png")]
         path = self._write_results(_make_results(answers))
         try:
-            records, _, _ = ingest(path, dry_run=True)
+            records, _, _ = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         self.assertIsNone(records[0]["score"])
@@ -365,7 +369,7 @@ class TestIngestIntegration(unittest.TestCase):
         answers = [bad, _make_answer("q01", "jit_1p25.png")]
         path = self._write_results(_make_results(answers))
         try:
-            records, summary, skipped = ingest(path, dry_run=True)
+            records, summary, skipped = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         self.assertEqual(len(records), 1)
@@ -391,7 +395,7 @@ class TestIngestIntegration(unittest.TestCase):
         results = _make_results(answers, judge_id="")
         path = self._write_results(results)
         try:
-            records, _, _ = ingest(path, dry_run=True)
+            records, _, _ = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         self.assertEqual(records[0]["judge_id"], "anonymous")
@@ -402,7 +406,7 @@ class TestIngestIntegration(unittest.TestCase):
         ans["dimension"] = "roughness"   # lie about dimension
         path = self._write_results(_make_results([ans]))
         try:
-            records, _, _ = ingest(path, dry_run=True)
+            records, _, _ = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         # normalize_answer uses answer dimension first, but gt_file comes from gt_map
@@ -413,7 +417,7 @@ class TestIngestIntegration(unittest.TestCase):
         results = {"judge_id": "x", "answers": "oops"}
         path = self._write_results(results)
         try:
-            records, summary, skipped = ingest(path, dry_run=True)
+            records, summary, skipped = ingest(path, dry_run=True, stimuli_path=_PILOT_STIMULI)
         finally:
             os.unlink(path)
         self.assertEqual(records, [])

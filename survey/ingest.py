@@ -47,9 +47,9 @@ from xano.schema import validate  # noqa: E402
 # stimuli ground-truth lookup
 # ---------------------------------------------------------------------------
 
-def _load_stimuli():
-    """load stimuli.json from the same directory as this script."""
-    path = os.path.join(_THIS_DIR, "stimuli.json")
+def _load_stimuli(stimuli_path=None):
+    """load stimuli.json (or an explicit batch file, e.g. specs/stimuli_batch1.json)."""
+    path = stimuli_path or os.path.join(_THIS_DIR, "stimuli.json")
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -61,9 +61,9 @@ def _build_gt_map(stimuli):
     """
     gt_map = {}
     for q in stimuli["questions"]:
-        gt = q.get("gt")   # "left" | "right" | None
-        if gt is None:
-            gt_file = None
+        gt = q.get("gt")   # "left" | "right" | None | "different"/"same" (v2)
+        if gt not in ("left", "right"):
+            gt_file = None  # catch pairs, anchors, same/different (analyzed by analyze_batch)
         else:
             side_path = q[gt]   # e.g. "../data/generated/arch_svg/jit_1p25.png"
             gt_file = os.path.basename(side_path)
@@ -230,7 +230,7 @@ def build_summary(records, skipped):
 # main
 # ---------------------------------------------------------------------------
 
-def ingest(results_path, dry_run=False):
+def ingest(results_path, dry_run=False, stimuli_path=None):
     """ingest a survey results JSON file.
 
     returns (records, summary, skipped_list).
@@ -238,7 +238,7 @@ def ingest(results_path, dry_run=False):
     """
     # load stimuli
     try:
-        stimuli = _load_stimuli()
+        stimuli = _load_stimuli(stimuli_path)
     except Exception as e:
         print("[ingest] cannot load stimuli.json: %s" % e, file=sys.stderr)
         return [], {}, []
