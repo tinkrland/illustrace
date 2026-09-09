@@ -19,6 +19,27 @@ targets throughout the benchmark. provenance and roles:
 | ref_12.jpeg | 78af0a899_WhatsAppImage...12813.jpeg | style target: naturalistic digital painting, dappled light, detailed garden path (non-house subject) |
 | ref_13.jpeg | a81476efa_WhatsAppImage...12807.jpeg | style target: mixed-media/textured (heavy impasto brushwork), high-contrast coastal cottage, front view |
 | ref_14.jpg | 988b4f0f0_WhatsAppImage...12805.jpg | style target: flat pastel digital illustration, children's-book decorative linework, cottage front view |
+| ref_15.png | e90c7acac_image.png | style target: dark storybook/whimsical digital painting, moody teal-green palette, decorative flat vine motif overlay |
+| ref_16.png | 44ffc1ba1_image.png | style target: storybook flat-vector/gouache hybrid, heavy grain texture, whimsical proportions (signed illustration) |
+| ref_17.png | d8f3431b6_image.png | style target: painterly gouache, dense brick pattern texture, amsterdam row houses (signed illustration) |
+| ref_18.png | 3593360d1_image.png | style target: storybook/children's-book, exaggerated curved architecture, muted lavender palette, cream ground |
+| ref_19.png | 175016f46_image.png | style target: flat vector poster illustration, saturated palette, gothic architecture |
+| ref_20.png | 542b4beed_image.png | style target: loose ink + light watercolor wash, urban sketch, minimal flat color blocks |
+| ref_21.png | f53a5eedf_image.png | style target: watercolor + ink line, traditional urban-sketch storefront |
+| ref_22.png | d15264beb_image.png | style target: watercolor + ink line, urban-sketch storefront |
+| ref_23.png | 1b6ebf146_image.png | style target: watercolor + ink line, urban-sketch storefront, denser color |
+| ref_24.png | 4446cc627_image.png | style target: watercolor wash + expressive scribble ink trees, loose park sketch |
+
+## ref_15-24 batch (2026-09-09): storybook/whimsical + watercolor styles
+
+same front-view, style-first framing as ref_09-14. this batch adds two new
+style families to the reference set: storybook/whimsical digital painting
+(ref_15, 16, 18 — exaggerated proportions, decorative motifs, heavier grain)
+and watercolor + ink urban sketching (ref_20-24 — traditional media, loose
+linework, wash-based color). ref_17 and ref_19 round out painterly-detailed
+and flat-vector-poster respectively. all kept front-view for the same reason:
+isolate style from spatial construction (see the 2d-depth vs 3d-positioning
+split noted in `research/STYLE_ONTOLOGY.md`, bucket 02).
 
 ## ref_09-14 batch (2026-09-09): front-view-only, style-first
 

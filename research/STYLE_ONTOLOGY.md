@@ -73,6 +73,27 @@ layer. how the cottage is constructed visually belongs to style. composition,
 typography, ui elements, subject matter, objects, pose are disabled by default
 in any transfer.
 
+**typography/logos are an explicit non-goal, not just a disabled default.**
+lettering, brand marks, and logo-with-text-content work stay out of scope for
+illustrace entirely (liat, 2026-09-09) — separate from the "composition
+preserved by default" rule above, which is about not transferring content;
+this is about not building the capability at all. `research/OSS_TOOL_SCAN.md`
+has a credited-by-name section on a teammate's typography tooling
+(kqrla/fontasy, fontasy-mask) studied purely for technique cross-reference
+(vectorization pipeline, pattern-as-mask), not as a direction illustrace
+is heading in.
+
+**02 spatial construction splits into a 2d-depth track and a 3d-positioning
+track — different problems, not one deferred item.** 2d depth cues
+(occlusion/overlap, relative scale, atmospheric/value falloff, layering order)
+are how a flat illustration fakes depth without real 3d coordinates — that's
+squarely illustrace's own future work. true 3d positioning (camera-relative
+xyz, perspective projection, joint/kinematic placement) is the parallel
+nova3d/openscad "editable presets" thread's problem
+(`research/EDITABLE_PRESETS_RESEARCH.md`, outside this repo — standalone
+research, reference point only), not this one. don't conflate the two when
+scoping "positioning" work later.
+
 ## parameter status ladder
 
 ```

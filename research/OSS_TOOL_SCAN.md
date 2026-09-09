@@ -57,6 +57,39 @@ workspace/branch endpoints and full workspace export — the control plane is
 programmable end to end, not just a data api. the repo's xano client was
 already provisioned through it; the toolkit task this week extends coverage.
 
+## teammate tools (credited by name — permitted, not competitor prior art)
+
+these are OSS by a teammate (kqrla / Jakob-Bock), explicitly ok to reference
+by name — different case from PRIOR_ART.md's competitor observations, which
+stay name-free on purpose. illustrace itself stays clear of logos/text-content
+work (typography, lettering, brand marks are out of scope), but the underlying
+techniques cross-reference our own pipeline:
+
+- **kqrla/fontasy** — handwriting-to-font tool (figma plugin + web app).
+  its vectorization stage is structurally the same pipeline illustrace's
+  svg substrate already runs: moore boundary tracing (contour) → douglas-
+  peucker (simplify) → catmull-rom→cubic-bezier (smooth) → opentype.js
+  export. useful as a second implementation to check our own trace/simplify/
+  smooth stages against, not a component to adopt (different output target,
+  fonts vs illustration strokes).
+- **kqrla/fontasy-mask** — applies decorative pattern fills (gingham, polka,
+  stripes, checkered) plus edge-stitch and fabric-noise overlays as masks
+  onto letterforms, with recolorable swatches. the pattern-as-mask + edge
+  treatment + noise overlay structure maps directly onto ontology bucket
+  **07 surface + texture** (`research/STYLE_ONTOLOGY.md`) — worth studying
+  as a second surface-recipe implementation, kept general (any vector shape,
+  not just letterforms) for illustrace's use.
+- **kqrla/fontasy_fork** — fork/variant of fontasy, not yet reviewed in depth.
+- **Jakob-Bock/Rogo** (+ rework at lab.vanity-ibex.xyz/rogo_rework) — armin
+  hofmann-inspired generative tool: draw ropes between adjustable poles,
+  export as svg. no text/logo involvement at all — this is pure procedural
+  mark-making (bucket **05 mark-making**), closer to a generative-geometry
+  reference than fontasy/fontasy-mask. the pole/rope parameterization (pin,
+  resize, layer toggle, snap-to-grid) is a clean example of a small, fully
+  exposed parameter set driving varied line output — same spirit as
+  illustrace's brush-recipe sliders, worth a closer look if/when the mark-
+  making bucket needs a generative (not just baked-jitter) mode.
+
 ## non-goals reminder
 
 no human identity/anatomy/realism subjects; inspos stay private; benchmarks
