@@ -118,3 +118,64 @@ def profile(img):
         "edge_direction_entropy": round(edge_direction_entropy(img), 3),
         "texture_energy": round(texture_energy(img), 2),
     }
+
+
+def value_range(img):
+    """luminance percentile spread (p5..p95) across the image. the palette
+    knob's ground truth predicts this from area-weighted role luminances."""
+    a = _as_array(img)
+    lum = a @ [0.299, 0.587, 0.114]
+    return float(np.percentile(lum, 95) - np.percentile(lum, 5))
+
+
+def stroke_axis(img, window_deg=15.0, bins=90):
+    """dominant line orientation (axial, degrees in 0..180) + concentration
+    (fraction of stroke-boundary orientation mass within the window of the
+    dominant axis). gradient orientation is perpendicular to the line, so
+    the reported axis is rotated back 90 degrees."""
+    a = _as_array(img)[:, :, 0]
+    gx = np.zeros_like(a); gy = np.zeros_like(a)
+    gx[:, 1:-1] = a[:, 2:] - a[:, :-2]
+    gy[1:-1, :] = a[2:, :] - a[:-2, :]
+    m = stroke_mask(img)
+    boundary = m ^ ndimage_binary_erosion(m)
+    near = ndimage_binary_dilation(boundary, iterations=1)
+    sel = near & ((np.abs(gx) + np.abs(gy)) > 8)
+    if sel.sum() < 20:
+        return None, 0.0
+    grad_ang = np.degrees(np.arctan2(gy[sel], gx[sel]))
+    line_ang = np.mod(grad_ang + 90.0, 180.0)
+    hist = np.histogram(line_ang, bins=bins, range=(0, 180))[0].astype(float)
+    step = 180.0 / bins
+    w = max(1, int(round(window_deg / step)))
+    # axial wrap: the orientation histogram is circular over 180 degrees
+    padded = np.concatenate([hist, hist[:w]])
+    windows = np.convolve(padded, np.ones(2 * w + 1), mode="full")[w:w + bins]
+    best = int(windows.argmax())
+    conc = float(windows[best] / max(hist.sum(), 1))
+    # circular mean (doubled angle, axial) over the winning window: the bin
+    # center alone sits on the flank of a peak, the mean centers on it
+    center = (best + 0.5) * step
+    lo, hi = center - window_deg, center + window_deg
+    inw = ((line_ang >= lo) & (line_ang <= hi)) | \
+          ((lo < 0) & (line_ang >= lo % 180)) | \
+          ((hi > 180) & (line_ang <= hi % 180))
+    t = np.radians(2.0 * line_ang[inw])
+    axis = 0.5 * np.degrees(np.arctan2(np.sin(t).sum(), np.cos(t).sum())) % 180.0
+    return axis, conc
+
+
+def shape_proxies(img):
+    """raster proxies for contour information density: isoperimetric ratio
+    of the stroke mask (perimeter / sqrt(area)) and boundary orientation
+    entropy. compared against vector ground truth corners; expected to be
+    the informative-failure candidate."""
+    from scipy import ndimage
+    m = stroke_mask(img)
+    if m.sum() < 50:
+        return {"perim_area": 0.0, "boundary_entropy": 0.0}
+    b = m ^ ndimage.binary_erosion(m)
+    perim = float(b.sum())
+    area = float(m.sum())
+    return {"perim_area": perim / max(np.sqrt(area), 1.0),
+            "boundary_entropy": edge_direction_entropy(img)}

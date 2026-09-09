@@ -1,0 +1,76 @@
+{
+ "value_range": {
+  "0.5": {
+   "measured": 70.78,
+   "expected": 70.78
+  },
+  "0.75": {
+   "measured": 98.08,
+   "expected": 98.08
+  },
+  "1.0": {
+   "measured": 125.5,
+   "expected": 125.5
+  },
+  "1.25": {
+   "measured": 152.92,
+   "expected": 152.92
+  },
+  "1.5": {
+   "measured": 180.22,
+   "expected": 180.22
+  }
+ },
+ "stroke_axis": {
+  "0": [
+   88.9,
+   0.378
+  ],
+  "30": [
+   58.1,
+   0.333
+  ],
+  "90": [
+   178.9,
+   0.378
+  ]
+ },
+ "axis_expected": [
+  1.0,
+  0.43483329146992
+ ],
+ "shape": {
+  "clean": {
+   "base": {
+    "perim_area": 46.662,
+    "boundary_entropy": 0.791
+   },
+   "complex": {
+    "perim_area": 48.103,
+    "boundary_entropy": 0.791
+   },
+   "perim_ratio": 1.031
+  },
+  "sketchy": {
+   "base": {
+    "perim_area": 41.376,
+    "boundary_entropy": 0.94
+   },
+   "complex": {
+    "perim_area": 42.525,
+    "boundary_entropy": 0.941
+   },
+   "perim_ratio": 1.028
+  }
+ },
+ "vector_truth": {
+  "base": [
+   17,
+   2199
+  ],
+  "complex": [
+   23,
+   2413
+  ]
+ }
+}

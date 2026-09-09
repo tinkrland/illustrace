@@ -4,13 +4,13 @@ status ladder: candidate -> measurable -> detector -> validated ->
 (transferable -> independently transferable -> controllable, tested next).
 
 **46 candidates** across 6 families —
-candidate: 36 detector: 2 measurable: 3 validated: 5
+candidate: 35 detector: 2 measurable: 2 validated: 7
 
 ## geometry (9)
 
 | parameter | status | granularity | operational definition | evidence |
 |---|---|---|---|---|
-| shape_complexity | candidate | both | contour information density: number of direction changes per unit contour length | untested |
+| shape_complexity | candidate | both | contour information density: number of direction changes per unit contour length | test-1: informative failure confirmed — raster proxies (isoperimetric ratio, boundary entropy) respond ~3% to a +23% corner-density change at clean brush, jitter swamps further; contour density needs the vector source (exact truth: 7.73 vs 9.53 per kpx) |
 | angularity | candidate | both | corner angle distribution: acute/obtuse frequency + polygonality index | untested |
 | curvature_mean | candidate | both | mean signed curvature along dominant contours | untested |
 | curvature_variance | candidate | both | curvature variance + frequency of abrupt direction changes | untested |
@@ -29,7 +29,7 @@ candidate: 36 detector: 2 measurable: 3 validated: 5
 | jitter_position | detector | both | contour deviation amplitude: high-frequency normal displacement of the ideal line | svg sweep: monotone via cv/edge entropy but saturating after sigma~1.25 — ordinal, calibration curve pending |
 | jitter_width | candidate | both | width modulation amplitude along the stroke (separate from position jitter) | split proposed in the ontology; untested as a separate axis |
 | taper | validated | both | width change along stroke: ease fraction + taper rate/symmetry | fidelity run 2: mean width rises monotonically as taper eases; cv confirms profile detection |
-| stroke_directionality | measurable | both | orientation distribution entropy + local directional coherence | edge_direction_entropy monotone on the jitter sweep; granularity run 1: stable across solo/set/staging (0.991-0.992) — first uncaveated 'both, stable' |
+| stroke_directionality | validated | both | dominant line axis + concentration (entropy side: edge_direction_entropy) | entropy: monotone on the jitter sweep, stable across solo/set/staging (0.991-0.992). test-1: axis+concentration rotation-exact (30 deg: 58.1 vs 58.9 expected; 90 deg: 178.9 exact); axis identity tie-limited when axis populations are within ~4% of each other |
 | stroke_density | detector | both | stroke_mask coverage: marks per area | double-pass ratio 1.34 (not ~2 — spatial overlap); detects, does not scale |
 | stroke_continuity | candidate | both | average uninterrupted run length + gap frequency | untested |
 | contour_hierarchy | candidate | both | outer/inner contour width ratio | untested |
@@ -41,7 +41,7 @@ candidate: 36 detector: 2 measurable: 3 validated: 5
 |---|---|---|---|---|
 | palette_size | candidate | both | distinct perceptual color clusters | k currently fixed at 6 — perceptual-count estimator pending |
 | palette_entropy | candidate | both | color cluster distribution entropy | untested |
-| value_range | candidate | both | luminance percentile spread (p5-p95) | untested |
+| value_range | validated | canvas | luminance percentile spread (p5-p95) | test-1: matches the area-weighted role-mixture expectation exactly at every palette-knob k (percentiles carried by dominant flat blocks); canvas-level metric — subject-level claims need a declared region anchor |
 | value_bands | candidate | both | quantized tonal band count in interiors | untested |
 | saturation_mean | candidate | both | mean saturation over subject regions | untested |
 | temperature_balance | candidate | both | warm/cool luminance-weighted hue balance | untested |

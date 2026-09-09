@@ -37,7 +37,9 @@ def _p(name, family, definition, status="candidate", scale_dep=True,
 
 # --- family 1: geometry ----------------------------------------------------
 _p("shape_complexity", "geometry",
-   "contour information density: number of direction changes per unit contour length")
+   "contour information density: number of direction changes per unit contour length",
+   status="candidate",
+   evidence="test-1: informative failure confirmed — raster proxies (isoperimetric ratio, boundary entropy) respond ~3% to a +23% corner-density change at clean brush, jitter swamps further; contour density needs the vector source (exact truth: 7.73 vs 9.53 per kpx)")
 _p("angularity", "geometry",
    "corner angle distribution: acute/obtuse frequency + polygonality index")
 _p("curvature_mean", "geometry",
@@ -80,9 +82,9 @@ _p("taper", "mark",
    evidence="fidelity run 2: mean width rises monotonically as taper eases; cv confirms profile detection",
    metric="profile.stroke_width_mean")
 _p("stroke_directionality", "mark",
-   "orientation distribution entropy + local directional coherence",
-   status="measurable",
-   evidence="edge_direction_entropy monotone on the jitter sweep; granularity run 1: stable across solo/set/staging (0.991-0.992) — first uncaveated 'both, stable'",
+   "dominant line axis + concentration (entropy side: edge_direction_entropy)",
+   status="validated",
+   evidence="entropy: monotone on the jitter sweep, stable across solo/set/staging (0.991-0.992). test-1: axis+concentration rotation-exact (30 deg: 58.1 vs 58.9 expected; 90 deg: 178.9 exact); axis identity tie-limited when axis populations are within ~4% of each other",
    metric="profile.edge_direction_entropy")
 _p("stroke_density", "mark",
    "stroke_mask coverage: marks per area",
@@ -101,7 +103,9 @@ _p("palette_size", "color", "distinct perceptual color clusters",
    scale_dep=False, evidence="k currently fixed at 6 — perceptual-count estimator pending")
 _p("palette_entropy", "color", "color cluster distribution entropy",
    scale_dep=False)
-_p("value_range", "color", "luminance percentile spread (p5-p95)", scale_dep=False)
+_p("value_range", "color", "luminance percentile spread (p5-p95)",
+   status="validated", granularity="canvas",
+   evidence="test-1: matches the area-weighted role-mixture expectation exactly at every palette-knob k (percentiles carried by dominant flat blocks); canvas-level metric — subject-level claims need a declared region anchor", scale_dep=False)
 _p("value_bands", "color", "quantized tonal band count in interiors",
    scale_dep=False)
 _p("saturation_mean", "color", "mean saturation over subject regions", scale_dep=False)
