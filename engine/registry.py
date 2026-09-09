@@ -121,11 +121,13 @@ _p("palette_distance", "color",
 # --- family 4: surface ----------------------------------------------------------
 _p("texture_energy", "surface",
    "high-frequency luminance energy over interior fills",
-   status="validated",
-   evidence="grain amplitude 0->14 doubles energy, monotone; run-1 leak was a mask problem (fixed); granularity run 1: canvas-anchored — px-stable across staging but +41% subject-relative at 0.55 scale (declared anchor)",
+   status="measurable",
+   evidence="fixed-scale fidelity: grain 0->14 doubles energy, monotone. DEMOTED by anchor run 1: masked-mean construction is scale-brittle (interior mask collapses at 0.55 scale; set-crop grain-off hit the <100px guard, returned 0.0) — +41% granularity drift was largely metric artifact. rebuild on vector-ground-truth fill regions pending",
    metric="profile.texture_energy")
 _p("texture_scale", "surface",
-   "micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms)")
+   "micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms)",
+   status="measurable",
+   evidence="anchor run 1: subject-anchored grain implemented (noise in house-local coords) — wall blocks read -33..+3% of solo vs canvas-anchored +9..+24%: texture is a valid subject-level parameter; anchor is a declared recipe property")
 _p("texture_directionality", "surface", "dominant texture orientation distribution")
 _p("texture_regularity", "surface", "periodicity/regularity of texture pattern")
 _p("grain_strength", "surface",

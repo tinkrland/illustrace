@@ -4,7 +4,7 @@ status ladder: candidate -> measurable -> detector -> validated ->
 (transferable -> independently transferable -> controllable, tested next).
 
 **46 candidates** across 6 families —
-candidate: 37 detector: 2 measurable: 2 validated: 5
+candidate: 36 detector: 2 measurable: 4 validated: 4
 
 ## geometry (9)
 
@@ -53,8 +53,8 @@ candidate: 37 detector: 2 measurable: 2 validated: 5
 
 | parameter | status | granularity | operational definition | evidence |
 |---|---|---|---|---|
-| texture_energy | validated | both | high-frequency luminance energy over interior fills | grain amplitude 0->14 doubles energy, monotone; run-1 leak was a mask problem (fixed); granularity run 1: canvas-anchored — px-stable across staging but +41% subject-relative at 0.55 scale (declared anchor) |
-| texture_scale | candidate | both | micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms) | untested |
+| texture_energy | measurable | both | high-frequency luminance energy over interior fills | fixed-scale fidelity: grain 0->14 doubles energy, monotone. DEMOTED by anchor run 1: masked-mean construction is scale-brittle (interior mask collapses at 0.55 scale; set-crop grain-off hit the <100px guard, returned 0.0) — +41% granularity drift was largely metric artifact. rebuild on vector-ground-truth fill regions pending |
+| texture_scale | measurable | both | micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms) | anchor run 1: subject-anchored grain implemented (noise in house-local coords) — wall blocks read -33..+3% of solo vs canvas-anchored +9..+24%: texture is a valid subject-level parameter; anchor is a declared recipe property |
 | texture_directionality | candidate | both | dominant texture orientation distribution | untested |
 | texture_regularity | candidate | both | periodicity/regularity of texture pattern | untested |
 | grain_strength | candidate | both | grain amplitude at the micro band | independence from texture_energy untested — likely confounded by construction |
