@@ -229,7 +229,15 @@ def render(svg_str, out_png, grain_amp=0.0, seed=7, lighting_apply=None):
         X, Y = np.meshgrid(np.arange(w), np.arange(h))
         alpha = strength * np.clip(1 - (X / (w * 1.4) + Y / (h * 1.4)), 0, 1)
         col = np.array(color, float)
-        a = a * (1 - alpha[..., None]) + col * alpha[..., None]
+        # true soft-light (w3c compositing spec), matching the svg layer's
+        # mix-blend-mode: soft-light — the v0 alpha-overlay was unfaithful.
+        b = a / 255.0
+        s = col[None, None, :] / 255.0
+        lit = np.where(s <= 0.25,
+                       b - (1 - 2 * s) * b * (1 - b),
+                       b + (2 * s - 1) * (np.sqrt(b) - b))
+        lit = (lit * 255.0).clip(0, 255)
+        a = a * (1 - alpha[..., None]) + lit * alpha[..., None]
         im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
     im = im.resize((SIZE, SIZE), Image.LANCZOS)
     im.save(out_png)

@@ -90,3 +90,31 @@ role-aware distance.
 - stroke_density + shading_contrast added as unvalidated candidate metrics
 - stroke_mask speckle fix (run 1 confound) still queued; regression pair A-D
 - then: human-judgment validation, now with parameter-labeled stimuli
+
+
+## run 2b: lighting re-run (true soft-light + fixed region support)
+
+two fixes applied after the v0 failure: (1) the raster bake now implements the
+w3c soft-light blend formula, matching the svg layer's mix-blend-mode
+physics; (2) the shading measurement computes its interior mask **once, from
+the unlit reference render** (same geometry + seed), instead of per-image.
+
+| strength | mean lum | contrast (fixed support) |
+|---|---|---|
+| 0.00 | 94.3 | 32.7 |
+| 0.25 | 96.2 | 31.8 |
+| 0.50 | 98.5 | 31.7 |
+| 0.75 | 100.8 | 32.2 |
+
+mean luminance now tracks lighting strength monotonically and smoothly —
+small deltas by design (soft-light is a gentle blend). contrast is honest now:
+flat. the v0 "contrast signal" (32.7 → 38.8) was a measurement artifact — the
+bg mask drifted as the illumination moved. same lesson as run 1's grain
+confound, generalized: **compute region masks from a reference render, not
+per-image; anything that changes global appearance invalidates per-image
+masks.** the lighting recipe's strength parameter modulates warmth/brightness,
+not directional contrast — so the candidate metric for lighting is mean
+luminance (on fixed supports), not shading contrast.
+
+fidelity table update: lighting → lum monotone yes, contrast no → **pass on
+mean luminance.**

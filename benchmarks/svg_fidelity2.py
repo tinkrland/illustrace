@@ -39,13 +39,20 @@ def lerp_roles(r1, r2, s):
     return {k: rgb2hex((1 - s) * hex2rgb(r1[k]) + s * hex2rgb(r2[k])) for k in r1}
 
 
-def shading_stats(img):
-    """candidate lighting measurements: mean lum + contrast (std) over interiors."""
+def shading_sel(img):
+    """interior mask: non-stroke, non-background pixels."""
     a = _as_array(img)
-    lum = a @ [0.299, 0.587, 0.114]
     m = ~stroke_mask(img)
     bg = np.abs(a - a[0, 0]).sum(-1) < 30
-    sel = m & ~bg
+    return m & ~bg
+
+
+def shading_stats(img, sel):
+    """lighting measurements over a FIXED region support (masks computed once
+    from the unlit image — same geometry + seed — so illumination shifts don't
+    move the region being measured)."""
+    a = _as_array(img)
+    lum = a @ [0.299, 0.587, 0.114]
     return float(lum[sel].mean()), float(lum[sel].std())
 
 
@@ -94,11 +101,12 @@ def main():
     # ---- 4. lighting strength -> luminance + candidate shading contrast
     print("== sweep 4: lighting")
     light_rows = []
+    sel0 = shading_sel(save(build_svg(rw, BRUSHES["clean"], seed=7), "fid2_light0"))
     for s in (0.0, 0.25, 0.5, 0.75):
         svg = build_svg(rw, BRUSHES["clean"],
                         lighting={"blend": "soft-light", "strength": s, "color": "#ffedd0"}, seed=7)
         im = save(svg, f"fid2_light{int(s*100)}", lighting_apply=(s, WARM) if s > 0 else None)
-        mlum, contrast = shading_stats(im)
+        mlum, contrast = shading_stats(im, sel0)
         light_rows.append((s, mlum, contrast))
         print(f"  strength={s:.2f}  mean_lum={mlum:.1f}  contrast={contrast:.1f}")
     results["lighting"] = light_rows
