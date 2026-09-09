@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>illustrace stylebench — human judgment survey</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #1a1a1a;
+    background: #f5f5f0;
+    min-height: 100vh;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ── intro ─────────────────────────────────────────── */
+  #screen-intro {
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .intro-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 560px;
+    width: 100%;
+    padding: 2.5rem;
+  }
+  .intro-card h1 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #111;
+  }
+  .intro-card p {
+    margin-bottom: 0.9rem;
+    color: #444;
+    font-size: 0.93rem;
+  }
+  .intro-card .consent-box {
+    background: #f9f9f7;
+    border: 1px solid #e0ddd6;
+    border-radius: 5px;
+    padding: 0.9rem 1rem;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 1.3rem;
+  }
+  .field-row { margin-bottom: 1.2rem; }
+  .field-row label { display: block; font-size: 0.88rem; font-weight: 500; margin-bottom: 0.3rem; }
+  .field-row input[type=text] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.93rem;
+  }
+  .field-row input[type=text]:focus { outline: 2px solid #4a7cfa; border-color: transparent; }
+  .field-hint { font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
+
+  /* ── survey ─────────────────────────────────────────── */
+  #screen-survey {
+    flex-direction: column;
+    padding: 1.5rem 2rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .survey-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .survey-header .progress-text { font-size: 0.88rem; color: #666; }
+  .progress-bar-wrap {
+    height: 4px;
+    background: #e0ddd6;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #4a7cfa;
+    border-radius: 2px;
+    transition: width 0.25s ease;
+  }
+  .question-prompt {
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #222;
+  }
+  .dimension-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: #efefea;
+    color: #666;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    margin-bottom: 0.75rem;
+  }
+  .question-header { text-align: center; }
+
+  .image-pair {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .image-choice {
+    flex: 1 1 300px;
+    max-width: 440px;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #fff;
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .image-choice:hover { border-color: #a0b4f5; box-shadow: 0 2px 12px rgba(74,124,250,0.15); }
+  .image-choice.selected { border-color: #4a7cfa; box-shadow: 0 2px 16px rgba(74,124,250,0.25); }
+  .image-choice img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    max-height: 360px;
+    background: #fafaf8;
+  }
+  .image-choice .choice-label {
+    font-size: 0.78rem;
+    color: #aaa;
+    padding: 0.4rem;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  .image-choice.selected .choice-label { color: #4a7cfa; font-weight: 600; }
+
+  .confidence-row {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+  .confidence-row.visible { display: block; }
+  .confidence-row label { font-size: 0.88rem; color: #555; margin-bottom: 0.5rem; display: block; }
+  .confidence-opts {
+    display: inline-flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .confidence-opts button {
+    padding: 0.45rem 1.1rem;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    background: #fff;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    color: #444;
+  }
+  .confidence-opts button:hover { border-color: #a0b4f5; background: #f0f4ff; }
+  .confidence-opts button.selected { border-color: #4a7cfa; background: #4a7cfa; color: #fff; }
+
+  .survey-nav { text-align: center; }
+
+  /* ── done ─────────────────────────────────────────── */
+  #screen-done {
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .done-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 480px;
+    width: 100%;
+    padding: 2.5rem;
+    text-align: center;
+  }
+  .done-card h2 { font-size: 1.4rem; margin-bottom: 0.75rem; }
+  .done-card p { color: #555; font-size: 0.93rem; margin-bottom: 1.5rem; }
+  .done-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ── shared buttons ─────────────────────────────────── */
+  .btn {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.93rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: #4a7cfa; color: #fff; }
+  .btn-secondary { background: #e8e8e3; color: #333; }
+  .btn:disabled { opacity: 0.38; cursor: default; }
+</style>
+</head>
+<body>
+
+<!-- ── intro / consent ──────────────────────────────────────────── -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-card">
+    <h1>illustrace stylebench — style perception survey</h1>
+    <p>
+      you'll see <strong>12 pairs of architectural illustration images</strong>.
+      for each pair, click the one that better matches the description above it.
+      then rate your confidence. the whole session takes about 3–5 minutes.
+    </p>
+    <div class="consent-box">
+      <strong>participation note:</strong> this is an academic research study.
+      no personally identifying information is collected unless you choose to
+      enter a judge id below. your answers are stored only in your browser until
+      you download them — nothing is sent to any server. you may stop at any time.
+    </div>
+    <div class="field-row">
+      <label for="judge-id-input">judge id <span style="font-weight:400;color:#999">(optional)</span></label>
+      <input type="text" id="judge-id-input" placeholder="e.g. jdoe or leave blank for anonymous" maxlength="64" autocomplete="off" />
+      <div class="field-hint">leave blank to participate anonymously. used only to link multiple sessions if you run more than one.</div>
+    </div>
+    <button class="btn btn-primary" id="btn-start" onclick="startSurvey()">start survey →</button>
+  </div>
+</div>
+
+<!-- ── survey ───────────────────────────────────────────────────── -->
+<div id="screen-survey" class="screen">
+  <div class="survey-header">
+    <span class="progress-text" id="progress-text">question 1 of 12</span>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+  <div class="question-header">
+    <div class="dimension-badge" id="dimension-badge"></div>
+    <div class="question-prompt" id="question-prompt"></div>
+  </div>
+  <div class="image-pair" id="image-pair">
+    <!-- populated by renderQuestion() -->
+  </div>
+  <div class="confidence-row" id="confidence-row">
+    <label>how confident are you?</label>
+    <div class="confidence-opts" id="confidence-opts">
+      <button onclick="setConfidence('a little')">a little</button>
+      <button onclick="setConfidence('pretty sure')">pretty sure</button>
+      <button onclick="setConfidence('very sure')">very sure</button>
+    </div>
+  </div>
+  <div class="survey-nav">
+    <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" disabled>next →</button>
+  </div>
+</div>
+
+<!-- ── done ─────────────────────────────────────────────────────── -->
+<div id="screen-done" class="screen">
+  <div class="done-card">
+    <h2>✓ all done</h2>
+    <p id="done-summary"></p>
+    <div class="done-actions">
+      <button class="btn btn-primary" onclick="downloadJSON()">download JSON</button>
+      <button class="btn btn-secondary" onclick="downloadCSV()">download CSV</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── state ────────────────────────────────────────────────────────
+let stimuli = null;       // loaded from stimuli.json
+let questions = [];       // shuffled left/right copy
+let currentIdx = 0;
+let judgeId = "anonymous";
+let startedAt = null;
+let completedAt = null;
+let questionStartedAt = null;
+let answers = [];
+
+// current question ephemeral state
+let chosenFile = null;    // filename chosen by judge
+let confidence = null;    // 'a little' | 'pretty sure' | 'very sure'
+
+// ── boot ─────────────────────────────────────────────────────────
+// stimuli.json is a sibling of index.html in survey/
+// images are referenced from there as ../data/generated/arch_svg/xxx.png
+// when served from repo root (python3 -m http.server), survey/ is a directory,
+// so fetch("survey/stimuli.json") works from the root — but index.html is inside
+// survey/, so a relative fetch("stimuli.json") is correct.
+(async function boot() {
+  try {
+    const resp = await fetch("stimuli.json");
+    stimuli = await resp.json();
+  } catch (e) {
+    alert("could not load stimuli.json: " + e);
+    return;
+  }
+})();
+
+// ── helpers ──────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function basename(p) {
+  // "path/to/foo.png" -> "foo.png"
+  return p.split("/").pop();
+}
+
+function shuffle(arr) {
+  // fisher-yates
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ── start ────────────────────────────────────────────────────────
+function startSurvey() {
+  const raw = document.getElementById("judge-id-input").value.trim();
+  judgeId = raw || "anonymous";
+  startedAt = new Date().toISOString();
+  answers = [];
+
+  // build per-question display objects with randomized left/right
+  questions = stimuli.questions.map(q => {
+    // coin flip: swap left/right?
+    const swapped = Math.random() < 0.5;
+    return {
+      id: q.id,
+      dimension: q.dimension,
+      prompt: q.prompt,
+      // display_left/display_right are what the judge sees
+      display_left:  swapped ? q.right : q.left,
+      display_right: swapped ? q.left  : q.right,
+      // originals kept for gt scoring in ingest
+      orig_left: q.left,
+      orig_right: q.right,
+      gt: q.gt,           // "left" | "right" | null (in original frame)
+      note: q.note || null,
+    };
+  });
+
+  currentIdx = 0;
+  show("screen-survey");
+  renderQuestion();
+}
+
+// ── render ───────────────────────────────────────────────────────
+function renderQuestion() {
+  const q = questions[currentIdx];
+  const total = questions.length;
+
+  // progress
+  document.getElementById("progress-text").textContent =
+    "question " + (currentIdx + 1) + " of " + total;
+  document.getElementById("progress-bar").style.width =
+    ((currentIdx / total) * 100) + "%";
+
+  // header
+  document.getElementById("dimension-badge").textContent = q.dimension.replace("_", " ");
+  document.getElementById("question-prompt").textContent = q.prompt;
+
+  // images — paths are relative to survey/index.html location
+  // stimuli.json stores "../data/generated/arch_svg/foo.png" (relative to survey/)
+  // that is correct as-is for img src when served from survey/
+  const pair = document.getElementById("image-pair");
+  pair.innerHTML = "";
+
+  ["display_left", "display_right"].forEach(side => {
+    const path = q[side];
+    const file = basename(path);
+    const div = document.createElement("div");
+    div.className = "image-choice";
+    div.dataset.file = file;
+    div.innerHTML = `<img src="${path}" alt="${file}" loading="lazy">
+                     <div class="choice-label">${side === "display_left" ? "option A" : "option B"}</div>`;
+    div.addEventListener("click", () => selectChoice(file, div));
+    pair.appendChild(div);
+  });
+
+  // reset ephemeral state
+  chosenFile = null;
+  confidence = null;
+  document.getElementById("confidence-row").classList.remove("visible");
+  document.querySelectorAll("#confidence-opts button").forEach(b => b.classList.remove("selected"));
+  document.getElementById("btn-next").disabled = true;
+
+  questionStartedAt = Date.now();
+}
+
+function selectChoice(file, el) {
+  chosenFile = file;
+  document.querySelectorAll(".image-choice").forEach(c => c.classList.remove("selected"));
+  el.classList.add("selected");
+  document.getElementById("confidence-row").classList.add("visible");
+  maybeEnableNext();
+}
+
+function setConfidence(level) {
+  confidence = level;
+  document.querySelectorAll("#confidence-opts button").forEach(b => {
+    b.classList.toggle("selected", b.textContent === level);
+  });
+  maybeEnableNext();
+}
+
+function maybeEnableNext() {
+  document.getElementById("btn-next").disabled = !(chosenFile && confidence);
+}
+
+// ── advance ──────────────────────────────────────────────────────
+function nextQuestion() {
+  const q = questions[currentIdx];
+  const elapsed = Date.now() - questionStartedAt;
+
+  answers.push({
+    question_id:  q.id,
+    dimension:    q.dimension,
+    prompt:       q.prompt,
+    left_file:    basename(q.display_left),
+    right_file:   basename(q.display_right),
+    choice:       chosenFile,           // filename the judge clicked
+    confidence:   confidence,
+    elapsed_ms:   elapsed,
+  });
+
+  currentIdx++;
+  if (currentIdx < questions.length) {
+    renderQuestion();
+  } else {
+    finishSurvey();
+  }
+}
+
+// ── finish ───────────────────────────────────────────────────────
+function finishSurvey() {
+  completedAt = new Date().toISOString();
+  document.getElementById("progress-bar").style.width = "100%";
+  document.getElementById("done-summary").textContent =
+    "you answered all " + answers.length + " questions. download your results below.";
+  show("screen-done");
+}
+
+// ── results payload ──────────────────────────────────────────────
+function buildResults() {
+  return {
+    judge_id:      judgeId,
+    started_at:    startedAt,
+    completed_at:  completedAt,
+    answers:       answers,
+  };
+}
+
+// ── download ─────────────────────────────────────────────────────
+function downloadJSON() {
+  const blob = new Blob([JSON.stringify(buildResults(), null, 2)], { type: "application/json" });
+  triggerDownload(blob, "survey_results_" + judgeId + "_" + Date.now() + ".json");
+}
+
+function downloadCSV() {
+  const cols = ["question_id","dimension","prompt","left_file","right_file","choice","confidence","elapsed_ms"];
+  const rows = [cols.join(",")];
+  for (const a of answers) {
+    rows.push(cols.map(c => JSON.stringify(a[c] ?? "")).join(","));
+  }
+  const blob = new Blob([rows.join("\n")], { type: "text/csv" });
+  triggerDownload(blob, "survey_results_" + judgeId + "_" + Date.now() + ".csv");
+}
+
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
