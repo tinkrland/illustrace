@@ -24,12 +24,12 @@ candidate: 37 detector: 2 measurable: 2 validated: 5
 
 | parameter | status | granularity | operational definition | evidence |
 |---|---|---|---|---|
-| stroke_width | validated | both | mean stroke width, normalized by subject height (px never transfers alone) | fidelity run 2: monotone + linear, stable 0.78x measurement bias (calibratable) |
-| stroke_width_variation | validated | both | width coefficient of variation along strokes | fidelity runs 1-2: tracks jitter sigma (saturating) and detects taper profiles (~0.5 vs ~0.2 uniform) |
+| stroke_width | validated | both, scale-normalizable | mean stroke width, normalized by subject height (px never transfers alone) | fidelity run 2: monotone + linear, 0.78x bias; granularity run 1: normalized w/subject_height stable to 1-3% across staging (0.01691 vs 0.01735) |
+| stroke_width_variation | validated | both | width coefficient of variation along strokes | fidelity runs 1-2: tracks jitter sigma (saturating), detects taper; granularity run 1: contaminated crops inflate cv to 0.786 (context features mixing into the width population) — asset measurement requires context exclusion |
 | jitter_position | detector | both | contour deviation amplitude: high-frequency normal displacement of the ideal line | svg sweep: monotone via cv/edge entropy but saturating after sigma~1.25 — ordinal, calibration curve pending |
 | jitter_width | candidate | both | width modulation amplitude along the stroke (separate from position jitter) | split proposed in the ontology; untested as a separate axis |
 | taper | validated | both | width change along stroke: ease fraction + taper rate/symmetry | fidelity run 2: mean width rises monotonically as taper eases; cv confirms profile detection |
-| stroke_directionality | measurable | both | orientation distribution entropy + local directional coherence | edge_direction_entropy monotone on the jitter sweep; directionality split untested |
+| stroke_directionality | measurable | both | orientation distribution entropy + local directional coherence | edge_direction_entropy monotone on the jitter sweep; granularity run 1: stable across solo/set/staging (0.991-0.992) — first uncaveated 'both, stable' |
 | stroke_density | detector | both | stroke_mask coverage: marks per area | double-pass ratio 1.34 (not ~2 — spatial overlap); detects, does not scale |
 | stroke_continuity | candidate | both | average uninterrupted run length + gap frequency | untested |
 | contour_hierarchy | candidate | both | outer/inner contour width ratio | untested |
@@ -47,13 +47,13 @@ candidate: 37 detector: 2 measurable: 2 validated: 5
 | temperature_balance | candidate | both | warm/cool luminance-weighted hue balance | untested |
 | color_relationships | candidate | both | relationship tendency scores (complementary/analogous/triadic) + relative structure, not raw rgb | untested |
 | local_contrast | candidate | both | adjacent-region color distance distribution | untested |
-| palette_distance | measurable | both | distance between measured palettes (mean nearest-color) | lerp sweep: monotone but compressive at long range (ratio 0.81 -> 0.59) — role-aware distance or calibration needed |
+| palette_distance | measurable | both | distance between measured palettes (mean nearest-color) | lerp sweep: monotone but compressive at long range; granularity run 1: asset-anchored palette stable (d=0.7), set-anchored differs (d=7.0, zero new colors) — the set is a real different profile |
 
 ## surface (6)
 
 | parameter | status | granularity | operational definition | evidence |
 |---|---|---|---|---|
-| texture_energy | validated | both | high-frequency luminance energy over interior fills | grain amplitude 0->14 doubles energy, monotone; run-1 grain->stroke leak was a mask problem (fixed by reference-render masks) |
+| texture_energy | validated | both | high-frequency luminance energy over interior fills | grain amplitude 0->14 doubles energy, monotone; run-1 leak was a mask problem (fixed); granularity run 1: canvas-anchored — px-stable across staging but +41% subject-relative at 0.55 scale (declared anchor) |
 | texture_scale | candidate | both | micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms) | untested |
 | texture_directionality | candidate | both | dominant texture orientation distribution | untested |
 | texture_regularity | candidate | both | periodicity/regularity of texture pattern | untested |
@@ -68,7 +68,7 @@ candidate: 37 detector: 2 measurable: 2 validated: 5
 | shadow_softness | candidate | both | shadow transition width profiles | untested |
 | shadow_darkness | candidate | both | shadow value relative to local fill value (relational reading) | untested |
 | highlight_intensity | candidate | both | highlight luminance + size distribution | untested |
-| lighting_strength | validated | both | mean luminance delta over fixed-support interiors (w3c soft-light model) | run 2b: monotone 94.3->100.8 under true soft-light + fixed region support; old contrast signal was mask drift |
+| lighting_strength | validated | both | mean luminance delta over fixed-support interiors (w3c soft-light model) | run 2b: monotone 94.3->100.8 under true soft-light + fixed support; granularity run 1: canvas-anchored recipe — identical house reads 133.8/134.2/129.6 by staging position (set-context contaminates unless subject-anchored) |
 | lighting_directionality | candidate | both | luminance gradient field directionality across the subject | untested |
 | shading_contrast | candidate | both | interior luminance std on fixed supports | FAILED as a lighting-strength metric (flat response by design of the recipe) — kept as candidate for directional-lighting recipes |
 

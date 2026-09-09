@@ -194,6 +194,13 @@ climbed so far (substrate fidelity + honesty about failures):
 - lessons recorded: masks from reference renders, never per-image; calibration
   curves before claiming linear control; wrong expectations get caught by
   ground truth (taper direction)
+- granularity run 1: stroke width scale-normalizable (stable to 1-3%
+  normalized); asset palette stable while the set-level palette is a genuinely
+  different profile (d=7.0 with zero new colors); canvas-anchored recipes
+  (grain, lighting) shift subject-relative scale and readings with staging —
+  recipes must declare their anchor. **metrology rule three: asset-level
+  measurement must exclude set-context features** (ground line + bush arc
+  inflated cv to 0.786 until the crop was context-cleaned)
 
 
 ## research scientist session notes (tensormux, glm-4-7-flash — 2026-09-09)

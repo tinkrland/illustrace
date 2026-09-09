@@ -58,13 +58,13 @@ _p("symmetry", "geometry", "bilateral symmetry score of the subject mask")
 # --- family 2: mark ----------------------------------------------------------
 _p("stroke_width", "mark",
    "mean stroke width, normalized by subject height (px never transfers alone)",
-   status="validated", granularity="both",
-   evidence="fidelity run 2: monotone + linear, stable 0.78x measurement bias (calibratable)",
+   status="validated", granularity="both, scale-normalizable",
+   evidence="fidelity run 2: monotone + linear, 0.78x bias; granularity run 1: normalized w/subject_height stable to 1-3% across staging (0.01691 vs 0.01735)",
    metric="profile.stroke_width_mean")
 _p("stroke_width_variation", "mark",
    "width coefficient of variation along strokes",
    status="validated",
-   evidence="fidelity runs 1-2: tracks jitter sigma (saturating) and detects taper profiles (~0.5 vs ~0.2 uniform)",
+   evidence="fidelity runs 1-2: tracks jitter sigma (saturating), detects taper; granularity run 1: contaminated crops inflate cv to 0.786 (context features mixing into the width population) — asset measurement requires context exclusion",
    metric="profile.stroke_width_cv")
 _p("jitter_position", "mark",
    "contour deviation amplitude: high-frequency normal displacement of the ideal line",
@@ -82,7 +82,7 @@ _p("taper", "mark",
 _p("stroke_directionality", "mark",
    "orientation distribution entropy + local directional coherence",
    status="measurable",
-   evidence="edge_direction_entropy monotone on the jitter sweep; directionality split untested",
+   evidence="edge_direction_entropy monotone on the jitter sweep; granularity run 1: stable across solo/set/staging (0.991-0.992) — first uncaveated 'both, stable'",
    metric="profile.edge_direction_entropy")
 _p("stroke_density", "mark",
    "stroke_mask coverage: marks per area",
@@ -115,14 +115,14 @@ _p("local_contrast", "color", "adjacent-region color distance distribution",
 _p("palette_distance", "color",
    "distance between measured palettes (mean nearest-color)",
    status="measurable", scale_dep=False,
-   evidence="lerp sweep: monotone but compressive at long range (ratio 0.81 -> 0.59) — role-aware distance or calibration needed",
+   evidence="lerp sweep: monotone but compressive at long range; granularity run 1: asset-anchored palette stable (d=0.7), set-anchored differs (d=7.0, zero new colors) — the set is a real different profile",
    metric="metrics.palette_distance")
 
 # --- family 4: surface ----------------------------------------------------------
 _p("texture_energy", "surface",
    "high-frequency luminance energy over interior fills",
    status="validated",
-   evidence="grain amplitude 0->14 doubles energy, monotone; run-1 grain->stroke leak was a mask problem (fixed by reference-render masks)",
+   evidence="grain amplitude 0->14 doubles energy, monotone; run-1 leak was a mask problem (fixed); granularity run 1: canvas-anchored — px-stable across staging but +41% subject-relative at 0.55 scale (declared anchor)",
    metric="profile.texture_energy")
 _p("texture_scale", "surface",
    "micro/meso/macro band split of spatial frequency energy (paper grain vs brush patches vs blooms)")
@@ -144,7 +144,7 @@ _p("highlight_intensity", "illumination", "highlight luminance + size distributi
 _p("lighting_strength", "illumination",
    "mean luminance delta over fixed-support interiors (w3c soft-light model)",
    status="validated", granularity="both",
-   evidence="run 2b: monotone 94.3->100.8 under true soft-light + fixed region support; old contrast signal was mask drift",
+   evidence="run 2b: monotone 94.3->100.8 under true soft-light + fixed support; granularity run 1: canvas-anchored recipe — identical house reads 133.8/134.2/129.6 by staging position (set-context contaminates unless subject-anchored)",
    metric="shading mean luminance on fixed supports")
 _p("lighting_directionality", "illumination",
    "luminance gradient field directionality across the subject")
