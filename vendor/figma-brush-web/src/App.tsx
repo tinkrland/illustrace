@@ -46,6 +46,8 @@ export default function App() {
   const [params, setParams] = useState<BrushParams>(DEFAULT_PARAMS)
   const [isDrawing, setIsDrawing] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [editMode, setEditMode] = useState(false)
+  const [selected, setSelected] = useState<number | null>(null)
 
   const [showFigmaPanel, setShowFigmaPanel] = useState(false)
   const [figmaTokenInput, setFigmaTokenInput] = useState("")
@@ -75,7 +77,7 @@ export default function App() {
   }, [])
 
   const redrawAll = useCallback(
-    (strokeList: Stroke[]) => {
+    (strokeList: Stroke[], highlightIdx: number | null = null) => {
       const off = offscreenRef.current
       if (!off) return
       const ctx = off.getContext("2d")!
@@ -83,6 +85,18 @@ export default function App() {
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
       for (const s of strokeList) {
         renderOutlines(ctx, s.outlines, s.params.color, s.params.opacity)
+      }
+      const hi = highlightIdx != null ? strokeList[highlightIdx] : null
+      if (hi) {
+        ctx.save()
+        ctx.strokeStyle = "#e8a34a"
+        ctx.lineWidth = 1.5
+        ctx.setLineDash([5, 4])
+        ctx.beginPath()
+        ctx.moveTo(hi.centerline[0].x, hi.centerline[0].y)
+        for (let i = 1; i < hi.centerline.length; i++) ctx.lineTo(hi.centerline[i].x, hi.centerline[i].y)
+        ctx.stroke()
+        ctx.restore()
       }
       blitToDisplay(off)
     },
@@ -109,10 +123,31 @@ export default function App() {
     }
   }
 
+  function nearestStroke(pt: Point): number | null {
+    let best: number | null = null
+    let bestDist = 18
+    strokes.forEach((s, idx) => {
+      for (const c of s.centerline) {
+        const d = Math.hypot(c.x - pt.x, c.y - pt.y)
+        if (d < bestDist) {
+          bestDist = d
+          best = idx
+        }
+      }
+    })
+    return best
+  }
+
   function handlePointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
+    const pt = canvasPoint(e)
+    if (editMode) {
+      const hit = nearestStroke(pt)
+      setSelected(hit)
+      redrawAll(strokes, hit)
+      return
+    }
     e.currentTarget.setPointerCapture(e.pointerId)
     setIsDrawing(true)
-    const pt = canvasPoint(e)
     currentPointsRef.current = [pt]
   }
 
@@ -175,15 +210,17 @@ export default function App() {
   }
 
   function handleUndo() {
+    if (selected != null && selected >= strokes.length - 1) setSelected(null)
     setStrokes((prev) => {
       const next = prev.slice(0, -1)
-      redrawAll(next)
+      redrawAll(next, selected != null && selected < next.length ? selected : null)
       return next
     })
   }
 
   function handleClear() {
     setStrokes([])
+    setSelected(null)
     redrawAll([])
   }
 
@@ -241,8 +278,20 @@ export default function App() {
     setFigmaConnecting(false)
   }
 
-  const update = <K extends keyof BrushParams>(key: K, value: BrushParams[K]) =>
+  const update = <K extends keyof BrushParams>(key: K, value: BrushParams[K]) => {
     setParams((p) => ({ ...p, [key]: value }))
+    if (editMode && selected != null) {
+      setStrokes((prev) => {
+        const next = prev.map((s, i) => {
+          if (i !== selected) return s
+          const nextParams = { ...s.params, [key]: value }
+          return { ...s, params: nextParams, outlines: generateOutlines(s.centerline, nextParams) }
+        })
+        redrawAll(next, selected)
+        return next
+      })
+    }
+  }
 
   return (
     <div className="flex flex-col h-full bg-[#141210] text-[#c8c4bc] select-none overflow-hidden">
@@ -466,6 +515,24 @@ export default function App() {
 
           {/* Action footer */}
           <div className="p-4 border-t border-[#252220] space-y-2 shrink-0">
+            <button
+              onClick={() => {
+                const next = !editMode
+                setEditMode(next)
+                if (!next) {
+                  setSelected(null)
+                  redrawAll(strokes, null)
+                }
+              }}
+              className={`w-full py-1.5 text-xs rounded border transition-colors ${
+                editMode
+                  ? "border-[#c8864a]/60 text-[#e8a34a] bg-[#c8864a]/10"
+                  : "border-[#c8864a]/35 text-[#c8864a] hover:bg-[#c8864a]/8"
+              }`}
+            >
+              {editMode ? (selected != null ? "Editing stroke " + (selected + 1) + " — sliders re-render it" : "Edit strokes: click one") : "Edit strokes"}
+            </button>
+
             <div className="flex gap-2">
               <GhostButton onClick={handleUndo} disabled={strokes.length === 0}>
                 Undo
