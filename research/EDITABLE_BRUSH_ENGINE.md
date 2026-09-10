@@ -176,6 +176,17 @@ none of layer 2's texture side. good news: the gap is precisely where
 our grain-amp/recipe layers live, and the pluginData sidecar + re-bake
 pattern is directly adoptable for our figma round-trip.
 
+the agent also shipped a **web version** (vendor/figma-brush-web/,
+react+vite, builds clean): same engine exported as a dependency-free
+`src/brushEngine.ts` with `generateOutlines` (pure: centerline+params
+-> outlines) and `strokesToSVG` (stroke set -> svg export). draw on
+canvas -> export svg -> import to figma -> plugin can re-bake from the
+imported vectors. per-stroke opacity is new vs the plugin; still flat
+fills, and strokes bake at pointer-up with no post-draw re-parametrize
+ui yet (the stroke records keep centerline+params, so it's a ui gap,
+not a data-model gap). runs anywhere vite does, no figma plan or
+desktop app needed.
+
 figma plan note: the manifest declares `isTool: true` (agent-invocable
 in figma make, paid ai features). but the same code runs as a plain
 development plugin on the free plan — compiled `code.js` is in the
