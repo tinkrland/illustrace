@@ -162,7 +162,9 @@ const COMPONENTS = [
   { id: "edges",   label: "edges",   take: "orientation entropy" },
   { id: "shape",   label: "contour", take: "density proxies" },
 ];
-const IMG = "../../data/test_images/";
+function imgPath(f) {
+  return f.startsWith("monet_") ? "../../data/monet/" : "../../data/test_images/";
+}
 
 let PROFS = DATA.profiles;
 /* dedupe: identical measured vectors fold into the first occurrence */
@@ -199,7 +201,7 @@ function nodeEl(p) {
   d.className = "node inspo"; d.dataset.id = p.file;
   d.innerHTML =
     `<div class="hd"><b>${p.file}</b></div>` +
-    `<img class="th" src="${IMG + p.file}" draggable="false">` +
+    `<img class="th" src="${imgPath(p.file) + p.file}" draggable="false">` +
     `<div class="sw">${p.components.palette.colors_hex.slice(0, 5).map(h => `<i style="background:${h}"></i>`).join("")}</div>` +
     `<div class="ft">w ${p.components.stroke.width_mean}px · cv ${p.components.stroke.width_cv} · tex ${p.components.texture.energy}</div>` +
     `<div class="port out" data-id="${p.file}"></div>` +
@@ -443,7 +445,7 @@ function growEl(f, i) {
   }).join("");
   d.innerHTML =
     `<div class="rank">${i < 0 ? "–" : i + 1}</div>` +
-    `<img src="${IMG + f}" draggable="false">` +
+    `<img src="${imgPath(f) + f}" draggable="false">` +
     `<div class="gname">${f.replace(/\.[a-z]+$/, "")}<span class="s">w ${p.components.stroke.width_mean}px · tex ${p.components.texture.energy}</span></div>` +
     `<div class="chips">${chips || '<span class="chip">unassigned</span>'}</div>`;
   if (i >= 0) d.addEventListener("pointerdown", gDrag);

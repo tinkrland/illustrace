@@ -15,18 +15,24 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 PROFILES = os.path.join(ROOT, "data", "generated", "inspo", "profiles.json")
 TEMPLATE = os.path.join(HERE, "composer.template.html")
 OUT = os.path.join(HERE, "index.html")
+MONET = os.path.join(ROOT, "data", "generated", "inspo", "monet_profiles.json")
 
 
 def main():
     with open(PROFILES) as f:
         profiles = json.load(f)
+    allp = list(profiles.get("profiles", []))
+    # merge the monet corpus profiles if ingestion has run
+    if os.path.exists(MONET):
+        with open(MONET) as f:
+            allp += json.load(f).get("profiles", [])
     with open(TEMPLATE) as f:
         tpl = f.read()
-    data = json.dumps(profiles, separators=(",", ":"))
+    data = json.dumps({"n": len(allp), "profiles": allp}, separators=(",", ":"))
     html = tpl.replace("const DATA = /*__PROFILES__*/null;", "const DATA = " + data + ";", 1)
     with open(OUT, "w") as f:
         f.write(html)
-    n = len(profiles.get("profiles", []))
+    n = len(allp)
     print(f"[composer] {n} profiles inlined -> {OUT}")
 
 

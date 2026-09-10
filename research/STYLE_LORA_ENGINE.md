@@ -144,6 +144,14 @@ adapter uri back.
 3. 2–3 more painters for breadth (van gogh, hokusai) once ingestion is
    proven on monet.
 
-next: corpus ingestion script once the painter-corpus research lands;
-adapter probe harness (profile-before, profile-after, delta report) before
-the first lora trains, so the demo comes with numbers attached.
+status update (2026-09-10): ingestion is live. `engine/ingest_monet.py`
+pulled 39 late-period monet works (1890-1923, wikidata Q296 -> commons,
+1024px, public domain, metadata in `data/monet/metadata.json`) — inside
+the 20-50 guidance band. all 39 are profiled and merged into the composer
+library (`data/generated/inspo/monet_profiles.json`), so monet is already
+assignable to components with gravity + strength, pre-training.
+
+next: adapter probe harness (profile-before, profile-after, delta report)
+before the first lora trains, so the demo comes with numbers attached;
+dataset packaging for kohya (resize/crop policy, captioning strategy) when
+the amd box arrives.
