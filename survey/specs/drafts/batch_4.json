@@ -1,0 +1,164 @@
+{
+  "batch": "batch_4",
+  "version": 1,
+  "date_preregistered": "2026-09-10",
+  "goal": "separability check for the four substrate v2 params (width_profile shape, lateral jitter, opacity falloff, pass scatter/rotation): each param must produce a discriminable percept alone, and its dose must order perceptually — prerequisites before any of them enter the style registry",
+  "scientist_session": "drafted in-session 2026-09-10 by jeremiah from the catalog + substrate v2 sweep (research/BRUSH_CATALOGS.md, benchmarks/svg_substrate_v2.py). no llm critique pass yet; run one before promotion if wanted. jitter_lin excluded by the geometry null result (0.0000 pixel diff at sigma 4.5 — layer-2 stamp param, not testable on vector linework)",
+  "judges_target": 5,
+  "session_shape": {
+    "total_questions": 12,
+    "blocks": {
+      "anchor": 1,
+      "separability_pairs": 8,
+      "catches": 3
+    },
+    "catch_positions_display_order": [3, 7, 11]
+  },
+  "images_new": [],
+  "stimuli_source": "data/generated/substrate_v2/ — all pairs use the sweep renders as-is (params recorded in substrate_v2 manifest.json); no new renders required for this batch",
+  "questions": [
+    {
+      "id": "b4a",
+      "kind": "anchor",
+      "dimension": "pass_alignment",
+      "prompt": "which linework looks more like multiple overlapping pen passes?",
+      "left": "pass_scatter_0.png",
+      "right": "pass_scatter_6.png",
+      "gt": "right",
+      "scored": false,
+      "note": "warm-up, extreme scatter step, not scored"
+    },
+    {
+      "id": "b4p1",
+      "kind": "pair",
+      "dimension": "line_wobble",
+      "prompt": "which linework wobbles more?",
+      "left": "jitter_lat_15.png",
+      "right": "jitter_lat_45.png",
+      "gt": "right",
+      "scored": true,
+      "note": "endpoint pair sigma 1.5 vs 4.5; discriminability required before anything else on this param"
+    },
+    {
+      "id": "b4p2",
+      "kind": "pair",
+      "dimension": "line_wobble",
+      "prompt": "which linework wobbles more?",
+      "left": "jitter_lat_15.png",
+      "right": "jitter_lat_30.png",
+      "gt": "right",
+      "scored": true,
+      "note": "adjacent step 1.5 vs 3.0; the JND probe for lateral jitter"
+    },
+    {
+      "id": "b4p3",
+      "kind": "pair",
+      "dimension": "taper_shape",
+      "prompt": "which linework thins more toward its ends?",
+      "left": "width_profile_flat.png",
+      "right": "width_profile_sym_taper.png",
+      "gt": "right",
+      "scored": true,
+      "note": "profile shape discrimination: constant vs symmetric taper"
+    },
+    {
+      "id": "b4p4",
+      "kind": "pair",
+      "dimension": "taper_shape",
+      "prompt": "which linework varies more in thickness along the stroke?",
+      "left": "width_profile_flat.png",
+      "right": "width_profile_mid_bulge.png",
+      "gt": "right",
+      "scored": true,
+      "note": "profile shape discrimination: constant vs mid-stroke bulge — the profile case plain taper cannot express"
+    },
+    {
+      "id": "b4p5",
+      "kind": "pair",
+      "dimension": "stroke_fade",
+      "prompt": "which linework fades out more along the stroke?",
+      "left": "opacity_falloff_none.png",
+      "right": "opacity_falloff_end_10.png",
+      "gt": "right",
+      "scored": true,
+      "note": "endpoint pair alpha 1.0 vs 0.10 falloff"
+    },
+    {
+      "id": "b4p6",
+      "kind": "pair",
+      "dimension": "stroke_fade",
+      "prompt": "which linework fades out more along the stroke?",
+      "left": "opacity_falloff_end_45.png",
+      "right": "opacity_falloff_end_10.png",
+      "gt": "right",
+      "scored": true,
+      "note": "adjacent step 0.45 vs 0.10; JND probe for falloff depth. caveat: falloff renders along bbox-dominant axis, so the effect direction varies per stroke — this pair tests depth, not axis"
+    },
+    {
+      "id": "b4p7",
+      "kind": "pair",
+      "dimension": "pass_alignment",
+      "prompt": "which linework looks more like multiple overlapping pen passes?",
+      "left": "pass_scatter_0.png",
+      "right": "pass_scatter_3.png",
+      "gt": "right",
+      "scored": true,
+      "note": "adjacent step 0 vs 3 sigma scatter; JND probe for pass misalignment"
+    },
+    {
+      "id": "b4p8",
+      "kind": "pair",
+      "dimension": "pass_alignment",
+      "prompt": "which linework looks more like multiple overlapping pen passes?",
+      "left": "pass_rotation_0_deg.png",
+      "right": "pass_rotation_4_deg.png",
+      "gt": "right",
+      "scored": true,
+      "note": "rotation-only misalignment 0 vs 4 deg; tests that rotation separates from scatter as a distinct pass- misalignment cue"
+    }
+  ],
+  "catches": [
+    {
+      "id": "b4c1",
+      "image": "jitter_lat_30.png",
+      "position": 3,
+      "prompt": "which linework wobbles more?",
+      "dimension": "line_wobble"
+    },
+    {
+      "id": "b4c2",
+      "image": "width_profile_flat.png",
+      "position": 7,
+      "prompt": "which linework thins more toward its ends?",
+      "dimension": "taper_shape"
+    },
+    {
+      "id": "b4c3",
+      "image": "opacity_falloff_none.png",
+      "position": 11,
+      "prompt": "which linework fades out more along the stroke?",
+      "dimension": "stroke_fade"
+    }
+  ],
+  "pass_criteria": {
+    "per_param": {
+      "line_wobble": "b4p1 >=4/5 required (stimulus validity); b4p2 >=3/5 = lateral jitter discriminable at the 1.5-to-3.0 step; b4p2 fail + b4p1 pass = JND above the adjacent step, widen steps next batch",
+      "taper_shape": "b4p3 and b4p4 each >=3/5 = profile shape discriminable as such (not just taper amount); b4p3 fail + batch_3 magnitude results passing = judges read taper amount but not shape — collapse width_profile back to taper magnitude in the registry",
+      "stroke_fade": "b4p5 >=4/5 required; b4p6 >=3/5 = falloff depth discriminable between 0.45 and 0.10; both failing = fade gradient below JND, drop the param or strengthen the ramp",
+      "pass_alignment": "b4p7 >=3/5 and b4p8 >=3/5 = scatter and rotation are each discriminable; b4p7 pass + b4p8 fail = misalignment reads as scatter only, merge pass_rotation into pass_scatter in the registry"
+    },
+    "general": "any scored pair with a 50/50 judge split is a stimulus failure, not human noise: regenerate at higher parameter delta in the next batch"
+  },
+  "adaptive_rules": {
+    "catch_fail": "a judge answering >1 catch pair with a side choice instead of 'no difference' is excluded from aggregates; recruit a replacement to hold n=5",
+    "adjacent_fail": "endpoint passes + adjacent fails -> next batch halves the endpoint delta (e.g. jitter_lat 1.5 vs 3.75) and probes the middle of the range",
+    "param_fail": "endpoint pair failing (b4p1, b4p5) -> stimulus failure: re-render at stronger setting before any registry verdict",
+    "convergence": "two consecutive batches with agreement values inside each other's bootstrap CIs at target n ends the loop for that param"
+  },
+  "registry_consequences": {
+    "pass": "param enters the style registry as a measured factor with its validated step size; extraction settings for the node canvas default to the measured JND so fitted slider deltas below JND snap to zero movement",
+    "shape_collapse": "if taper_shape fails while taper magnitude passes, width_profile is registry-redundant — keep it as engine sugar (one param instead of taper+taper_dir) but stop claiming shape as a separate style factor",
+    "merge": "if pass_rotation fails while pass_scatter passes, the registry stores one pass-misalignment factor, not two",
+    "null_note": "jitter_lin is already registry-excluded by the geometry null result; if a raster/stamp layer ever lands, it gets re-registered there, not in vector linework"
+  }
+}
