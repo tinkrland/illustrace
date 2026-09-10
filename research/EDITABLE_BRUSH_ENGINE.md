@@ -136,6 +136,52 @@ wetness/pressure curves are raster-brush concepts; which translate to
 vector strokes and which become recipe *texture layers* instead
 (cf. the wash-as-recipe conclusion in research/STYLE_ONTOLOGY.md)?
 
+## 5. figma make tool precedent (ai-authored, two-layer in the wild)
+
+liat fed the brush engine concept to figma's agent and it authored a
+working figma plugin/make-tool from it — "Brush strokes"
+(vendor/figma-brush-tool/, source + compiled code.js + port test). it
+is the two-layer representation implemented natively in figma, and it
+is further along the figma round-trip than anything else we have:
+
+- **state**: `centerline: {x,y}[]` extracted from any figma vector
+  path (vectorNetwork segments flattened via tangent sampling), stored
+  in `setPluginData` on the *original* node alongside the full params
+  object — a recipe sidecar living on the geometry itself
+- **params**: brush preset (9: clean, sketchy, marker, calligraphy,
+  tapered, ink brush, charcoal, pencil, felt tip) -> width multiplier,
+  jitter sigma, passes, taper fraction, taper_dir
+  (symmetric/toward/away — the same vocabulary as our substrate),
+  plus seed, color, and jitter/taper overrides
+- **bake**: resample at 4px spacing, per-point normals, taper-scaled
+  half-width (floor 0.05), left/right offset polygon, one filled
+  vector per pass (charcoal = 3 jittered passes, deterministic via
+  seeded LCG + box-muller)
+- **re-bake**: params-change messages re-bake *in place* from the
+  stored centerline, reusing the output node id — sliders re-render
+  live, original centerline stays hidden-but-intact, "remove" restores
+  it. relaunch button pinned on the node for later re-entry
+
+verified by porting the pure functions out of typescript into the test
+harness (vendor/figma-brush-tool/port_test/presets.svg): all nine
+presets bake coherently — jitter, multi-pass, and tapers all behave.
+
+what it lacks vs. our engine plan: fills are flat solid color only —
+no texture/grain recipes, and multi-pass has no opacity variation so
+charcoal passes just thicken; outlines are polyline-only (M/L/Z, no
+curve fitting); centerline extraction assumes one ordered stroke
+(the network walk would misread branching paths); `cap` is declared
+but unused. so it covers layer 1 (centerline + width recipe) fully but
+none of layer 2's texture side. good news: the gap is precisely where
+our grain-amp/recipe layers live, and the pluginData sidecar + re-bake
+pattern is directly adoptable for our figma round-trip.
+
+figma plan note: the manifest declares `isTool: true` (agent-invocable
+in figma make, paid ai features). but the same code runs as a plain
+development plugin on the free plan — compiled `code.js` is in the
+vendor folder, import via figma desktop -> plugins -> development ->
+import from manifest, sliders work manually.
+
 ## 6. evaluation hook (keep it stylebench-shaped)
 
 if the engine is "select vector, switch brush, adjust sliders," its
