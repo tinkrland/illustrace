@@ -53,3 +53,56 @@ credits. what we actually use it for, in priority order:
 - first job when live: fitter pilot — substrate sweep → crops → small
   cnn regressor → eval against held-out param values (see
   research/EDITABLE_BRUSH_ENGINE.md for the recipe param space)
+
+## xano backbone (staged 2026-09-10)
+
+the control plane for lora fine-tuning + the node ui is live. four tables
+plus six endpoints, all verified with seeded records.
+
+tables (workspace 1, stylebench group 9):
+
+- `training_jobs` (33) — the job queue + ledger. job_type
+  (fitter|lora|batch_render), status (queued|running|done|failed),
+  target_factor, hardware, dataset_ref, params json, metrics json,
+  artifact_uri, gpu_hours
+- `datasets` (34) — substrate sweeps + reference uploads feeding training.
+  name, source, manifest json, image_count
+- `node_graphs` (35) — node-ui documents. graph json
+  ({nodes:[{id,type,image|component|preset,...}], edges:[{from,to}]}),
+  graph_version, status (draft|validated|superseded)
+- `presets` (36) — saved recipes = style slots. recipe json
+  (components, strengths, extraction settings), recipe_version, graph_id
+
+endpoints (instance https://xpnx-e4ie-cfuf.z7.xano.io/api:o_C6f1ff, no auth
+for now, add auth when the runner goes multi-user):
+
+- `POST /training_jobs_ingest` (57) — queue a job
+- `GET /training_jobs_list?status=queued` (56) — runner claims queued work
+- `POST /node_graphs_ingest` (58) / `GET /node_graphs_list` (59)
+- `POST /presets_ingest` (60) / `GET /presets_list` (61)
+
+job flow (pull model, amd box holds no state):
+
+1. queue: research pass creates a training_jobs row via ingest (job 1 =
+   the fitter pilot, already queued: jitter_lat, mi300x, small cnn)
+2. claim: the amd runner polls training_jobs_list?status=queued, takes
+   the lowest id, marks it running (update endpoint: todo below)
+3. run: rocm box trains, posts metrics + artifact_uri back on completion
+4. registry: metrics that pass a batch's preregistered criteria promote
+   the factor into the style registry; the node ui reads node_graphs +
+   presets so sliders snap to measured jnd steps (batch_4 registry rules)
+
+node ui flow: the canvas saves graphs via node_graphs_ingest (each save =
+new row, graph_version++, never mutated — old versions stay queryable),
+users pin presets via presets_ingest referencing the graph_id they were
+extracted from. fits live inside the graph json as component nodes, so
+the measurement records and the ui document are one thing.
+
+known gaps (next provisioning round):
+
+- no status-update endpoint yet (claim/results transitions) — needs db.update
+  xanoscript + a shared secret so only the runner can flip job status
+- no auth on any endpoint — fine while single-user, must change before
+  anything public
+- datasets table has no ingest endpoint yet; manifests go in via meta api
+  bulk insert for now

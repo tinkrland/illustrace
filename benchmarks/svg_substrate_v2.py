@@ -31,9 +31,11 @@ BASE_SKETCHY = dict(BRUSHES["sketchy"], jitter=1.0)  # 2 passes, mild jitter
 
 ROWS = [
     ("width_profile", [
+        # area-normalized (mean factor 1.0): total ink constant across shapes
+        # (glm-5.2 critique: unnormalized shapes confound profile with ink density)
         ("flat", dict(BASE_PROFILE, width_profile=[(0, 1.0), (1, 1.0)])),
-        ("sym taper", dict(BASE_PROFILE, width_profile=[(0, 0.0), (0.3, 1.0), (0.7, 1.0), (1, 0.0)])),
-        ("mid bulge", dict(BASE_PROFILE, width_profile=[(0, 0.25), (0.4, 1.0), (1, 0.6)])),
+        ("sym taper", dict(BASE_PROFILE, width_profile=[(0, 0.0), (0.3, 1.43), (0.7, 1.43), (1, 0.0)])),
+        ("mid bulge", dict(BASE_PROFILE, width_profile=[(0, 0.34), (0.4, 1.37), (1, 0.82)])),
     ]),
     ("jitter_lat", [
         ("1.5", dict(BASE_PROFILE, jitter=0.0, jitter_lat=1.5, jitter_lin=0.0)),
