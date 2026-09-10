@@ -87,9 +87,18 @@ def resample(pts, step=6):
     return out
 
 
-def bake_outline(pts, base_w, taper, sigma, seed):
+def bake_outline(pts, base_w, taper, sigma, seed, taper_dir=None):
     """variable-width tapered stroke baked as a filled outline path
-    (perfect-freehand pattern). taper = fraction of length spent easing in/out."""
+    (perfect-freehand pattern). taper = fraction of length spent easing in/out.
+    taper_dir: None = symmetric (default), "toward" = ease out only
+    (stroke narrows at the path end / tip), "away" = ease in only
+    (stroke starts thin, thickens toward the path end)."""
+    if taper_dir == "toward":
+        taper_in, taper_out = 0.0, taper
+    elif taper_dir == "away":
+        taper_in, taper_out = taper, 0.0
+    else:
+        taper_in, taper_out = taper, taper
     p = resample(jitter_polyline(pts, sigma, seed))
     n = len(p)
     L = [0.0]
@@ -105,7 +114,13 @@ def bake_outline(pts, base_w, taper, sigma, seed):
         else: dx, dy = p[i + 1][0] - p[i - 1][0], p[i + 1][1] - p[i - 1][1]
         nrm = (dx * dx + dy * dy) ** 0.5 or 1.0
         nx, ny = -dy / nrm, dx / nrm
-        w = base_w * min(1.0, t / taper, (1 - t) / taper) if taper > 0 else base_w
+        if taper > 0:
+            f = 1.0
+            if taper_in > 0: f = min(f, t / taper_in)
+            if taper_out > 0: f = min(f, (1 - t) / taper_out)
+            w = base_w * f
+        else:
+            w = base_w
         w = max(w, 0.4)
         left.append((x + nx * w / 2, y + ny * w / 2))
         right.append((x - nx * w / 2, y - ny * w / 2))
@@ -173,7 +188,7 @@ def build_svg(roles, brush, textured=False, lighting=None, seed=7):
   </g>"""
 
     if brush.get("taper"):
-        paths = [f'    <path class="stroke stroke-{name} baked-outline" data-brush="tapered" fill="{roles["stroke"]}" stroke="none" d="{bake_outline(GEO[name], brush["width"], brush["taper"], brush.get("jitter", 0.0), seed + sum(map(ord, name)))}"/>'
+        paths = [f'    <path class="stroke stroke-{name} baked-outline" data-brush="tapered" fill="{roles["stroke"]}" stroke="none" d="{bake_outline(GEO[name], brush["width"], brush["taper"], brush.get("jitter", 0.0), seed + sum(map(ord, name)), brush.get("taper_dir"))}"/>'
                  for name in GEO]
     else:
         paths = [f'    <path class="stroke stroke-{name}" data-brush="linework" d="{stroke_d(name, brush, seed)}"/>'

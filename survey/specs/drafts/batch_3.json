@@ -21,16 +21,16 @@
   },
   "images_new": [
     {
-      "file": "fid2_taper_away30",
-      "recipe": "build_svg(roles, clean, tapered=True, taper_dir=away) + render taper=0.3",
+      "file": "fid2_taperaway30",
+      "recipe": "build_svg(rw, dict(BRUSHES['clean'], width=7, taper=0.30, jitter=0.5, taper_dir='away'), seed=7)",
       "params": {
         "taper": 0.3,
         "taper_dir": "away"
       }
     },
     {
-      "file": "fid2_taper_away60",
-      "recipe": "build_svg(roles, clean, tapered=True, taper_dir=away) + render taper=0.6",
+      "file": "fid2_taperaway60",
+      "recipe": "build_svg(rw, dict(BRUSHES['clean'], width=7, taper=0.60, jitter=0.5, taper_dir='away'), seed=7)",
       "params": {
         "taper": 0.6,
         "taper_dir": "away"
@@ -121,7 +121,7 @@
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
       "left": "fid2_taper30.png",
-      "right": "fid2_taper_away30.png",
+      "right": "fid2_taperaway30.png",
       "gt": "left",
       "scored": true,
       "note": "same magnitude 0.3, direction effect: toward-tip vs away-from-tip; hypothesis: toward = more hand-drawn"
@@ -132,7 +132,7 @@
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
       "left": "fid2_taper60.png",
-      "right": "fid2_taper_away60.png",
+      "right": "fid2_taperaway60.png",
       "gt": "left",
       "scored": true,
       "note": "same magnitude 0.6, direction effect at high taper; hypothesis: toward = more hand-drawn"
@@ -143,7 +143,7 @@
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
       "left": "fid2_taper15.png",
-      "right": "fid2_taper_away30.png",
+      "right": "fid2_taperaway30.png",
       "gt": "left",
       "scored": true,
       "note": "direction vs magnitude conflict: toward-low 0.15 vs away-mid 0.3; tests whether direction or magnitude dominates hand-drawnness perception"
@@ -154,7 +154,7 @@
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
       "left": "fid2_taper60.png",
-      "right": "fid2_taper_away30.png",
+      "right": "fid2_taperaway30.png",
       "gt": "left",
       "scored": true,
       "note": "direction and magnitude aligned: toward-high 0.6 vs away-mid 0.3; both cues favor left, expected easy pass"
@@ -176,7 +176,7 @@
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
       "left": "fid2_taper15.png",
-      "right": "fid2_taper_away60.png",
+      "right": "fid2_taperaway60.png",
       "gt": "left",
       "scored": true,
       "note": "extreme direction vs magnitude conflict: toward-low 0.15 vs away-high 0.6; if judges pick right, magnitude fully dominates direction"
