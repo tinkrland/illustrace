@@ -21,6 +21,30 @@
   },
   "images_new": [
     {
+      "file": "fid2_tapertoward15",
+      "recipe": "build_svg(rw, dict(BRUSHES['clean'], width=7, taper=0.15, jitter=0.5, taper_dir='toward'), seed=7)",
+      "params": {
+        "taper": 0.15,
+        "taper_dir": "toward"
+      }
+    },
+    {
+      "file": "fid2_tapertoward30",
+      "recipe": "build_svg(rw, dict(BRUSHES['clean'], width=7, taper=0.30, jitter=0.5, taper_dir='toward'), seed=7)",
+      "params": {
+        "taper": 0.3,
+        "taper_dir": "toward"
+      }
+    },
+    {
+      "file": "fid2_tapertoward60",
+      "recipe": "build_svg(rw, dict(BRUSHES['clean'], width=7, taper=0.60, jitter=0.5, taper_dir='toward'), seed=7)",
+      "params": {
+        "taper": 0.6,
+        "taper_dir": "toward"
+      }
+    },
+    {
       "file": "fid2_taperaway30",
       "recipe": "build_svg(rw, dict(BRUSHES['clean'], width=7, taper=0.30, jitter=0.5, taper_dir='away'), seed=7)",
       "params": {
@@ -69,7 +93,7 @@
       "right": "fid2_width7.png",
       "gt": "right",
       "scored": true,
-      "note": "delta=2, mid range; KEY TEST \u2014 hypothesis predicts judges cannot distinguish 5v7"
+      "note": "delta=2, mid range; KEY TEST — hypothesis predicts judges cannot distinguish 5v7"
     },
     {
       "id": "b3w3",
@@ -120,7 +144,7 @@
       "kind": "pair",
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
-      "left": "fid2_taper30.png",
+      "left": "fid2_tapertoward30.png",
       "right": "fid2_taperaway30.png",
       "gt": "left",
       "scored": true,
@@ -131,7 +155,7 @@
       "kind": "pair",
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
-      "left": "fid2_taper60.png",
+      "left": "fid2_tapertoward60.png",
       "right": "fid2_taperaway60.png",
       "gt": "left",
       "scored": true,
@@ -142,7 +166,7 @@
       "kind": "pair",
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
-      "left": "fid2_taper15.png",
+      "left": "fid2_tapertoward15.png",
       "right": "fid2_taperaway30.png",
       "gt": "left",
       "scored": true,
@@ -153,7 +177,7 @@
       "kind": "pair",
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
-      "left": "fid2_taper60.png",
+      "left": "fid2_tapertoward60.png",
       "right": "fid2_taperaway30.png",
       "gt": "left",
       "scored": true,
@@ -175,7 +199,7 @@
       "kind": "pair",
       "dimension": "taper",
       "prompt": "which linework feels more hand-drawn?",
-      "left": "fid2_taper15.png",
+      "left": "fid2_tapertoward15.png",
       "right": "fid2_taperaway60.png",
       "gt": "left",
       "scored": true,
@@ -207,8 +231,8 @@
   ],
   "pass_criteria": {
     "width": {
-      "extreme_pass": ">=4/5 judges correct on b3w6 (3v9, delta=6) \u2014 validates substrate; failing this invalidates the session",
-      "jnd_bracket": "lowest delta=2 pair with >=4/5 agreement gives the JND floor; if b3w2 (5v7) fails while b3w1 (3v5) and b3w3 (7v9) pass, nonlinearity confirmed \u2014 JND is position-dependent",
+      "extreme_pass": ">=4/5 judges correct on b3w6 (3v9, delta=6) — validates substrate; failing this invalidates the session",
+      "jnd_bracket": "lowest delta=2 pair with >=4/5 agreement gives the JND floor; if b3w2 (5v7) fails while b3w1 (3v5) and b3w3 (7v9) pass, nonlinearity confirmed — JND is position-dependent",
       "nonlinearity_test": "b3w2 agreement < b3w1 agreement AND b3w2 agreement < b3w3 agreement -> perceptual nonlinearity confirmed; if all delta=2 pairs pass, JND is uniformly below 2 and linearity holds",
       "bridge_pass": ">=4/5 correct on b3w4 and b3w5 (delta=4) -> JND is below 4 across the range; if any delta=4 pair fails, regenerate at delta=6 next batch",
       "verdict_rule": "extreme_pass + nonlinearity_test -> line_weight validated with position-dependent JND; extreme_pass + linearity -> line_weight validated with uniform JND; extreme_fail -> substrate failure, regenerate stimuli"
@@ -238,5 +262,6 @@
     "taper_direction_magnitude_dominates": "taper -> direction is secondary cue, magnitude primary; direction recorded as modifier",
     "taper_direction_fail": "taper -> magnitude-only, direction does not affect hand-drawnness; stays on existing axis",
     "taper_magnitude_control_fail": "taper -> discriminability not established, results from b3t1-b3t4 invalidated, re-queue taper magnitude work"
-  }
+  },
+  "review_note": "promotion fix 2026-09-10: original draft treated fid2_taperXX (symmetric renders) as toward-tip; rendered true toward variants (fid2_tapertoward15/30/60) and re-rendered away variants with matching recipe; b3t5 (magnitude control) correctly stays symmetric-vs-symmetric"
 }
