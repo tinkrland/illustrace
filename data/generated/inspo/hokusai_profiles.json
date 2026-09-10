@@ -1,0 +1,887 @@
+{
+ "n": 21,
+ "profiles": [
+  {
+   "file": "hokusai_000_1741.jpg",
+   "size": [
+    1280,
+    1577
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#f0f2f2",
+      "#9ba19b",
+      "#dfe4e7",
+      "#69716b",
+      "#c8cdce",
+      "#202722"
+     ],
+     "value_range": 178.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.53,
+     "width_cv": 0.568,
+     "axis_deg": 131.6,
+     "axis_concentration": 0.227,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 10.83,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.997,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 209.522,
+     "boundary_entropy": 0.997,
+     "ink_coverage": 0.063,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_001_1799.jpg",
+   "size": [
+    1280,
+    499
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#baac9d",
+      "#ad9f8e",
+      "#968774",
+      "#6f6455",
+      "#dbd2c0",
+      "#423a32"
+     ],
+     "value_range": 130.2,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.38,
+     "width_cv": 1.386,
+     "axis_deg": 178.8,
+     "axis_concentration": 0.21,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 18.04,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 93.168,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.05,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_002_1799.jpg",
+   "size": [
+    1280,
+    1635
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#8b8b8b",
+      "#9e9e9e",
+      "#b7b7b7",
+      "#cbcbcb",
+      "#101010",
+      "#616161"
+     ],
+     "value_range": 179.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 5.39,
+     "width_cv": 0.768,
+     "axis_deg": 94.9,
+     "axis_concentration": 0.305,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 19.8,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.981,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 107.604,
+     "boundary_entropy": 0.981,
+     "ink_coverage": 0.079,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_003_1799.jpg",
+   "size": [
+    1280,
+    1932
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#909090",
+      "#a4a4a4",
+      "#b8b8b8",
+      "#777777",
+      "#cecece",
+      "#2a2a2a"
+     ],
+     "value_range": 118.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.67,
+     "width_cv": 0.53,
+     "axis_deg": 93.0,
+     "axis_concentration": 0.282,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 12.27,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.988,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 164.637,
+     "boundary_entropy": 0.988,
+     "ink_coverage": 0.048,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_004_1799.jpg",
+   "size": [
+    1280,
+    872
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#878787",
+      "#6b6b6b",
+      "#a3a3a3",
+      "#464646",
+      "#1d1d1d",
+      "#cbcbcb"
+     ],
+     "value_range": 153.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 4.4,
+     "width_cv": 1.34,
+     "axis_deg": 17.0,
+     "axis_concentration": 0.27,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 18.72,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.986,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 106.136,
+     "boundary_entropy": 0.986,
+     "ink_coverage": 0.212,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_005_1800.jpg",
+   "size": [
+    1280,
+    854
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c4b598",
+      "#b3b6b7",
+      "#aa997b",
+      "#786c57",
+      "#39301e",
+      "#d3cbbd"
+     ],
+     "value_range": 131.9,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.1,
+     "width_cv": 0.221,
+     "axis_deg": 91.0,
+     "axis_concentration": 0.222,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 29.4,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 251.917,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.069,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_006_1802.jpg",
+   "size": [
+    1280,
+    830
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#b79b75",
+      "#a58961",
+      "#c4ac87",
+      "#797053",
+      "#555238",
+      "#231a07"
+     ],
+     "value_range": 152.6,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.82,
+     "width_cv": 0.504,
+     "axis_deg": 170.8,
+     "axis_concentration": 0.232,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 26.67,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.997,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 238.192,
+     "boundary_entropy": 0.997,
+     "ink_coverage": 0.16,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_007_1804.jpg",
+   "size": [
+    1280,
+    1710
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#d2d2d2",
+      "#c1c1c1",
+      "#a8a8a8",
+      "#e2e2e2",
+      "#101010",
+      "#5f5f5f"
+     ],
+     "value_range": 215.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 5.13,
+     "width_cv": 0.602,
+     "axis_deg": 95.0,
+     "axis_concentration": 0.224,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 20.5,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.998,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 155.083,
+     "boundary_entropy": 0.998,
+     "ink_coverage": 0.107,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_008_1804.jpg",
+   "size": [
+    1280,
+    977
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#e0e0e0",
+      "#cecece",
+      "#f0f0f0",
+      "#b7b7b7",
+      "#0c0c0c",
+      "#636363"
+     ],
+     "value_range": 237.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 4.07,
+     "width_cv": 0.562,
+     "axis_deg": 172.5,
+     "axis_concentration": 0.22,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 38.61,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 160.525,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.125,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_009_1804.jpg",
+   "size": [
+    1280,
+    1739
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#acacac",
+      "#bebebe",
+      "#171717",
+      "#8e8e8e",
+      "#e1e1e1",
+      "#545454"
+     ],
+     "value_range": 204.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 5.28,
+     "width_cv": 0.556,
+     "axis_deg": 95.0,
+     "axis_concentration": 0.266,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 20.7,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.991,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 184.666,
+     "boundary_entropy": 0.991,
+     "ink_coverage": 0.147,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_010_1805.jpg",
+   "size": [
+    1280,
+    960
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#1f1817",
+      "#ced1cf",
+      "#7b6052",
+      "#a19f98",
+      "#0c0a09",
+      "#3f3330"
+     ],
+     "value_range": 208.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 17.29,
+     "width_cv": 2.48,
+     "axis_deg": 170.2,
+     "axis_concentration": 0.411,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 13.77,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.952,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 24.57,
+     "boundary_entropy": 0.952,
+     "ink_coverage": 0.504,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_011_1806.jpg",
+   "size": [
+    1280,
+    854
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#ecdab7",
+      "#cfc0a1",
+      "#b0a288",
+      "#dfe1e1",
+      "#7b7766",
+      "#433c2d"
+     ],
+     "value_range": 149.3,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.04,
+     "width_cv": 0.181,
+     "axis_deg": 89.1,
+     "axis_concentration": 0.215,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 34.99,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 221.329,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.048,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_012_1812.jpg",
+   "size": [
+    1280,
+    907
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#ead2b6",
+      "#efdac2",
+      "#b06850",
+      "#bea97f",
+      "#dbc1a1",
+      "#14100c"
+     ],
+     "value_range": 161.8,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 4.79,
+     "width_cv": 1.236,
+     "axis_deg": 179.9,
+     "axis_concentration": 0.275,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 34.94,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.994,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 51.102,
+     "boundary_entropy": 0.994,
+     "ink_coverage": 0.052,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_014_1821.jpg",
+   "size": [
+    1280,
+    1426
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#ecdec7",
+      "#dfceaa",
+      "#987e5e",
+      "#c9b08a",
+      "#f8f0df",
+      "#5a4630"
+     ],
+     "value_range": 149.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.14,
+     "width_cv": 0.55,
+     "axis_deg": 152.8,
+     "axis_concentration": 0.218,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 25.37,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 142.252,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.031,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_018_1825.jpg",
+   "size": [
+    1280,
+    998
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c6ba9f",
+      "#d7c9ad",
+      "#b3a68c",
+      "#ecdec8",
+      "#96816a",
+      "#5a5142"
+     ],
+     "value_range": 134.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.05,
+     "width_cv": 0.122,
+     "axis_deg": 135.1,
+     "axis_concentration": 0.226,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 24.39,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.996,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 191.271,
+     "boundary_entropy": 0.996,
+     "ink_coverage": 0.032,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_019_1830.jpg",
+   "size": [
+    1280,
+    1800
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#65705e",
+      "#251f19",
+      "#0e2a3a",
+      "#e0ac7a",
+      "#bb875b",
+      "#553b27"
+     ],
+     "value_range": 161.5,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 6.72,
+     "width_cv": 1.946,
+     "axis_deg": 91.3,
+     "axis_concentration": 0.209,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 20.62,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 102.678,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.458,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_020_1830.jpg",
+   "size": [
+    1280,
+    854
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#325a8e",
+      "#a23725",
+      "#ebead6",
+      "#797a69",
+      "#1f2834",
+      "#bccfc5"
+     ],
+     "value_range": 204.9,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.73,
+     "width_cv": 0.792,
+     "axis_deg": 58.7,
+     "axis_concentration": 0.256,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 30.26,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.99,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 166.578,
+     "boundary_entropy": 0.99,
+     "ink_coverage": 0.109,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_021_1830.jpg",
+   "size": [
+    1000,
+    701
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#82bec0",
+      "#dfd097",
+      "#27535c",
+      "#1e2b23",
+      "#748274",
+      "#e8ebdb"
+     ],
+     "value_range": 207.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.64,
+     "width_cv": 0.639,
+     "axis_deg": 179.1,
+     "axis_concentration": 0.211,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 46.34,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 200.561,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.193,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_022_1830.jpg",
+   "size": [
+    1280,
+    879
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#ddc29c",
+      "#9cab9d",
+      "#6c877c",
+      "#365164",
+      "#6f6854",
+      "#f8f3e7"
+     ],
+     "value_range": 152.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.11,
+     "width_cv": 0.26,
+     "axis_deg": 17.1,
+     "axis_concentration": 0.287,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 37.53,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.981,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 237.165,
+     "boundary_entropy": 0.981,
+     "ink_coverage": 0.073,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_023_1831.jpg",
+   "size": [
+    1280,
+    852
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#faf9c2",
+      "#0a0d1a",
+      "#bbe0c0",
+      "#8cc4b3",
+      "#9e9269",
+      "#365063"
+     ],
+     "value_range": 243.9,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.64,
+     "width_cv": 1.269,
+     "axis_deg": 179.4,
+     "axis_concentration": 0.255,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 40.98,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.994,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 226.171,
+     "boundary_entropy": 0.994,
+     "ink_coverage": 0.208,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "hokusai_024_1831.jpg",
+   "size": [
+    1280,
+    858
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#f0e4ce",
+      "#0f2f70",
+      "#9fb7c0",
+      "#111e23",
+      "#537c96",
+      "#faf9f0"
+     ],
+     "value_range": 213.7,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.83,
+     "width_cv": 0.797,
+     "axis_deg": 179.2,
+     "axis_concentration": 0.253,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 23.53,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.997,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 163.618,
+     "boundary_entropy": 0.997,
+     "ink_coverage": 0.123,
+     "take": "contour density proxies"
+    }
+   }
+  }
+ ]
+}

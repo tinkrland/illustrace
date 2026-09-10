@@ -144,6 +144,24 @@ adapter uri back.
 3. 2–3 more painters for breadth (van gogh, hokusai) once ingestion is
    proven on monet.
 
+status update (2026-09-10, later): breadth pass done.
+`engine/ingest_painter.py` generalizes corpus pull to any wikidata
+painter: van gogh (Q5582, 21 works 1886-1888) and hokusai (Q5586, 21
+works 1741-1831) join monet in the composer library — 101 deduped inspos
+total. painter thumbs route by filename prefix.
+
+the adapter probe harness is built and validated:
+`engine/adapter_probe.py` profiles a corpus as the target
+(pre-training), then profiles adapter generations post-training and
+emits per-component delta reports (json + md) with fidelity/leakage
+verdicts. validation runs: monet-vs-monet passes at mean palette
+dE 0.0; van gogh-as-monet correctly FAILS at dE 38.5 (cie76 deltae in
+lab space — the first luminance-only v0 metric was too weak to tell
+them apart, which is exactly the kind of thing this harness exists to
+catch). known v0 caveats: self-test on the same corpus is degenerate
+(same representative palette both sides); thresholds (palette dE < 10,
+component shift < 1.0) are preregistration candidates not truth.
+
 status update (2026-09-10): ingestion is live. `engine/ingest_monet.py`
 pulled 39 late-period monet works (1890-1923, wikidata Q296 -> commons,
 1024px, public domain, metadata in `data/monet/metadata.json`) — inside

@@ -1,0 +1,44 @@
+{
+ "components": {
+  "palette": {
+   "mean_hex_dist": 38.465,
+   "claimed": true
+  },
+  "stroke": {
+   "shifts": {
+    "width_mean": 0.412,
+    "width_cv": 0.376,
+    "axis_deg": -0.619,
+    "axis_conc": -0.27
+   },
+   "max_shift": 0.619,
+   "claimed": false
+  },
+  "texture": {
+   "shifts": {
+    "energy": 0.574
+   },
+   "max_shift": 0.574,
+   "claimed": false
+  },
+  "edges": {
+   "shifts": {
+    "dir_entropy": 0.4
+   },
+   "max_shift": 0.4,
+   "claimed": false
+  },
+  "shape": {
+   "shifts": {
+    "perim_area": 0.207,
+    "boundary_entropy": 0.4,
+    "ink_coverage": 0.247
+   },
+   "max_shift": 0.4,
+   "claimed": false
+  }
+ },
+ "claim": "palette",
+ "fidelity_ok": false,
+ "leaked": []
+}
