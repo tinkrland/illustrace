@@ -27,6 +27,10 @@ def score_answer(q_spec, choice):
     if q_spec is None:
         return "unscorable"
     kind = q_spec.get("kind", "pair")
+    l, r = q_spec.get("left"), q_spec.get("right")
+    if kind == "catch" or (l is not None and l == r):
+        # catch pair: expected answer is "no difference" ("identical")
+        return "nodiff" if choice in ("nodiff", "no_difference", "same", "identical", None) else "incorrect"
     if kind == "same_different":
         return "correct" if choice == q_spec["gt"] else "incorrect"
     if kind == "catch":
@@ -41,14 +45,17 @@ def score_answer(q_spec, choice):
 
 def judge_summary(answers, qmap):
     """catch performance + scored accuracy for one judge."""
-    catches = [score_answer(qmap[a["question_id"]], a["choice"])
+    def qs_(a):
+        return qmap.get(a["question_id"]) or {}
+
+    catches = [score_answer(qs_(a), a["choice"])
                for a in answers
-               if qmap.get(a["question_id"], {}).get("kind") == "catch"]
+               if qs_(a).get("kind") == "catch"]
     catch_fails = catches.count("incorrect")
-    scored = [score_answer(qmap[a["question_id"]], a["choice"])
+    scored = [score_answer(qs_(a), a["choice"])
               for a in answers
-              if qmap.get(a["question_id"], {}).get("scored") and
-                 qmap.get(a["question_id"], {}).get("kind") in ("pair", "same_different")]
+              if qs_(a).get("scored") and
+                 qs_(a).get("kind") in ("pair", "same_different", None)]
     return {
         "catch_fails": catch_fails,
         "excluded": catch_fails > 1,
@@ -83,7 +90,7 @@ def question_stats(included_answers, qmap):
 def block_agreement(qstats, spec):
     """agreement per dimension block with bootstrap CI over judges."""
     by_dim = defaultdict(list)
-    for q in spec["questions"]:
+    for q in spec.get("questions", []):
         if q.get("kind") in ("pair", "same_different") and q.get("scored", True):
             by_dim[q["dimension"]].append(q["id"])
     out = {}
@@ -178,9 +185,9 @@ def verdicts(qstats, spec, n_judges):
 def analyze(result_files, spec=None, write_markdown=None):
     spec = spec or load_spec()
     qmap = {}
-    for q in spec["questions"]:
+    for q in spec.get("questions", []):
         qmap[q["id"]] = q
-    for c in spec["catches"]:
+    for c in spec.get("catches", []):
         qmap[c["id"]] = {"kind": "catch", "scored": False, "id": c["id"]}
 
     judges, all_answers = [], []
@@ -210,7 +217,7 @@ def analyze(result_files, spec=None, write_markdown=None):
     verd = verdicts(qstats, spec, max(n_judges, 1))
 
     report = {
-        "batch": spec["batch"],
+        "batch": spec.get("batch", "unnamed"),
         "judges_total": len(judges),
         "judges_excluded_catch_fail": sorted(excluded_files),
         "judges_included": n_judges,
@@ -248,7 +255,7 @@ def render_markdown(rep):
 def demo():
     """synthetic judges for offline testing of every rule."""
     spec = load_spec()
-    qmap = {q["id"]: q for q in spec["questions"]}
+    qmap = {q["id"]: q for q in spec.get("questions", [])}
     files = []
     for ji in range(5):
         answers = []
@@ -263,7 +270,7 @@ def demo():
             answers.append({"question_id": qid, "kind": q["kind"], "scored": q.get("scored", True),
                             "dimension": q["dimension"], "choice": choice,
                             "confidence": "pretty sure", "elapsed_ms": 2200})
-        for c in spec["catches"]:
+        for c in spec.get("catches", []):
             answers.append({"question_id": c["id"], "kind": "catch", "scored": False,
                             "dimension": c["dimension"],
                             "choice": "identical" if not (ji == 4 and c["id"] == "b2c3") else os.path.basename(c["image"]),
@@ -281,5 +288,10 @@ if __name__ == "__main__":
         rep = analyze(files)
         print(json.dumps(rep["verdicts"], indent=2, default=str)[:1500])
     else:
-        rep = analyze(sys.argv[1:])
+        args = [a for a in sys.argv[1:] if not a.startswith("--spec=")]
+        spec_path = None
+        for a in sys.argv[1:]:
+            if a.startswith("--spec="):
+                spec_path = a.split("=", 1)[1]
+        rep = analyze(args, spec=load_spec(spec_path) if spec_path else None)
         print(json.dumps(rep["verdicts"], indent=2, default=str))
