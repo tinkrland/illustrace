@@ -125,18 +125,28 @@ the output keeps the user's artwork while borrowing only the selected characteri
 
 ## multiple reference images
 
-each artistic component can have its own source — the heart of the compositional idea:
+each artistic component can have its own source — the heart of the compositional idea.
+the canonical request looks like this:
 
 ```
-stroke    → illustration a
-color     → illustration b
-texture   → illustration c
-lighting  → illustration d
-rendering → illustration e
+mark-making / drawing style → image 1
+palette                     → image 2  (ignore its drawing style)
+texture                     → image 3
+content (what to draw)      → image 4  (a house, a town, a ship)
 ```
 
-this creates entirely new visual styles that never existed before. no single reference
-image contains the target style; the user composes it.
+every image plays exactly the role the user assigns it and nothing else: the
+palette comes from image 2 even though its strokes are ignored; the texture
+comes from image 3 without its color; the object being drawn comes from image
+4 without any of its style. one request, four sources, zero ambiguity about
+which image contributes what. this creates entirely new visual styles that
+never existed before — no single reference image contains the target style;
+the user composes it.
+
+the content image is an input like the others, not the canvas being styled:
+it says *what* to draw (a ship, this house, a different town), the style
+images say *how*. in the substrate this split is already literal — geometry
+comes from the content source, recipes come from the style references.
 
 ## adjustable strength
 
