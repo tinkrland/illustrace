@@ -22,9 +22,10 @@ def main():
     with open(PROFILES) as f:
         profiles = json.load(f)
     allp = list(profiles.get("profiles", []))
-    # merge the monet corpus profiles if ingestion has run
-    if os.path.exists(MONET):
-        with open(MONET) as f:
+    # merge any painter corpus profiles (monet, van_gogh, hokusai, ...)
+    import glob
+    for p in sorted(glob.glob(os.path.join(os.path.dirname(MONET), "*_profiles.json"))):
+        with open(p) as f:
             allp += json.load(f).get("profiles", [])
     with open(TEMPLATE) as f:
         tpl = f.read()

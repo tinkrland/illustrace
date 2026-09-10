@@ -162,8 +162,13 @@ const COMPONENTS = [
   { id: "edges",   label: "edges",   take: "orientation entropy" },
   { id: "shape",   label: "contour", take: "density proxies" },
 ];
+const IMGDIRS = {
+  monet: "../../data/monet/", van_gogh: "../../data/van_gogh/",
+  hokusai: "../../data/hokusai/",
+};
 function imgPath(f) {
-  return f.startsWith("monet_") ? "../../data/monet/" : "../../data/test_images/";
+  for (const k in IMGDIRS) if (f.startsWith(k + "_")) return IMGDIRS[k];
+  return "../../data/test_images/";
 }
 
 let PROFS = DATA.profiles;

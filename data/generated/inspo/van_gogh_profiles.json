@@ -1,0 +1,887 @@
+{
+ "n": 21,
+ "profiles": [
+  {
+   "file": "van_gogh_000_1886.jpg",
+   "size": [
+    1280,
+    1063
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#554b32",
+      "#383324",
+      "#736748",
+      "#948763",
+      "#1c1a12",
+      "#b9ac86"
+     ],
+     "value_range": 136.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.69,
+     "width_cv": 0.788,
+     "axis_deg": 16.9,
+     "axis_concentration": 0.215,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 41.39,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.998,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 339.588,
+     "boundary_entropy": 0.998,
+     "ink_coverage": 0.507,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_001_1886.jpg",
+   "size": [
+    1280,
+    1930
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#1a1711",
+      "#272117",
+      "#372d1e",
+      "#100e0a",
+      "#4d4230",
+      "#746851"
+     ],
+     "value_range": 60.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 9.33,
+     "width_cv": 1.196,
+     "axis_deg": 91.1,
+     "axis_concentration": 0.215,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 40.3,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 98.643,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.961,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_002_1886.jpg",
+   "size": [
+    1280,
+    765
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#705224",
+      "#b5b4b3",
+      "#d7d2cb",
+      "#44310e",
+      "#9f7845",
+      "#b79b7a"
+     ],
+     "value_range": 170.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.95,
+     "width_cv": 0.754,
+     "axis_deg": 16.9,
+     "axis_concentration": 0.234,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 28.26,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.996,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 148.414,
+     "boundary_entropy": 0.996,
+     "ink_coverage": 0.114,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_003_1886.jpg",
+   "size": [
+    1280,
+    1557
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#594019",
+      "#3c290f",
+      "#795929",
+      "#1f1509",
+      "#9c7d45",
+      "#c6ac74"
+     ],
+     "value_range": 136.7,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.77,
+     "width_cv": 0.875,
+     "axis_deg": 178.8,
+     "axis_concentration": 0.25,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 44.67,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.991,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 280.231,
+     "boundary_entropy": 0.991,
+     "ink_coverage": 0.415,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_004_1886.jpg",
+   "size": [
+    1280,
+    1884
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#bcbdb8",
+      "#d9d6d1",
+      "#647567",
+      "#85a0aa",
+      "#a99e78",
+      "#353d2e"
+     ],
+     "value_range": 159.6,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.28,
+     "width_cv": 0.411,
+     "axis_deg": 16.7,
+     "axis_concentration": 0.227,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 36.47,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.996,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 285.543,
+     "boundary_entropy": 0.996,
+     "ink_coverage": 0.068,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_005_1886.jpg",
+   "size": [
+    1280,
+    990
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#d4af52",
+      "#be9655",
+      "#a27851",
+      "#776650",
+      "#403f38",
+      "#dac28c"
+     ],
+     "value_range": 110.3,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.96,
+     "width_cv": 0.91,
+     "axis_deg": 45.1,
+     "axis_concentration": 0.218,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 17.07,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.997,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 98.888,
+     "boundary_entropy": 0.997,
+     "ink_coverage": 0.057,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_006_1887.jpg",
+   "size": [
+    1280,
+    1051
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#455432",
+      "#596c4a",
+      "#2c3f22",
+      "#6a8867",
+      "#191f14",
+      "#8d9b7c"
+     ],
+     "value_range": 111.8,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.92,
+     "width_cv": 0.888,
+     "axis_deg": 40.9,
+     "axis_concentration": 0.216,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 25.49,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.998,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 283.847,
+     "boundary_entropy": 0.998,
+     "ink_coverage": 0.462,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_007_1887.jpg",
+   "size": [
+    1280,
+    910
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#94824f",
+      "#c8ba81",
+      "#829fbb",
+      "#647e97",
+      "#4e4b43",
+      "#b0c9db"
+     ],
+     "value_range": 130.8,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.25,
+     "width_cv": 0.4,
+     "axis_deg": 43.1,
+     "axis_concentration": 0.239,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 32.45,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.996,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 180.305,
+     "boundary_entropy": 0.996,
+     "ink_coverage": 0.056,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_008_1887.jpg",
+   "size": [
+    1280,
+    1060
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#b0af9c",
+      "#c0bfb0",
+      "#9e9d87",
+      "#86846e",
+      "#d1d0c0",
+      "#646050"
+     ],
+     "value_range": 96.3,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.08,
+     "width_cv": 0.189,
+     "axis_deg": 16.7,
+     "axis_concentration": 0.205,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 25.76,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 101.973,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.01,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_009_1887.jpg",
+   "size": [
+    1280,
+    938
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#90771c",
+      "#90866d",
+      "#aa9a7e",
+      "#928243",
+      "#bfb399",
+      "#765b34"
+     ],
+     "value_range": 73.8,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.26,
+     "width_cv": 0.461,
+     "axis_deg": 16.7,
+     "axis_concentration": 0.267,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 16.47,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.989,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 54.02,
+     "boundary_entropy": 0.989,
+     "ink_coverage": 0.005,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_010_1887.jpg",
+   "size": [
+    1280,
+    1617
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#a18c70",
+      "#85704e",
+      "#bcaa92",
+      "#d9b83b",
+      "#e4d3af",
+      "#4f422b"
+     ],
+     "value_range": 129.2,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.19,
+     "width_cv": 0.308,
+     "axis_deg": 79.1,
+     "axis_concentration": 0.217,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 43.95,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.998,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 238.52,
+     "boundary_entropy": 0.998,
+     "ink_coverage": 0.043,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_011_1887.jpg",
+   "size": [
+    1280,
+    935
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#686e47",
+      "#cdb766",
+      "#a98f48",
+      "#859267",
+      "#d7d1b2",
+      "#3c3e2a"
+     ],
+     "value_range": 154.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.26,
+     "width_cv": 0.407,
+     "axis_deg": 43.0,
+     "axis_concentration": 0.219,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 37.51,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.997,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 242.466,
+     "boundary_entropy": 0.997,
+     "ink_coverage": 0.1,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_012_1887.jpg",
+   "size": [
+    1280,
+    1069
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#dbc28f",
+      "#ceaf76",
+      "#be9652",
+      "#e9d5a6",
+      "#926732",
+      "#593918"
+     ],
+     "value_range": 147.3,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.68,
+     "width_cv": 0.55,
+     "axis_deg": 106.8,
+     "axis_concentration": 0.22,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 25.73,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.996,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 112.606,
+     "boundary_entropy": 0.996,
+     "ink_coverage": 0.029,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_013_1887.jpg",
+   "size": [
+    1280,
+    1633
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#8a6234",
+      "#a5804d",
+      "#c4a671",
+      "#694523",
+      "#3c2211",
+      "#e9d3a6"
+     ],
+     "value_range": 161.3,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.44,
+     "width_cv": 0.564,
+     "axis_deg": 17.0,
+     "axis_concentration": 0.202,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 53.77,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 267.026,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.103,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_014_1888.jpg",
+   "size": [
+    1280,
+    1564
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#75c897",
+      "#4eab77",
+      "#2d2e1f",
+      "#5a5331",
+      "#8e8d59",
+      "#cacd94"
+     ],
+     "value_range": 156.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.87,
+     "width_cv": 1.172,
+     "axis_deg": 50.8,
+     "axis_concentration": 0.224,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 32.32,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.996,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 141.797,
+     "boundary_entropy": 0.996,
+     "ink_coverage": 0.218,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_015_1888.jpg",
+   "size": [
+    1280,
+    930
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#efad37",
+      "#7b89c3",
+      "#4d69a9",
+      "#36332e",
+      "#d6ceb8",
+      "#b45d38"
+     ],
+     "value_range": 151.5,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.66,
+     "width_cv": 0.792,
+     "axis_deg": 151.2,
+     "axis_concentration": 0.275,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 26.23,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.987,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 134.408,
+     "boundary_entropy": 0.987,
+     "ink_coverage": 0.064,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_016_1888.jpg",
+   "size": [
+    1280,
+    1016
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#9c874d",
+      "#7b6436",
+      "#9e7c0e",
+      "#a2ab9b",
+      "#7e8c89",
+      "#3b3118"
+     ],
+     "value_range": 108.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.45,
+     "width_cv": 0.49,
+     "axis_deg": 85.4,
+     "axis_concentration": 0.293,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 25.12,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.988,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 166.862,
+     "boundary_entropy": 0.988,
+     "ink_coverage": 0.049,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_017_1888.jpg",
+   "size": [
+    1280,
+    1681
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#e4ae57",
+      "#a37b56",
+      "#78919c",
+      "#5d6c73",
+      "#40403c",
+      "#e0c87f"
+     ],
+     "value_range": 142.5,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.6,
+     "width_cv": 1.001,
+     "axis_deg": 83.0,
+     "axis_concentration": 0.245,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 14.6,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.992,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 151.377,
+     "boundary_entropy": 0.992,
+     "ink_coverage": 0.103,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_018_1888.jpg",
+   "size": [
+    1280,
+    1016
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#5c5f52",
+      "#b7704c",
+      "#7c8a6e",
+      "#c6935b",
+      "#343935",
+      "#9ca896"
+     ],
+     "value_range": 117.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.95,
+     "width_cv": 0.672,
+     "axis_deg": 91.2,
+     "axis_concentration": 0.241,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 24.57,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.995,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 237.971,
+     "boundary_entropy": 0.995,
+     "ink_coverage": 0.188,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_019_1888.jpg",
+   "size": [
+    1280,
+    1873
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#bbc393",
+      "#99ba86",
+      "#d2d9ad",
+      "#879868",
+      "#eff2cc",
+      "#4e5a3b"
+     ],
+     "value_range": 114.5,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.03,
+     "width_cv": 0.138,
+     "axis_deg": 178.9,
+     "axis_concentration": 0.247,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 45.83,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.983,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 147.626,
+     "boundary_entropy": 0.983,
+     "ink_coverage": 0.01,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "van_gogh_020_1888.jpg",
+   "size": [
+    1280,
+    1606
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#9ccfba",
+      "#282433",
+      "#0f070c",
+      "#998f61",
+      "#505a54",
+      "#c6ba8f"
+     ],
+     "value_range": 201.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 7.67,
+     "width_cv": 1.721,
+     "axis_deg": 96.6,
+     "axis_concentration": 0.219,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 27.08,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.998,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 117.317,
+     "boundary_entropy": 0.998,
+     "ink_coverage": 0.408,
+     "take": "contour density proxies"
+    }
+   }
+  }
+ ]
+}

@@ -24,5 +24,7 @@ no build needed — the profiles are baked in at generation time:
     python3 application/composer/build_composer.py
     open application/composer/index.html         # file:// works
 
-images load from `data/test_images/` (relative paths), so the repo folder
-must stay intact.
+images load from `data/test_images/` and `data/<painter>/` (monet,
+van_gogh, hokusai — routed by filename prefix), so the repo folder must
+stay intact. the library is 101 deduped inspos; refresh with
+`engine/ingest_painter.py` for any wikidata painter.
