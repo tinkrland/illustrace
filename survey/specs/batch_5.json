@@ -1,0 +1,380 @@
+{
+ "batch": "batch_5",
+ "version": 2,
+ "date_preregistered": "2026-09-30",
+ "goal": "test separability of per-pass scatter and rotation as independent mark-making factors; verify no cross-factor confusion above >=4/5 threshold; validate opacity_falloff as 'fading' independent of overlap density",
+ "scientist_session": "glm-5.2 via nebius token factory, 2026-09-30 (draft: scatter bracketed 0-6 with canonical levels 0/3/6 and intermediates 2/4 per valid range; rotation bracketed 0-6 deg with canonical levels 0/2/4 and extension to 6; opacity_falloff tested at scatter=0 and scatter=6 for independence from overlap density \u2014 sketchy profile is 2-pass by construction, no passes parameter exists; cross-factor confusion pairs use conflicting cues at extreme scatter vs canonical max rotation)",
+ "judges_target": 5,
+ "session_shape": {
+  "total_questions": 17,
+  "blocks": {
+   "anchor": 1,
+   "scatter_rank": 3,
+   "rotation_rank": 4,
+   "cross_confusion": 2,
+   "opacity_falloff": 4,
+   "catches": 3
+  },
+  "catch_positions_display_order": [
+   5,
+   10,
+   15
+  ]
+ },
+ "images_new": [
+  {
+   "file": "scat0_rot0",
+   "recipe": "build_svg(roles, clean, pass_scatter=0, pass_rotation=0)",
+   "params": {
+    "pass_scatter": 0,
+    "pass_rotation": 0
+   }
+  },
+  {
+   "file": "scat2_rot0",
+   "recipe": "build_svg(roles, clean, pass_scatter=2, pass_rotation=0)",
+   "params": {
+    "pass_scatter": 2,
+    "pass_rotation": 0
+   }
+  },
+  {
+   "file": "scat4_rot0",
+   "recipe": "build_svg(roles, clean, pass_scatter=4, pass_rotation=0)",
+   "params": {
+    "pass_scatter": 4,
+    "pass_rotation": 0
+   }
+  },
+  {
+   "file": "scat6_rot0",
+   "recipe": "build_svg(roles, clean, pass_scatter=6, pass_rotation=0)",
+   "params": {
+    "pass_scatter": 6,
+    "pass_rotation": 0
+   }
+  },
+  {
+   "file": "scat0_rot2",
+   "recipe": "build_svg(roles, clean, pass_scatter=0, pass_rotation=2)",
+   "params": {
+    "pass_scatter": 0,
+    "pass_rotation": 2
+   }
+  },
+  {
+   "file": "scat0_rot4",
+   "recipe": "build_svg(roles, clean, pass_scatter=0, pass_rotation=4)",
+   "params": {
+    "pass_scatter": 0,
+    "pass_rotation": 4
+   }
+  },
+  {
+   "file": "scat0_rot6",
+   "recipe": "build_svg(roles, clean, pass_scatter=0, pass_rotation=6)",
+   "params": {
+    "pass_scatter": 0,
+    "pass_rotation": 6
+   }
+  },
+  {
+   "file": "opf_e100_s0",
+   "recipe": "build_svg(roles, clean, pass_scatter=0, pass_rotation=0, opacity_falloff={start: 1.0, end: 1.0})",
+   "params": {
+    "pass_scatter": 0,
+    "pass_rotation": 0,
+    "opacity_falloff": {
+     "start": 1.0,
+     "end": 1.0
+    }
+   }
+  },
+  {
+   "file": "opf_e045_s0",
+   "recipe": "build_svg(roles, clean, pass_scatter=0, pass_rotation=0, opacity_falloff={start: 1.0, end: 0.45})",
+   "params": {
+    "pass_scatter": 0,
+    "pass_rotation": 0,
+    "opacity_falloff": {
+     "start": 1.0,
+     "end": 0.45
+    }
+   }
+  },
+  {
+   "file": "opf_e010_s0",
+   "recipe": "build_svg(roles, clean, pass_scatter=0, pass_rotation=0, opacity_falloff={start: 1.0, end: 0.10})",
+   "params": {
+    "pass_scatter": 0,
+    "pass_rotation": 0,
+    "opacity_falloff": {
+     "start": 1.0,
+     "end": 0.1
+    }
+   }
+  },
+  {
+   "file": "opf_e100_s6",
+   "recipe": "build_svg(roles, clean, pass_scatter=6, pass_rotation=0, opacity_falloff={start: 1.0, end: 1.0})",
+   "params": {
+    "pass_scatter": 6,
+    "pass_rotation": 0,
+    "opacity_falloff": {
+     "start": 1.0,
+     "end": 1.0
+    }
+   }
+  },
+  {
+   "file": "opf_e045_s6",
+   "recipe": "build_svg(roles, clean, pass_scatter=6, pass_rotation=0, opacity_falloff={start: 1.0, end: 0.45})",
+   "params": {
+    "pass_scatter": 6,
+    "pass_rotation": 0,
+    "opacity_falloff": {
+     "start": 1.0,
+     "end": 0.45
+    }
+   }
+  },
+  {
+   "file": "opf_e010_s6",
+   "recipe": "build_svg(roles, clean, pass_scatter=6, pass_rotation=0, opacity_falloff={start: 1.0, end: 0.10})",
+   "params": {
+    "pass_scatter": 6,
+    "pass_rotation": 0,
+    "opacity_falloff": {
+     "start": 1.0,
+     "end": 0.1
+    }
+   }
+  }
+ ],
+ "questions": [
+  {
+   "id": "b5a",
+   "kind": "anchor",
+   "dimension": "scatter",
+   "prompt": "which linework has more scattered marks?",
+   "left": "scat0_rot0.png",
+   "right": "scat6_rot0.png",
+   "gt": "right",
+   "scored": false,
+   "note": "warm-up, extreme scatter delta (0 vs 6), not scored"
+  },
+  {
+   "id": "b5s1",
+   "kind": "pair",
+   "dimension": "scatter",
+   "prompt": "which linework has more scattered marks?",
+   "left": "scat0_rot0.png",
+   "right": "scat2_rot0.png",
+   "gt": "right",
+   "scored": true,
+   "note": "scatter floor probe, delta=2, rotation fixed at 0"
+  },
+  {
+   "id": "b5s2",
+   "kind": "pair",
+   "dimension": "scatter",
+   "prompt": "which linework has more scattered marks?",
+   "left": "scat2_rot0.png",
+   "right": "scat4_rot0.png",
+   "gt": "right",
+   "scored": true,
+   "note": "scatter mid-range, delta=2, rotation fixed at 0"
+  },
+  {
+   "id": "b5s3",
+   "kind": "pair",
+   "dimension": "scatter",
+   "prompt": "which linework has more scattered marks?",
+   "left": "scat4_rot0.png",
+   "right": "scat6_rot0.png",
+   "gt": "right",
+   "scored": true,
+   "note": "scatter high-end, delta=2, rotation fixed at 0"
+  },
+  {
+   "id": "b5r1",
+   "kind": "pair",
+   "dimension": "rotation",
+   "prompt": "which linework has more rotated marks?",
+   "left": "scat0_rot0.png",
+   "right": "scat0_rot6.png",
+   "gt": "right",
+   "scored": true,
+   "note": "rotation extreme, delta=6 deg, scatter fixed at 0"
+  },
+  {
+   "id": "b5r2",
+   "kind": "pair",
+   "dimension": "rotation",
+   "prompt": "which linework has more rotated marks?",
+   "left": "scat0_rot0.png",
+   "right": "scat0_rot2.png",
+   "gt": "right",
+   "scored": true,
+   "note": "rotation floor probe, delta=2 deg, scatter fixed at 0"
+  },
+  {
+   "id": "b5r3",
+   "kind": "pair",
+   "dimension": "rotation",
+   "prompt": "which linework has more rotated marks?",
+   "left": "scat0_rot2.png",
+   "right": "scat0_rot4.png",
+   "gt": "right",
+   "scored": true,
+   "note": "rotation mid-range, delta=2 deg, scatter fixed at 0"
+  },
+  {
+   "id": "b5r4",
+   "kind": "pair",
+   "dimension": "rotation",
+   "prompt": "which linework has more rotated marks?",
+   "left": "scat0_rot4.png",
+   "right": "scat0_rot6.png",
+   "gt": "right",
+   "scored": true,
+   "note": "rotation high-end, delta=2 deg, scatter fixed at 0"
+  },
+  {
+   "id": "b5x1",
+   "kind": "pair",
+   "dimension": "scatter",
+   "prompt": "which linework has more scattered marks?",
+   "left": "scat6_rot0.png",
+   "right": "scat0_rot4.png",
+   "gt": "left",
+   "scored": true,
+   "note": "cross-factor confusion test: high scatter + no rotation vs no scatter + 4 deg rotation; if judges pick right they are reading rotation as scatter"
+  },
+  {
+   "id": "b5x2",
+   "kind": "pair",
+   "dimension": "rotation",
+   "prompt": "which linework has more rotated marks?",
+   "left": "scat6_rot0.png",
+   "right": "scat0_rot4.png",
+   "gt": "right",
+   "scored": true,
+   "note": "cross-factor confusion test: same stimuli as b5x1 but asked about rotation; if judges pick left they are reading scatter as rotation"
+  },
+  {
+   "id": "b5o1",
+   "kind": "pair",
+   "dimension": "opacity_falloff",
+   "prompt": "which linework looks more faded?",
+   "left": "opf_e100_s0.png",
+   "right": "opf_e010_s0.png",
+   "gt": "right",
+   "scored": true,
+   "note": "opacity_falloff extreme at scatter=0, end delta=0.90 (end=1.0 vs end=0.10), tests fading detection at low overlap density"
+  },
+  {
+   "id": "b5o2",
+   "kind": "pair",
+   "dimension": "opacity_falloff",
+   "prompt": "which linework looks more faded?",
+   "left": "opf_e100_s0.png",
+   "right": "opf_e045_s0.png",
+   "gt": "right",
+   "scored": true,
+   "note": "opacity_falloff moderate at scatter=0, end delta=0.55 (end=1.0 vs end=0.45), JND probe at low overlap density"
+  },
+  {
+   "id": "b5o3",
+   "kind": "pair",
+   "dimension": "opacity_falloff",
+   "prompt": "which linework looks more faded?",
+   "left": "opf_e100_s6.png",
+   "right": "opf_e010_s6.png",
+   "gt": "right",
+   "scored": true,
+   "note": "opacity_falloff extreme at scatter=6, end delta=0.90 (end=1.0 vs end=0.10), tests fading detection at high overlap density"
+  },
+  {
+   "id": "b5o4",
+   "kind": "pair",
+   "dimension": "opacity_falloff",
+   "prompt": "which linework looks more faded?",
+   "left": "opf_e045_s6.png",
+   "right": "opf_e010_s6.png",
+   "gt": "right",
+   "scored": true,
+   "note": "opacity_falloff fine step at scatter=6, end delta=0.35 (end=0.45 vs end=0.10), JND probe at high overlap density; agreement compared to b5o2 for independence"
+  }
+ ],
+ "catches": [
+  {
+   "id": "b5c1",
+   "image": "scat0_rot0.png",
+   "position": 5,
+   "prompt": "which linework has more scattered marks?",
+   "dimension": "scatter",
+   "left": "scat0_rot0.png",
+   "right": "scat0_rot0.png"
+  },
+  {
+   "id": "b5c2",
+   "image": "scat0_rot0.png",
+   "position": 10,
+   "prompt": "which linework has more rotated marks?",
+   "dimension": "rotation",
+   "left": "scat0_rot0.png",
+   "right": "scat0_rot0.png"
+  },
+  {
+   "id": "b5c3",
+   "image": "opf_e100_s0.png",
+   "position": 15,
+   "prompt": "which linework looks more faded?",
+   "dimension": "opacity_falloff",
+   "left": "opf_e100_s0.png",
+   "right": "opf_e100_s0.png"
+  }
+ ],
+ "pass_criteria": {
+  "scatter": {
+   "anchor_pass": "5/5 judges correct on b5a (0 vs 6, extreme delta) \u2014 validates substrate",
+   "ranking": ">=4/5 judges correct on each of b5s1, b5s2, b5s3 \u2014 scatter is reliably rankable at fixed rotation",
+   "floor": "if b5s1 (0v2, delta=2) fails but b5s2 (2v4, delta=2) passes, delta=2 is detectable at mid-range but not from zero scatter"
+  },
+  "rotation": {
+   "ranking": ">=4/5 judges correct on each of b5r1, b5r2, b5r3, b5r4 \u2014 rotation is reliably rankable at fixed scatter",
+   "floor": "if b5r2 (0v2, delta=2 deg) fails but b5r3 (2v4, delta=2 deg) passes, delta=2 deg is detectable at mid-range but not from zero rotation"
+  },
+  "cross_factor": {
+   "scatter_question": ">=4/5 judges pick left (high-scatter side) on b5x1 \u2014 scatter does not read as rotation",
+   "rotation_question": ">=4/5 judges pick right (high-rotation side) on b5x2 \u2014 rotation does not read as scatter",
+   "verdict_rule": "both pass -> scatter and rotation are separable, independently judgeable; either fails -> cross-factor confusion above threshold, factors not separable at these deltas"
+  },
+  "opacity_falloff": {
+   "extreme": ">=4/5 correct on b5o1 (s0) and b5o3 (s6) \u2014 fading is detectable at both overlap densities",
+   "jnd": "b5o2 (end delta=0.55 at s0) and b5o4 (end delta=0.35 at s6) agreement gives the JND; if both fail, JND is above 0.55 end delta",
+   "independence": "agreement on b5o1 vs b5o3 and b5o2 vs b5o4 within each other's bootstrap CIs -> opacity_falloff reads independently of overlap density; if s0 pairs pass but s6 pairs fail (or vice versa), opacity_falloff interacts with overlap density"
+  },
+  "general": "any scored pair with a 50/50 judge split is a stimulus failure, not human noise: regenerate at higher parameter delta in the next batch"
+ },
+ "adaptive_rules": {
+  "catch_fail": "a judge answering >1 catch pair with a side choice instead of 'no difference' is excluded from aggregates; recruit a replacement to hold n=5",
+  "scatter_fail": "if 0v2 fails but 2v4 passes, floor is between scatter=0 and scatter=2 at delta=2: next batch probes 0v3 and 1v3",
+  "rotation_fail": "if 0v2 fails but 2v4 passes, floor is between 0 and 2 deg at delta=2: next batch probes 0v3 and 1v3",
+  "cross_factor_fail": "if b5x1 fails (judges pick high-rotation side for scatter question), scatter and rotation are confounded at these deltas: next batch tests scat6 vs rot2 (reducing rotation cue) to isolate confound; if still fails, factors collapse to composite",
+  "opacity_fail": "if end=1.0 vs end=0.45 (delta=0.55) fails but end=1.0 vs end=0.10 (delta=0.90) passes, JND is between 0.55 and 0.90 end delta: next batch probes end=0.70 and end=0.25",
+  "opacity_independence_fail": "if s0 pairs pass but s6 pairs fail, opacity_falloff interacts with overlap density: next batch tests at scatter=3 and with explicit overlap density control",
+  "stimulus_fail": "50/50 splits get regenerated at higher contrast next batch and logged as stimulus-quality data",
+  "convergence": "two consecutive batches with agreement values inside each other's bootstrap CIs at target n ends the loop for that dimension; the plateau is the metric's honest ceiling"
+ },
+ "registry_consequences": {
+  "scatter_pass": "scatter -> validated as independent mark-making axis (mark_scatter)",
+  "rotation_pass": "rotation -> validated as independent mark-making axis (mark_rotation)",
+  "cross_factor_pass": "scatter and rotation -> validated as separable, independently judgeable; both promoted to own axes",
+  "cross_factor_fail": "scatter and rotation -> collapsed into composite mark_making factor with evidence",
+  "opacity_pass": "opacity_falloff -> validated as fading axis, independent of overlap density (opacity_fade)",
+  "opacity_independence_fail": "opacity_falloff -> validated as fading but interacts with overlap density; flagged with interaction term",
+  "opacity_fail": "opacity_falloff -> stays measurable, JND work queued"
+ }
+}
