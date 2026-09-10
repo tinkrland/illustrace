@@ -1,0 +1,242 @@
+{
+  "batch": "batch_3",
+  "version": 3,
+  "date_preregistered": "2026-09-12",
+  "goal": "bracket the line width JND and test perceptual nonlinearity (5v7 hard, 3v9 easy); check whether taper direction (toward tip vs away) interacts with perceived hand-drawnness",
+  "scientist_session": "glm-5.2 via nebius token factory, 2026-09-12 (draft critique: width delta=2 fine-steps placed at low/mid/high range to test nonlinearity directly; taper direction requires new away-from-tip renders at 0.3 and 0.6; magnitude-conflict pairs added to test direction vs magnitude dominance on hand-drawnness)",
+  "judges_target": 5,
+  "session_shape": {
+    "total_questions": 16,
+    "blocks": {
+      "anchor": 1,
+      "width_jnd": 6,
+      "taper_direction": 6,
+      "catches": 3
+    },
+    "catch_positions_display_order": [
+      4,
+      9,
+      14
+    ]
+  },
+  "images_new": [
+    {
+      "file": "fid2_taper_away30",
+      "recipe": "build_svg(roles, clean, tapered=True, taper_dir=away) + render taper=0.3",
+      "params": {
+        "taper": 0.3,
+        "taper_dir": "away"
+      }
+    },
+    {
+      "file": "fid2_taper_away60",
+      "recipe": "build_svg(roles, clean, tapered=True, taper_dir=away) + render taper=0.6",
+      "params": {
+        "taper": 0.6,
+        "taper_dir": "away"
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "b3a",
+      "kind": "anchor",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "fid2_width3.png",
+      "right": "fid2_width9.png",
+      "gt": "right",
+      "scored": false,
+      "note": "warm-up, extreme width delta=6, not scored"
+    },
+    {
+      "id": "b3w1",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "fid2_width3.png",
+      "right": "fid2_width5.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=2, low end; fine step where signal expected strong per pilot agreement=1.0"
+    },
+    {
+      "id": "b3w2",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "fid2_width5.png",
+      "right": "fid2_width7.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=2, mid range; KEY TEST \u2014 hypothesis predicts judges cannot distinguish 5v7"
+    },
+    {
+      "id": "b3w3",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "fid2_width7.png",
+      "right": "fid2_width9.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=2, high end; fine step, pairs with b3w1 and b3w2 to test nonlinearity"
+    },
+    {
+      "id": "b3w4",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "fid2_width3.png",
+      "right": "fid2_width7.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=4, low-mid bridge; coarser step to confirm JND is below 4"
+    },
+    {
+      "id": "b3w5",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "fid2_width5.png",
+      "right": "fid2_width9.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=4, mid-high bridge; coarser step to confirm JND is below 4"
+    },
+    {
+      "id": "b3w6",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "fid2_width3.png",
+      "right": "fid2_width9.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=6, extreme; scored validation that judges separate 3v9 as hypothesis predicts"
+    },
+    {
+      "id": "b3t1",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "fid2_taper30.png",
+      "right": "fid2_taper_away30.png",
+      "gt": "left",
+      "scored": true,
+      "note": "same magnitude 0.3, direction effect: toward-tip vs away-from-tip; hypothesis: toward = more hand-drawn"
+    },
+    {
+      "id": "b3t2",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "fid2_taper60.png",
+      "right": "fid2_taper_away60.png",
+      "gt": "left",
+      "scored": true,
+      "note": "same magnitude 0.6, direction effect at high taper; hypothesis: toward = more hand-drawn"
+    },
+    {
+      "id": "b3t3",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "fid2_taper15.png",
+      "right": "fid2_taper_away30.png",
+      "gt": "left",
+      "scored": true,
+      "note": "direction vs magnitude conflict: toward-low 0.15 vs away-mid 0.3; tests whether direction or magnitude dominates hand-drawnness perception"
+    },
+    {
+      "id": "b3t4",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "fid2_taper60.png",
+      "right": "fid2_taper_away30.png",
+      "gt": "left",
+      "scored": true,
+      "note": "direction and magnitude aligned: toward-high 0.6 vs away-mid 0.3; both cues favor left, expected easy pass"
+    },
+    {
+      "id": "b3t5",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework has more taper?",
+      "left": "fid2_taper30.png",
+      "right": "fid2_taper60.png",
+      "gt": "right",
+      "scored": true,
+      "note": "taper magnitude discrimination control; validates judges can perceive taper amount before interpreting direction results"
+    },
+    {
+      "id": "b3t6",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "fid2_taper15.png",
+      "right": "fid2_taper_away60.png",
+      "gt": "left",
+      "scored": true,
+      "note": "extreme direction vs magnitude conflict: toward-low 0.15 vs away-high 0.6; if judges pick right, magnitude fully dominates direction"
+    }
+  ],
+  "catches": [
+    {
+      "id": "b3c1",
+      "image": "fid2_width5.png",
+      "position": 4,
+      "prompt": "which linework feels heavier / thicker?",
+      "dimension": "line_weight"
+    },
+    {
+      "id": "b3c2",
+      "image": "fid2_taper30.png",
+      "position": 9,
+      "prompt": "which linework feels more hand-drawn?",
+      "dimension": "taper"
+    },
+    {
+      "id": "b3c3",
+      "image": "grain_8.png",
+      "position": 14,
+      "prompt": "which image feels more textured / grainy?",
+      "dimension": "texture"
+    }
+  ],
+  "pass_criteria": {
+    "width": {
+      "extreme_pass": ">=4/5 judges correct on b3w6 (3v9, delta=6) \u2014 validates substrate; failing this invalidates the session",
+      "jnd_bracket": "lowest delta=2 pair with >=4/5 agreement gives the JND floor; if b3w2 (5v7) fails while b3w1 (3v5) and b3w3 (7v9) pass, nonlinearity confirmed \u2014 JND is position-dependent",
+      "nonlinearity_test": "b3w2 agreement < b3w1 agreement AND b3w2 agreement < b3w3 agreement -> perceptual nonlinearity confirmed; if all delta=2 pairs pass, JND is uniformly below 2 and linearity holds",
+      "bridge_pass": ">=4/5 correct on b3w4 and b3w5 (delta=4) -> JND is below 4 across the range; if any delta=4 pair fails, regenerate at delta=6 next batch",
+      "verdict_rule": "extreme_pass + nonlinearity_test -> line_weight validated with position-dependent JND; extreme_pass + linearity -> line_weight validated with uniform JND; extreme_fail -> substrate failure, regenerate stimuli"
+    },
+    "taper_direction": {
+      "magnitude_control": ">=4/5 correct on b3t5 -> judges can discriminate taper magnitude; failing this invalidates taper direction results",
+      "direction_pass": ">=4/5 judges select toward-tip side on b3t1 and b3t2 -> taper direction affects perceived hand-drawnness",
+      "conflict_resolution": "b3t3 (toward-low vs away-mid): if >=4/5 select toward, direction dominates; if >=4/5 select away, magnitude dominates; 2/3 split -> both cues matter, interaction confirmed",
+      "extreme_conflict": "b3t6 (toward-low vs away-high): if judges select away, magnitude fully dominates direction; if toward, direction is robust even under extreme magnitude conflict",
+      "verdict_rule": "direction_pass + magnitude_control -> taper direction promoted to hand-drawnness axis; direction_pass + magnitude_dominates on b3t3/b3t6 -> direction is secondary cue, magnitude primary; direction_fail -> taper direction does not affect hand-drawnness, taper is magnitude-only"
+    },
+    "general": "any scored pair with a 50/50 judge split is a stimulus failure, not human noise: regenerate at higher parameter delta in the next batch"
+  },
+  "adaptive_rules": {
+    "catch_fail": "a judge answering >1 catch pair with a side choice instead of 'no difference' is excluded from aggregates; recruit a replacement to hold n=5",
+    "width_fail": "if 5v7 fails but 3v5 and 7v9 pass: nonlinearity confirmed, next batch probes 4v6 and 6v8 to map the nonlinear region; if all delta=2 pass: next batch probes delta=1 (3v4, 5v6, 7v8) to tighten the JND",
+    "taper_direction_fail": "if b3t1 and b3t2 fail (judges don't distinguish direction): taper direction does not affect hand-drawnness, drop from registry; if b3t1 passes but b3t2 fails: direction effect is magnitude-dependent, next batch probes at taper=0.15 toward vs away",
+    "taper_magnitude_dominates": "if b3t3 and b3t6 both select away side: magnitude fully dominates, direction is noise on hand-drawnness; if b3t3 selects toward but b3t6 selects away: direction dominates at small magnitude gaps, magnitude at large gaps",
+    "stimulus_fail": "50/50 splits get regenerated at higher contrast next batch and logged as stimulus-quality data",
+    "convergence": "two consecutive batches with agreement values inside each other's bootstrap CIs at target n ends the loop for that dimension; the plateau is the metric's honest ceiling"
+  },
+  "registry_consequences": {
+    "width_nonlinear_pass": "line_weight -> validated with position-dependent JND, nonlinearity recorded as perceptual property",
+    "width_linear_pass": "line_weight -> validated with uniform JND at delta<=2",
+    "width_fail": "line_weight -> stays measurable, JND work queued with finer steps",
+    "taper_direction_pass": "taper -> promoted with direction component on hand-drawnness axis, controllable_track",
+    "taper_direction_magnitude_dominates": "taper -> direction is secondary cue, magnitude primary; direction recorded as modifier",
+    "taper_direction_fail": "taper -> magnitude-only, direction does not affect hand-drawnness; stays on existing axis",
+    "taper_magnitude_control_fail": "taper -> discriminability not established, results from b3t1-b3t4 invalidated, re-queue taper magnitude work"
+  }
+}
