@@ -45,3 +45,58 @@ queryable control plane (GET /runs?experiment=measurability_v0 etc).
 
 note: metadata key expires 2026-09-15 — renew from settings > metadata api when it does;
 the *runtime* endpoints (api:o_C6f1ff) are public and don't need it.
+
+---
+
+# judgments provisioning — DONE (2026-09-10)
+
+## what exists now (added)
+
+table: **`judgments`** (id 26, workspace 1, branch v1) — human judgment records
+from the style-survey app:
+
+| field | type | notes |
+|---|---|---|
+| id, created_at | int, timestamp | auto |
+| judge_id | text | judge identifier or "anonymous" |
+| dimension | text | style dimension under test (roughness, texture, ...) |
+| stimulus_a_id / stimulus_b_id | text | left / right stimulus filenames |
+| chosen | text | chosen stimulus filename |
+| confidence | text | self-reported confidence label |
+| is_catch_pair | bool | identical-image catch trial (q04, q07) |
+| noise_flag | bool | flagged inconsistent/noisy response |
+| reaction_ms | int | reaction time |
+| session_id | text | survey session identifier |
+| question_id | text | survey question id (q01..) |
+| raw | json | full original answer payload |
+
+endpoint (group stylebench, id 42):
+- `POST /api:o_C6f1ff/judgments` — insert a judgment record, returns it with id.
+  created via the metadata api `POST /api:meta/workspace/1/apigroup/9/api` with
+  `text/x-xanoscript` (real xanoscript: `query <name> verb=POST { input {...} stack { db.add <table> { data = {...} } as $record } response = $record }`).
+  xanoscript syntax reference: docs.xano.com/xanoscript/function-reference/database-operations
+
+synced: 12 pilot judgment records (session anonymous_1788981271664) via the
+metadata bulk-content endpoint (`items` array, not `records`).
+
+## pipeline
+
+- `survey/index.html` — "send to stylebench" button posts each answer
+  directly to the endpoint (local-first; downloads unchanged). cors on the
+  group already allows any origin incl. `null` (file:// pages).
+- `scripts/sync_judgments.py` — idempotent repo-side sync of any processed
+  session not yet in the table (skips by session_id).
+- `survey/ingest.py` still validates + scores locally; the ingest sweep
+  workflow remains the local ledger of record. xano mirrors it.
+
+## gotchas learned this round
+
+- `api.xano.com` still does not resolve in the sandbox; the instance host
+  `https://xpnx-e4ie-cfuf.z7.xano.io/api:meta/...` serves the full metadata
+  api (spec at `/apispec:meta?type=json&token=<token>` — has *everything*:
+  tables, bulk content, endpoint create via xanoscript, branches, releases).
+- bulk insert body key is `items`, not `records`.
+- xanoscript input fields take no inline defaults (`text judge_id = ""` is a
+  syntax error; just `text judge_id`).
+- `db.add <table> { data = { col: $input.x } } as $var` is the real insert
+  form (`db.insert` does not exist).

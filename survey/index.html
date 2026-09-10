@@ -293,6 +293,7 @@
     <div class="done-actions">
       <button class="btn btn-primary" onclick="downloadJSON()">download JSON</button>
       <button class="btn btn-secondary" onclick="downloadCSV()">download CSV</button>
+      <button class="btn btn-primary" onclick="submitToStylebench(this)">send to stylebench</button>
     </div>
   </div>
 </div>
@@ -546,6 +547,50 @@ function buildResults() {
     completed_at:  completedAt,
     answers:       answers,
   };
+}
+
+// ── stylebench control plane (xano) ───────────────────────────────
+// posts each answer as a judgment record to the stylebench api group.
+// local-first: downloads stay available; this is opt-in.
+const JUDGMENTS_ENDPOINT = "https://xpnx-e4ie-cfuf.z7.xano.io/api:o_C6f1ff/judgments";
+const CATCH_QUESTIONS = new Set(["q04", "q07"]);
+
+async function submitToStylebench(btn) {
+  btn.disabled = true;
+  const original = btn.textContent;
+  const results = buildResults();
+  const sessionId = judgeId + "_" + Date.now();
+  let sent = 0, failed = 0;
+  for (const a of results.answers) {
+    const body = {
+      judge_id: results.judge_id,
+      dimension: a.dimension,
+      stimulus_a_id: a.left_file,
+      stimulus_b_id: a.right_file,
+      chosen: a.choice,
+      confidence: a.confidence ?? "",
+      is_catch_pair: CATCH_QUESTIONS.has(a.question_id),
+      noise_flag: false,
+      reaction_ms: a.elapsed_ms ?? 0,
+      session_id: sessionId,
+      question_id: a.question_id,
+      raw: a,
+    };
+    try {
+      const res = await fetch(JUDGMENTS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) sent++; else failed++;
+    } catch { failed++; }
+  }
+  btn.textContent = failed === 0
+    ? "\u2713 " + sent + " sent"
+    : "\u26a0 " + sent + " sent, " + failed + " failed (retry?)";
+  if (failed > 0) {
+    setTimeout(() => { btn.disabled = false; btn.textContent = original; }, 2500);
+  }
 }
 
 // ── download ─────────────────────────────────────────────────────
