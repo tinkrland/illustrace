@@ -183,8 +183,11 @@ react+vite, builds clean): same engine exported as a dependency-free
 canvas -> export svg -> import to figma -> plugin can re-bake from the
 imported vectors. per-stroke opacity is new vs the plugin; still flat
 fills, and strokes bake at pointer-up with no post-draw re-parametrize
-ui yet (the stroke records keep centerline+params, so it's a ui gap,
-not a data-model gap). runs anywhere vite does, no figma plan or
+ui yet — added 2026-09-10: an "edit strokes" mode (click a stroke,
+its centerline highlights, sliders re-bake it in place from the stored
+centerline; draw mode untouched). the web version is now as
+non-destructive as the plugin: every stroke keeps its centerline and
+recipe, and either can change at any time without touching the other. runs anywhere vite does, no figma plan or
 desktop app needed.
 
 figma plan note: the manifest declares `isTool: true` (agent-invocable
