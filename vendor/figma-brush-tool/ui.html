@@ -1,0 +1,260 @@
+<!doctype html>
+<html>
+<head>
+  <script>
+    try {
+      window.localStorage.getItem('x')
+    } catch (e) {
+      const store = new Map()
+      const shim = {
+        getItem: (k) => (store.has(k) ? store.get(k) : null),
+        setItem: (k, v) => {
+          store.set(k, String(v))
+        },
+        removeItem: (k) => {
+          store.delete(k)
+        },
+        clear: () => {
+          store.clear()
+        },
+        key: (i) => Array.from(store.keys())[i] ?? null,
+        get length() {
+          return store.size
+        },
+      }
+      Object.defineProperty(window, 'localStorage', { value: shim, configurable: true })
+    }
+  </script>
+  <style>
+    /* Panel shrink-wraps its content; code.ts resizes the iframe height from
+       the 'resize' messages posted below. Width is fixed by code.ts. */
+    html, body { margin: 0; padding: 0; height: auto; min-height: 0; }
+    #plugin-root { height: auto; }
+    body { display: block; }
+    body > #plugin-root > fig-footer {
+      background-color: var(--figma-color-bg);
+      border-radius: 0 0 var(--radius-large) var(--radius-large);
+    }
+    /* The propskit fill picker opens as a wider dialog; size it explicitly so
+       the resize observer can measure its full height. */
+    dialog.fig-fill-picker-dialog {
+      width: 300px;
+      max-width: 300px;
+      min-width: 300px;
+      max-height: none;
+      height: max-content;
+    }
+  </style>
+</head>
+<body>
+  <div id="plugin-root">
+    <fig-content>
+      <fig-group name="Brush">
+    <fig-field>
+      <label>Brush style</label>
+      <fig-options id="brush" options="Clean, Sketchy, Marker, Calligraphy, Tapered, Ink brush, Charcoal, Pencil, Felt tip" value="Sketchy"></fig-options>
+    </fig-field>
+    <fig-field>
+      <label>Stroke width</label>
+      <fig-slider id="width" type="range" min="1" max="40" step="0.5" units="px" value="5" text></fig-slider>
+    </fig-field>
+    <fig-field>
+      <label>Color</label>
+      <fig-input-color id="color" value="#262626FF" alpha="true" picker="figma-native"></fig-input-color>
+    </fig-field>
+      </fig-group>
+      <fig-group name="Advanced">
+    <fig-field>
+      <label>Variation seed</label>
+      <fig-input-number id="seed" value="42" step="1"></fig-input-number>
+    </fig-field>
+    <fig-field>
+      <label>Jitter override</label>
+      <fig-slider id="jitterOverride" type="range" min="-1" max="10" step="0.5" value="-1" text></fig-slider>
+    </fig-field>
+    <fig-field>
+      <label>Taper override</label>
+      <fig-slider id="taperOverride" type="range" min="-1" max="1" step="0.05" value="-1" text></fig-slider>
+    </fig-field>
+      </fig-group>
+    </fig-content>
+    <fig-footer sticky>
+      <label id="status-apply"></label>
+      <fig-button id="action-apply" type="submit" disabled>Apply brush</fig-button>
+    </fig-footer>
+  </div>
+  <script>
+    // Report the shrink-wrapped panel height back to code.ts so it can resize
+    // the iframe. A ResizeObserver covers content/control changes; a
+    // MutationObserver catches the fill picker dialog opening/closing.
+    let lastReportedHeight = 0
+    let resizeRaf = 0
+
+    function measurePanelHeight() {
+      const root = document.getElementById('plugin-root')
+      if (!root) return 0
+      let h = Math.ceil(root.getBoundingClientRect().height)
+      const openDialog = document.querySelector('dialog.fig-fill-picker-dialog[open]')
+      if (openDialog) h = Math.max(h, Math.ceil(openDialog.getBoundingClientRect().bottom))
+      return h
+    }
+
+    function reportHeight() {
+      const h = measurePanelHeight()
+      if (h && h !== lastReportedHeight) {
+        lastReportedHeight = h
+        parent.postMessage({ pluginMessage: { type: 'resize', height: h } }, '*')
+      }
+    }
+
+    const pluginRoot = document.getElementById('plugin-root')
+    if (pluginRoot && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(() => {
+        if (resizeRaf) cancelAnimationFrame(resizeRaf)
+        resizeRaf = requestAnimationFrame(reportHeight)
+      }).observe(pluginRoot)
+    }
+
+    new MutationObserver(() => {
+      if (resizeRaf) cancelAnimationFrame(resizeRaf)
+      resizeRaf = requestAnimationFrame(reportHeight)
+    }).observe(document.body, {
+      childList: true,
+      attributes: true,
+      attributeFilter: ['open'],
+      subtree: true,
+    })
+
+    function colorValue(id) {
+      const value = document.getElementById(id).value
+      const hex = String(value || '#000000FF').replace('#', '')
+      const read = (start, fallback) => {
+        const slice = hex.slice(start, start + 2)
+        const parsed = Number.parseInt(slice, 16)
+        return Number.isFinite(parsed) ? parsed / 255 : fallback
+      }
+      return { r: read(0, 0), g: read(2, 0), b: read(4, 0), a: hex.length >= 8 ? read(6, 1) : 1 }
+    }
+
+    function colorToHex(value) {
+      const color = typeof value === 'object' && value !== null ? value : {}
+      const channel = (component, fallback) => {
+        const numeric = Number(component)
+        return Math.round(Math.max(0, Math.min(1, Number.isFinite(numeric) ? numeric : fallback)) * 255)
+          .toString(16)
+          .padStart(2, '0')
+          .toUpperCase()
+      }
+      return '#' + channel(color.r, 0) + channel(color.g, 0) + channel(color.b, 0) + channel(color.a, 1)
+    }
+
+    function gradientToControlValueJson(value) {
+      const g = typeof value === 'object' && value !== null ? value : {}
+      const stops = Array.isArray(g.stops) ? g.stops : []
+      const pct = (n) => Math.round(Math.max(0, Math.min(1, Number(n))) * 100)
+      return JSON.stringify({
+        type: 'gradient',
+        gradient: {
+          type: g.type || 'linear',
+          angle: Number.isFinite(Number(g.angle)) ? Number(g.angle) : 0,
+          stops: stops.map((s) => ({
+            position: pct(s.position),
+            color: colorToHex(s.color).slice(0, 7),
+            opacity: pct(s.color && s.color.a),
+          })),
+        },
+      })
+    }
+
+    function hasParam(values, name) {
+      return Object.prototype.hasOwnProperty.call(values, name)
+    }
+
+    function setControlValue(id, value) {
+      const input = document.getElementById(id)
+      if (!input) return
+      const next = String(value)
+      input.value = next
+      input.setAttribute('value', next)
+    }
+
+    function setControlChecked(id, value) {
+      const input = document.getElementById(id)
+      if (!input) return
+      input.checked = Boolean(value)
+      if (input.checked) {
+        input.setAttribute('checked', '')
+      } else {
+        input.removeAttribute('checked')
+      }
+    }
+
+    function setPanelParams(values) {
+      if (typeof values !== 'object' || values === null) return
+      if (hasParam(values, "brush")) setControlValue("brush", values.brush)
+      if (hasParam(values, "width")) setControlValue("width", values.width)
+      if (hasParam(values, "color")) setControlValue("color", colorToHex(values.color))
+      if (hasParam(values, "seed")) setControlValue("seed", values.seed)
+      if (hasParam(values, "jitterOverride")) setControlValue("jitterOverride", values.jitterOverride)
+      if (hasParam(values, "taperOverride")) setControlValue("taperOverride", values.taperOverride)
+    }
+
+    function currentParams() {
+      return {
+        brush: String(document.getElementById('brush').value),
+        width: Number(document.getElementById('width').value),
+        color: colorValue('color'),
+        seed: Number(document.getElementById('seed').value),
+        jitterOverride: Number(document.getElementById('jitterOverride').value),
+        taperOverride: Number(document.getElementById('taperOverride').value),
+      }
+    }
+    document.getElementById('action-apply').addEventListener('click', () => {
+      parent.postMessage({ pluginMessage: { type: 'action', id: "apply", params: currentParams() } }, '*')
+    })
+
+    function postParamsChange(changed) {
+      parent.postMessage({ pluginMessage: { type: 'params-change', params: currentParams(), changed: changed } }, '*')
+    }
+
+    document.getElementById("brush").addEventListener('change', () => postParamsChange("brush"))
+    document.getElementById("width").addEventListener('change', () => postParamsChange("width"))
+    document.getElementById("color").addEventListener('input', () => postParamsChange("color"))
+    document.getElementById("color").addEventListener('change', () => postParamsChange("color"))
+    document.getElementById("seed").addEventListener('change', () => postParamsChange("seed"))
+    document.getElementById("jitterOverride").addEventListener('change', () => postParamsChange("jitterOverride"))
+    document.getElementById("taperOverride").addEventListener('change', () => postParamsChange("taperOverride"))
+
+    window.onmessage = (event) => {
+      const msg = event.data && event.data.pluginMessage
+      if (!msg) return
+      if (msg.type === 'params-change') {
+        setPanelParams(msg.params)
+        return
+      }
+    }
+
+
+    // code.ts pushes per-action enabled state, button label, and status here on
+    // every selection change. addEventListener (not window.onmessage) so this
+    // coexists with the spatial/restore message handler.
+    window.addEventListener('message', (event) => {
+      const msg = event.data && event.data.pluginMessage
+      if (!msg || msg.type !== 'action-state' || !msg.actions) return
+      {
+        const a = msg.actions["apply"]
+        const button = document.getElementById('action-apply')
+        if (a && button) {
+          if (a.enabled === false) button.setAttribute('disabled', '')
+          else button.removeAttribute('disabled')
+          if (typeof a.label === 'string') button.textContent = a.label
+        }
+        const status = document.getElementById('status-apply')
+        if (a && status && typeof a.status === 'string') status.textContent = a.status
+      }
+    })
+
+  </script>
+  <!-- Values are restored by code.ts before figma.showUI paints. -->
+</body>
+</html>

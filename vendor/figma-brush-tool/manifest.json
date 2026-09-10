@@ -1,0 +1,18 @@
+{
+  "name": "Brush strokes",
+  "id": "4b4bc9f4-6fda-4d68-bd35-49d3940e47ce",
+  "api": "1.0.0",
+  "main": "code.js",
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "isTool": true,
+  "relaunchButtons": [
+    {
+      "command": "4b4bc9f4-6fda-4d68-bd35-49d3940e47ce",
+      "name": "Brush strokes"
+    }
+  ],
+  "ui": "ui.html"
+}
