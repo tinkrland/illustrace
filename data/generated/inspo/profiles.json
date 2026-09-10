@@ -1,0 +1,1667 @@
+{
+ "n": 24,
+ "profiles": [
+  {
+   "file": "ref_01.webp",
+   "size": [
+    1504,
+    1128
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#603428",
+      "#c5664b",
+      "#964a34",
+      "#f58743",
+      "#3f1b12",
+      "#f2b891"
+     ],
+     "value_range": 171.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.87,
+     "width_cv": 0.91,
+     "axis_deg": 88.8,
+     "axis_concentration": 0.261,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 42.78,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.993,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 227.436,
+     "boundary_entropy": 0.993,
+     "ink_coverage": 0.23,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_02.png",
+   "size": [
+    736,
+    1004
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fefefe",
+      "#62637e",
+      "#2a2d49",
+      "#c7c7cd",
+      "#a8a6b3",
+      "#e4e4e7"
+     ],
+     "value_range": 212.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.26,
+     "width_cv": 1.114,
+     "axis_deg": 90.7,
+     "axis_concentration": 0.323,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 16.23,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.981,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 117.6,
+     "boundary_entropy": 0.981,
+     "ink_coverage": 0.147,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_03.png",
+   "size": [
+    735,
+    805
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fff4d8",
+      "#946f66",
+      "#513647",
+      "#d5bdb3",
+      "#caa885",
+      "#fff5e4"
+     ],
+     "value_range": 189.5,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 5.12,
+     "width_cv": 1.752,
+     "axis_deg": 91.3,
+     "axis_concentration": 0.268,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 15.84,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.994,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 31.396,
+     "boundary_entropy": 0.994,
+     "ink_coverage": 0.129,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_04.png",
+   "size": [
+    724,
+    1024
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c3a6a8",
+      "#da7e8c",
+      "#edd5d6",
+      "#6f433f",
+      "#9e716e",
+      "#c3d3fd"
+     ],
+     "value_range": 156.6,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.75,
+     "width_cv": 0.763,
+     "axis_deg": 88.9,
+     "axis_concentration": 0.35,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 20.08,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.977,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 81.429,
+     "boundary_entropy": 0.977,
+     "ink_coverage": 0.05,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_05.png",
+   "size": [
+    674,
+    1024
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#697233",
+      "#0e2724",
+      "#9c8c3f",
+      "#181d0d",
+      "#323a1b",
+      "#eed9c4"
+     ],
+     "value_range": 142.2,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 20.27,
+     "width_cv": 0.938,
+     "axis_deg": 92.2,
+     "axis_concentration": 0.383,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 12.96,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.971,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 45.616,
+     "boundary_entropy": 0.971,
+     "ink_coverage": 0.476,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_06.png",
+   "size": [
+    700,
+    392
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c6bba3",
+      "#fdf8df",
+      "#a99b5e",
+      "#7a7866",
+      "#4a3d2d",
+      "#ece5ce"
+     ],
+     "value_range": 191.6,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.69,
+     "width_cv": 1.166,
+     "axis_deg": 98.0,
+     "axis_concentration": 0.334,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 16.09,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.974,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 46.378,
+     "boundary_entropy": 0.974,
+     "ink_coverage": 0.084,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_07.png",
+   "size": [
+    735,
+    245
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#5f30a1",
+      "#140943",
+      "#33237f",
+      "#111763",
+      "#7669c9",
+      "#e0be90"
+     ],
+     "value_range": 124.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 5.83,
+     "width_cv": 0.732,
+     "axis_deg": 179.3,
+     "axis_concentration": 0.479,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 21.11,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.93,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 48.114,
+     "boundary_entropy": 0.93,
+     "ink_coverage": 0.114,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_08.png",
+   "size": [
+    697,
+    1024
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c7d7ef",
+      "#e0c094",
+      "#777294",
+      "#fcf9e1",
+      "#6b3144",
+      "#a3a637"
+     ],
+     "value_range": 191.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.58,
+     "width_cv": 0.404,
+     "axis_deg": 179.3,
+     "axis_concentration": 0.265,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 20.9,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.993,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 137.016,
+     "boundary_entropy": 0.993,
+     "ink_coverage": 0.05,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_09.jpeg",
+   "size": [
+    736,
+    736
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c0c2d3",
+      "#a99570",
+      "#f6ecea",
+      "#727757",
+      "#c8b586",
+      "#f1dbbd"
+     ],
+     "value_range": 137.5,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.0,
+     "width_cv": 0.0,
+     "axis_deg": 87.8,
+     "axis_concentration": 0.226,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 17.21,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.998,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 12.728,
+     "boundary_entropy": 0.998,
+     "ink_coverage": 0.0,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_10.jpeg",
+   "size": [
+    736,
+    737
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#528c8c",
+      "#89b3b6",
+      "#b6d3d1",
+      "#f2f4df",
+      "#2e3518",
+      "#535d49"
+     ],
+     "value_range": 206.3,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.39,
+     "width_cv": 0.809,
+     "axis_deg": 178.8,
+     "axis_concentration": 0.269,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 33.19,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.993,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 112.206,
+     "boundary_entropy": 0.993,
+     "ink_coverage": 0.155,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_11.jpeg",
+   "size": [
+    736,
+    736
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#d2bf6f",
+      "#987a3b",
+      "#bf7367",
+      "#f2d5c0",
+      "#ecf1f9",
+      "#63531c"
+     ],
+     "value_range": 162.8,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 4.29,
+     "width_cv": 0.938,
+     "axis_deg": 90.3,
+     "axis_concentration": 0.303,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 14.06,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.987,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 42.694,
+     "boundary_entropy": 0.987,
+     "ink_coverage": 0.025,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_12.jpeg",
+   "size": [
+    640,
+    640
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#bf9d4c",
+      "#183c52",
+      "#2e281f",
+      "#8c642c",
+      "#2d5167",
+      "#f0c1b4"
+     ],
+     "value_range": 166.8,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 6.21,
+     "width_cv": 2.199,
+     "axis_deg": 179.1,
+     "axis_concentration": 0.266,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 22.86,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.995,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 63.359,
+     "boundary_entropy": 0.995,
+     "ink_coverage": 0.267,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_13.jpeg",
+   "size": [
+    735,
+    588
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fffefe",
+      "#afadbf",
+      "#5f6d3a",
+      "#363d29",
+      "#edac90",
+      "#a29960"
+     ],
+     "value_range": 204.7,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.95,
+     "width_cv": 1.448,
+     "axis_deg": 172.0,
+     "axis_concentration": 0.235,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 13.02,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.997,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 55.577,
+     "boundary_entropy": 0.997,
+     "ink_coverage": 0.159,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_14.jpg",
+   "size": [
+    725,
+    1024
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#5c682a",
+      "#a7b498",
+      "#314122",
+      "#f5ead6",
+      "#0c1a28",
+      "#8f954c"
+     ],
+     "value_range": 228.7,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 4.32,
+     "width_cv": 1.433,
+     "axis_deg": 106.8,
+     "axis_concentration": 0.22,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 18.77,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.999,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 97.759,
+     "boundary_entropy": 0.999,
+     "ink_coverage": 0.296,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_15.png",
+   "size": [
+    674,
+    1024
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#697233",
+      "#0e2724",
+      "#9c8c3f",
+      "#181d0d",
+      "#323a1b",
+      "#eed9c4"
+     ],
+     "value_range": 142.2,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 20.27,
+     "width_cv": 0.938,
+     "axis_deg": 92.2,
+     "axis_concentration": 0.383,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 12.96,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.971,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 45.616,
+     "boundary_entropy": 0.971,
+     "ink_coverage": 0.476,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_16.png",
+   "size": [
+    735,
+    1000
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#85c2be",
+      "#475768",
+      "#f2e1cc",
+      "#ab7271",
+      "#d29d97",
+      "#668993"
+     ],
+     "value_range": 161.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.37,
+     "width_cv": 0.82,
+     "axis_deg": 178.5,
+     "axis_concentration": 0.391,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 13.08,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.966,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 92.116,
+     "boundary_entropy": 0.966,
+     "ink_coverage": 0.072,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_17.png",
+   "size": [
+    724,
+    1024
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c3a6a8",
+      "#da7e8c",
+      "#edd5d6",
+      "#6f433f",
+      "#9e716e",
+      "#c3d3fd"
+     ],
+     "value_range": 156.6,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 3.75,
+     "width_cv": 0.763,
+     "axis_deg": 88.9,
+     "axis_concentration": 0.35,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 20.08,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.977,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 81.429,
+     "boundary_entropy": 0.977,
+     "ink_coverage": 0.05,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_18.png",
+   "size": [
+    735,
+    805
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fff4d8",
+      "#946f66",
+      "#513647",
+      "#d5bdb3",
+      "#caa885",
+      "#fff5e4"
+     ],
+     "value_range": 189.5,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 5.12,
+     "width_cv": 1.752,
+     "axis_deg": 91.3,
+     "axis_concentration": 0.268,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 15.84,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.994,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 31.396,
+     "boundary_entropy": 0.994,
+     "ink_coverage": 0.129,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_19.png",
+   "size": [
+    697,
+    1024
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#c7d7ef",
+      "#e0c094",
+      "#777294",
+      "#fcf9e1",
+      "#6b3144",
+      "#a3a637"
+     ],
+     "value_range": 191.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.58,
+     "width_cv": 0.404,
+     "axis_deg": 179.3,
+     "axis_concentration": 0.265,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 20.9,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.993,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 137.016,
+     "boundary_entropy": 0.993,
+     "ink_coverage": 0.05,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_20.png",
+   "size": [
+    680,
+    680
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fafbfb",
+      "#e5e5e2",
+      "#83877e",
+      "#f2b786",
+      "#b5bcb3",
+      "#25211c"
+     ],
+     "value_range": 212.1,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.17,
+     "width_cv": 0.322,
+     "axis_deg": 89.4,
+     "axis_concentration": 0.45,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 36.9,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.965,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 156.195,
+     "boundary_entropy": 0.965,
+     "ink_coverage": 0.074,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_21.png",
+   "size": [
+    736,
+    984
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fffefe",
+      "#bca598",
+      "#d7c9b7",
+      "#e9e6de",
+      "#7a7c6d",
+      "#1f1714"
+     ],
+     "value_range": 223.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.45,
+     "width_cv": 0.327,
+     "axis_deg": 89.0,
+     "axis_concentration": 0.422,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 38.4,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.953,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 195.257,
+     "boundary_entropy": 0.953,
+     "ink_coverage": 0.079,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_22.png",
+   "size": [
+    735,
+    1012
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fefefd",
+      "#b5b0b4",
+      "#e5dfdb",
+      "#f2d7ae",
+      "#87888f",
+      "#1a1515"
+     ],
+     "value_range": 240.8,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.98,
+     "width_cv": 0.354,
+     "axis_deg": 89.0,
+     "axis_concentration": 0.418,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 34.63,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.936,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 181.963,
+     "boundary_entropy": 0.936,
+     "ink_coverage": 0.09,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_23.png",
+   "size": [
+    736,
+    979
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fefefe",
+      "#98b69d",
+      "#cfc8b2",
+      "#dfe5e1",
+      "#72877a",
+      "#161914"
+     ],
+     "value_range": 222.0,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.62,
+     "width_cv": 0.352,
+     "axis_deg": 88.9,
+     "axis_concentration": 0.402,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 29.35,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.937,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 178.364,
+     "boundary_entropy": 0.937,
+     "ink_coverage": 0.073,
+     "take": "contour density proxies"
+    }
+   }
+  },
+  {
+   "file": "ref_24.png",
+   "size": [
+    736,
+    1016
+   ],
+   "components": {
+    "palette": {
+     "colors_hex": [
+      "#fbf8f5",
+      "#d2dad5",
+      "#bac1a8",
+      "#8e9684",
+      "#ebeae4",
+      "#21211a"
+     ],
+     "value_range": 186.4,
+     "take": "dominant k palette + value spread"
+    },
+    "stroke": {
+     "width_mean": 2.34,
+     "width_cv": 0.343,
+     "axis_deg": 85.6,
+     "axis_concentration": 0.255,
+     "take": "width profile + wobble (cv) + dominant axis"
+    },
+    "texture": {
+     "energy": 27.4,
+     "take": "texture_energy target for the grain recipe"
+    },
+    "edges": {
+     "direction_entropy": 0.994,
+     "take": "edge entropy + orientation histogram"
+    },
+    "shape": {
+     "perim_area": 161.087,
+     "boundary_entropy": 0.994,
+     "ink_coverage": 0.057,
+     "take": "contour density proxies"
+    }
+   }
+  }
+ ],
+ "redundancy": {
+  "files": [
+   "ref_01.webp",
+   "ref_02.png",
+   "ref_03.png",
+   "ref_04.png",
+   "ref_05.png",
+   "ref_06.png",
+   "ref_07.png",
+   "ref_08.png",
+   "ref_09.jpeg",
+   "ref_10.jpeg",
+   "ref_11.jpeg",
+   "ref_12.jpeg",
+   "ref_13.jpeg",
+   "ref_14.jpg",
+   "ref_15.png",
+   "ref_16.png",
+   "ref_17.png",
+   "ref_18.png",
+   "ref_19.png",
+   "ref_20.png",
+   "ref_21.png",
+   "ref_22.png",
+   "ref_23.png",
+   "ref_24.png"
+  ],
+  "pairwise": [
+   [
+    1.52,
+    -0.12,
+    -0.37,
+    -0.21,
+    -0.45,
+    -0.52,
+    -0.64,
+    0.21,
+    -0.35,
+    0.55,
+    -0.5,
+    0.15,
+    -0.29,
+    0.18,
+    -0.45,
+    -0.49,
+    -0.21,
+    -0.37,
+    0.21,
+    0.42,
+    0.62,
+    0.34,
+    0.2,
+    0.57
+   ],
+   [
+    -0.12,
+    0.22,
+    0.15,
+    -0.1,
+    -0.23,
+    0.09,
+    -0.32,
+    0.05,
+    -0.23,
+    0.01,
+    -0.02,
+    0.06,
+    0.23,
+    0.3,
+    -0.23,
+    -0.01,
+    -0.1,
+    0.15,
+    0.05,
+    -0.05,
+    -0.01,
+    0.06,
+    0.05,
+    -0.02
+   ],
+   [
+    -0.37,
+    0.15,
+    0.73,
+    -0.03,
+    0.1,
+    0.28,
+    -0.39,
+    -0.1,
+    0.12,
+    -0.01,
+    0.31,
+    0.73,
+    0.64,
+    0.51,
+    0.1,
+    -0.06,
+    -0.03,
+    0.73,
+    -0.1,
+    -0.7,
+    -0.82,
+    -0.8,
+    -0.73,
+    -0.24
+   ],
+   [
+    -0.21,
+    -0.1,
+    -0.03,
+    0.21,
+    -0.1,
+    0.07,
+    0.37,
+    0.02,
+    0.34,
+    -0.16,
+    0.21,
+    -0.12,
+    -0.1,
+    -0.35,
+    -0.1,
+    0.22,
+    0.21,
+    -0.03,
+    0.02,
+    -0.02,
+    -0.11,
+    -0.16,
+    -0.07,
+    -0.01
+   ],
+   [
+    -0.45,
+    -0.23,
+    0.1,
+    -0.1,
+    2.78,
+    -0.08,
+    0.74,
+    -0.66,
+    -0.34,
+    -0.51,
+    -0.07,
+    0.53,
+    -0.07,
+    0.02,
+    2.78,
+    0.06,
+    -0.1,
+    0.1,
+    -0.66,
+    -0.72,
+    -0.86,
+    -0.76,
+    -0.68,
+    -0.8
+   ],
+   [
+    -0.52,
+    0.09,
+    0.28,
+    0.07,
+    -0.08,
+    0.25,
+    0.12,
+    -0.08,
+    0.09,
+    -0.14,
+    0.22,
+    0.12,
+    0.23,
+    0.04,
+    -0.08,
+    0.14,
+    0.07,
+    0.28,
+    -0.08,
+    -0.2,
+    -0.28,
+    -0.18,
+    -0.14,
+    -0.21
+   ],
+   [
+    -0.64,
+    -0.32,
+    -0.39,
+    0.37,
+    0.74,
+    0.12,
+    1.79,
+    -0.51,
+    -0.03,
+    -0.63,
+    0.09,
+    -0.35,
+    -0.69,
+    -1.07,
+    0.74,
+    0.61,
+    0.37,
+    -0.39,
+    -0.51,
+    0.3,
+    0.21,
+    0.34,
+    0.43,
+    -0.58
+   ],
+   [
+    0.21,
+    0.05,
+    -0.1,
+    0.02,
+    -0.66,
+    -0.08,
+    -0.51,
+    0.4,
+    0.39,
+    0.18,
+    0.07,
+    -0.29,
+    0.07,
+    0.06,
+    -0.66,
+    -0.07,
+    0.02,
+    -0.1,
+    0.4,
+    0.05,
+    0.08,
+    -0.0,
+    0.03,
+    0.45
+   ],
+   [
+    -0.35,
+    -0.23,
+    0.12,
+    0.34,
+    -0.34,
+    0.09,
+    -0.03,
+    0.39,
+    1.47,
+    -0.02,
+    0.58,
+    -0.24,
+    0.17,
+    -0.26,
+    -0.34,
+    0.14,
+    0.34,
+    0.12,
+    0.39,
+    -0.48,
+    -0.71,
+    -0.87,
+    -0.63,
+    0.34
+   ],
+   [
+    0.55,
+    0.01,
+    -0.01,
+    -0.16,
+    -0.51,
+    -0.14,
+    -0.63,
+    0.18,
+    -0.02,
+    0.42,
+    -0.17,
+    0.06,
+    0.07,
+    0.3,
+    -0.51,
+    -0.36,
+    -0.16,
+    -0.01,
+    0.18,
+    0.19,
+    0.24,
+    0.14,
+    0.02,
+    0.31
+   ],
+   [
+    -0.5,
+    -0.02,
+    0.31,
+    0.21,
+    -0.07,
+    0.22,
+    0.09,
+    0.07,
+    0.58,
+    -0.17,
+    0.42,
+    0.1,
+    0.25,
+    -0.09,
+    -0.07,
+    0.2,
+    0.21,
+    0.31,
+    0.07,
+    -0.42,
+    -0.58,
+    -0.61,
+    -0.45,
+    -0.05
+   ],
+   [
+    0.15,
+    0.06,
+    0.73,
+    -0.12,
+    0.53,
+    0.12,
+    -0.35,
+    -0.29,
+    -0.24,
+    0.06,
+    0.1,
+    1.17,
+    0.57,
+    0.63,
+    0.53,
+    -0.21,
+    -0.12,
+    0.73,
+    -0.29,
+    -0.76,
+    -0.85,
+    -0.93,
+    -0.88,
+    -0.32
+   ],
+   [
+    -0.29,
+    0.23,
+    0.64,
+    -0.1,
+    -0.07,
+    0.23,
+    -0.69,
+    0.07,
+    0.17,
+    0.07,
+    0.25,
+    0.57,
+    0.71,
+    0.68,
+    -0.07,
+    -0.13,
+    -0.1,
+    0.64,
+    0.07,
+    -0.69,
+    -0.75,
+    -0.71,
+    -0.64,
+    -0.07
+   ],
+   [
+    0.18,
+    0.3,
+    0.51,
+    -0.35,
+    0.02,
+    0.04,
+    -1.07,
+    0.06,
+    -0.26,
+    0.3,
+    -0.09,
+    0.63,
+    0.68,
+    1.0,
+    0.02,
+    -0.4,
+    -0.35,
+    0.51,
+    0.06,
+    -0.5,
+    -0.45,
+    -0.41,
+    -0.46,
+    0.02
+   ],
+   [
+    -0.45,
+    -0.23,
+    0.1,
+    -0.1,
+    2.78,
+    -0.08,
+    0.74,
+    -0.66,
+    -0.34,
+    -0.51,
+    -0.07,
+    0.53,
+    -0.07,
+    0.02,
+    2.78,
+    0.06,
+    -0.1,
+    0.1,
+    -0.66,
+    -0.72,
+    -0.86,
+    -0.76,
+    -0.68,
+    -0.8
+   ],
+   [
+    -0.49,
+    -0.01,
+    -0.06,
+    0.22,
+    0.06,
+    0.14,
+    0.61,
+    -0.07,
+    0.14,
+    -0.36,
+    0.2,
+    -0.21,
+    -0.13,
+    -0.4,
+    0.06,
+    0.4,
+    0.22,
+    -0.06,
+    -0.07,
+    -0.01,
+    -0.08,
+    -0.03,
+    0.09,
+    -0.18
+   ],
+   [
+    -0.21,
+    -0.1,
+    -0.03,
+    0.21,
+    -0.1,
+    0.07,
+    0.37,
+    0.02,
+    0.34,
+    -0.16,
+    0.21,
+    -0.12,
+    -0.1,
+    -0.35,
+    -0.1,
+    0.22,
+    0.21,
+    -0.03,
+    0.02,
+    -0.02,
+    -0.11,
+    -0.16,
+    -0.07,
+    -0.01
+   ],
+   [
+    -0.37,
+    0.15,
+    0.73,
+    -0.03,
+    0.1,
+    0.28,
+    -0.39,
+    -0.1,
+    0.12,
+    -0.01,
+    0.31,
+    0.73,
+    0.64,
+    0.51,
+    0.1,
+    -0.06,
+    -0.03,
+    0.73,
+    -0.1,
+    -0.7,
+    -0.82,
+    -0.8,
+    -0.73,
+    -0.24
+   ],
+   [
+    0.21,
+    0.05,
+    -0.1,
+    0.02,
+    -0.66,
+    -0.08,
+    -0.51,
+    0.4,
+    0.39,
+    0.18,
+    0.07,
+    -0.29,
+    0.07,
+    0.06,
+    -0.66,
+    -0.07,
+    0.02,
+    -0.1,
+    0.4,
+    0.05,
+    0.08,
+    -0.0,
+    0.03,
+    0.45
+   ],
+   [
+    0.42,
+    -0.05,
+    -0.7,
+    -0.02,
+    -0.72,
+    -0.2,
+    0.3,
+    0.05,
+    -0.48,
+    0.19,
+    -0.42,
+    -0.76,
+    -0.69,
+    -0.5,
+    -0.72,
+    -0.01,
+    -0.02,
+    -0.7,
+    0.05,
+    1.18,
+    1.29,
+    1.28,
+    1.04,
+    0.21
+   ],
+   [
+    0.62,
+    -0.01,
+    -0.82,
+    -0.11,
+    -0.86,
+    -0.28,
+    0.21,
+    0.08,
+    -0.71,
+    0.24,
+    -0.58,
+    -0.85,
+    -0.75,
+    -0.45,
+    -0.86,
+    -0.08,
+    -0.11,
+    -0.82,
+    0.08,
+    1.29,
+    1.55,
+    1.59,
+    1.32,
+    0.29
+   ],
+   [
+    0.34,
+    0.06,
+    -0.8,
+    -0.16,
+    -0.76,
+    -0.18,
+    0.34,
+    -0.0,
+    -0.87,
+    0.14,
+    -0.61,
+    -0.93,
+    -0.71,
+    -0.41,
+    -0.76,
+    -0.03,
+    -0.16,
+    -0.8,
+    -0.0,
+    1.28,
+    1.59,
+    1.79,
+    1.5,
+    0.14
+   ],
+   [
+    0.2,
+    0.05,
+    -0.73,
+    -0.07,
+    -0.68,
+    -0.14,
+    0.43,
+    0.03,
+    -0.63,
+    0.02,
+    -0.45,
+    -0.88,
+    -0.64,
+    -0.46,
+    -0.68,
+    0.09,
+    -0.07,
+    -0.73,
+    0.03,
+    1.04,
+    1.32,
+    1.5,
+    1.31,
+    0.13
+   ],
+   [
+    0.57,
+    -0.02,
+    -0.24,
+    -0.01,
+    -0.8,
+    -0.21,
+    -0.58,
+    0.45,
+    0.34,
+    0.31,
+    -0.05,
+    -0.32,
+    -0.07,
+    0.02,
+    -0.8,
+    -0.18,
+    -0.01,
+    -0.24,
+    0.45,
+    0.21,
+    0.29,
+    0.14,
+    0.13,
+    0.58
+   ]
+  ]
+ }
+}
