@@ -1,0 +1,295 @@
+{
+  "baseline_profile": {
+    "width": 5,
+    "jitter": 0.0,
+    "passes": 1,
+    "caps": "square"
+  },
+  "baseline_sketchy": {
+    "width": 5,
+    "jitter": 1.0,
+    "passes": 2,
+    "caps": "round"
+  },
+  "rows": [
+    {
+      "param": "width_profile",
+      "levels": [
+        {
+          "label": "flat",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "width_profile": [
+              [
+                0,
+                1.0
+              ],
+              [
+                1,
+                1.0
+              ]
+            ]
+          },
+          "file": "width_profile_flat.png"
+        },
+        {
+          "label": "sym taper",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "width_profile": [
+              [
+                0,
+                0.0
+              ],
+              [
+                0.3,
+                1.0
+              ],
+              [
+                0.7,
+                1.0
+              ],
+              [
+                1,
+                0.0
+              ]
+            ]
+          },
+          "file": "width_profile_sym_taper.png"
+        },
+        {
+          "label": "mid bulge",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "width_profile": [
+              [
+                0,
+                0.25
+              ],
+              [
+                0.4,
+                1.0
+              ],
+              [
+                1,
+                0.6
+              ]
+            ]
+          },
+          "file": "width_profile_mid_bulge.png"
+        }
+      ]
+    },
+    {
+      "param": "jitter_lat",
+      "levels": [
+        {
+          "label": "1.5",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "jitter_lat": 1.5,
+            "jitter_lin": 0.0
+          },
+          "file": "jitter_lat_15.png"
+        },
+        {
+          "label": "3.0",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "jitter_lat": 3.0,
+            "jitter_lin": 0.0
+          },
+          "file": "jitter_lat_30.png"
+        },
+        {
+          "label": "4.5",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "jitter_lat": 4.5,
+            "jitter_lin": 0.0
+          },
+          "file": "jitter_lat_45.png"
+        }
+      ]
+    },
+    {
+      "param": "jitter_lin",
+      "levels": [
+        {
+          "label": "1.5",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "jitter_lat": 0.0,
+            "jitter_lin": 1.5
+          },
+          "file": "jitter_lin_15.png"
+        },
+        {
+          "label": "3.0",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "jitter_lat": 0.0,
+            "jitter_lin": 3.0
+          },
+          "file": "jitter_lin_30.png"
+        },
+        {
+          "label": "4.5",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "jitter_lat": 0.0,
+            "jitter_lin": 4.5
+          },
+          "file": "jitter_lin_45.png"
+        }
+      ]
+    },
+    {
+      "param": "opacity_falloff",
+      "levels": [
+        {
+          "label": "none",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square"
+          },
+          "file": "opacity_falloff_none.png"
+        },
+        {
+          "label": "end .45",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "opacity_falloff": {
+              "start": 1.0,
+              "end": 0.45
+            }
+          },
+          "file": "opacity_falloff_end_45.png"
+        },
+        {
+          "label": "end .10",
+          "brush": {
+            "width": 5,
+            "jitter": 0.0,
+            "passes": 1,
+            "caps": "square",
+            "opacity_falloff": {
+              "start": 1.0,
+              "end": 0.1
+            }
+          },
+          "file": "opacity_falloff_end_10.png"
+        }
+      ]
+    },
+    {
+      "param": "pass_scatter",
+      "levels": [
+        {
+          "label": "0",
+          "brush": {
+            "width": 5,
+            "jitter": 1.0,
+            "passes": 2,
+            "caps": "round",
+            "pass_scatter": 0.0
+          },
+          "file": "pass_scatter_0.png"
+        },
+        {
+          "label": "3",
+          "brush": {
+            "width": 5,
+            "jitter": 1.0,
+            "passes": 2,
+            "caps": "round",
+            "pass_scatter": 3.0
+          },
+          "file": "pass_scatter_3.png"
+        },
+        {
+          "label": "6",
+          "brush": {
+            "width": 5,
+            "jitter": 1.0,
+            "passes": 2,
+            "caps": "round",
+            "pass_scatter": 6.0
+          },
+          "file": "pass_scatter_6.png"
+        }
+      ]
+    },
+    {
+      "param": "pass_rotation",
+      "levels": [
+        {
+          "label": "0 deg",
+          "brush": {
+            "width": 5,
+            "jitter": 1.0,
+            "passes": 2,
+            "caps": "round",
+            "pass_rotation": 0.0
+          },
+          "file": "pass_rotation_0_deg.png"
+        },
+        {
+          "label": "2 deg",
+          "brush": {
+            "width": 5,
+            "jitter": 1.0,
+            "passes": 2,
+            "caps": "round",
+            "pass_rotation": 2.0
+          },
+          "file": "pass_rotation_2_deg.png"
+        },
+        {
+          "label": "4 deg",
+          "brush": {
+            "width": 5,
+            "jitter": 1.0,
+            "passes": 2,
+            "caps": "round",
+            "pass_rotation": 4.0
+          },
+          "file": "pass_rotation_4_deg.png"
+        }
+      ]
+    }
+  ],
+  "seed": 7
+}

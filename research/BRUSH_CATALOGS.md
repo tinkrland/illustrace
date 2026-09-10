@@ -119,5 +119,27 @@ in the procreate 14 attributes is either metadata, hardware, or already
 ours by another name. that's the answer to the §4 pending question: our
 substrate is missing 4 params, not 40.
 
-next step when we build: add width_profile + jitter split to the substrate,
-then preregister the stylebench batch for separability of the new params.
+## post-implementation check (2026-09-10, same day)
+
+all four params are in the substrate now (benchmarks/svg_house.py v2 +
+benchmarks/svg_substrate_v2.py sweep, data/generated/substrate_v2/) —
+with one null result that reshuffles the layer split:
+
+- **width_profile, jitter_lat, opacity_falloff, pass_scatter,
+  pass_rotation**: all render and all separate visually (pixel-diff step
+  checks positive at every level).
+- **jitter_lin is degenerate on vector geometry.** displacing samples
+  *along* the local path direction just slides them along the same
+  segment — the polyline is unchanged (verified: 0.0000 pixel diff at
+  sigma 4.5 on the house set). procreate's linear jitter is a *stamp
+  spacing* wobble, visible only when the brush is raster stamps along
+  the path. so jitter_lin moves to layer 2 (stamp/texture density
+  param), and the layer-1 jitter is lateral only. one catalog param
+  down, three to go.
+
+regression: legacy brushes (clean/sketchy/marker) render byte-identical
+to the pre-v2 substrate — old stimuli and judgments stay valid.
+
+next: preregister the stylebench batch for separability of the new
+params (width_profile shape, lateral jitter, opacity falloff, pass
+scatter/rotation) — survey/specs is the vehicle.
