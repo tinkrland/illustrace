@@ -6,9 +6,13 @@ is a permanent eval ledger — when a batch verdict looks weird later, the exact
 llm run that produced the spec or the critique is queryable, not folklore.
 
 usage:
-    from llm.trace import traced_chat
+    from llm.trace import traced_chat, traced_call, log_note
+
     out = traced_chat("glm-4.7 spec draft", base_url, api_key,
                       "glm-4-7-flash", messages)
+    content, resp = traced_call(...)   # same, but returns the raw response
+                                      # for callers that need finish_reason /
+                                      # reasoning_content fallbacks
 
 config comes from env:
     LANGCHAIN_API_KEY  (lsv2_pt_..., eu region only — us endpoint 403s)
@@ -20,19 +24,25 @@ import time
 import urllib.request
 
 LANGSMITH_PROJECT = os.environ.get("LANGSMITH_PROJECT", "illustrace")
+EU_API_URL = "https://eu.api.smith.langchain.com"
 
 
-def traced_chat(run_name, base_url, api_key, model, messages,
-                max_tokens=8000, temperature=0.7, run_type="llm", extra=None):
-    """one openai-compatible chat call, fully traced to langsmith.
-
-    returns the assistant message content. raises on transport errors.
-    """
+def _client():
     import langsmith as ls
 
     os.environ.setdefault("LANGSMITH_PROJECT", LANGSMITH_PROJECT)
-    os.environ.setdefault("LANGCHAIN_ENDPOINT", "https://eu.api.smith.langchain.com")
-    client = ls.Client(api_url="https://eu.api.smith.langchain.com")
+    os.environ.setdefault("LANGCHAIN_ENDPOINT", EU_API_URL)
+    return ls.Client(api_url=EU_API_URL)
+
+
+def traced_call(run_name, base_url, api_key, model, messages,
+                max_tokens=8000, temperature=0.7, run_type="llm", extra=None):
+    """one openai-compatible chat call, fully traced to langsmith.
+
+    returns (content, response_dict). the run closes with status success,
+    end_time, usage, finish_reason, latency.
+    """
+    client = _client()
     started = time.time()
     body = json.dumps({
         "model": model, "messages": messages,
@@ -42,41 +52,43 @@ def traced_chat(run_name, base_url, api_key, model, messages,
         base_url.rstrip("/") + "/chat/completions", data=body,
         headers={"Content-Type": "application/json",
                  "Authorization": "Bearer " + api_key})
-    with urllib.request.urlopen(req, timeout=600) as r:
+    with urllib.request.urlopen(req, timeout=900) as r:
         resp = json.loads(r.read())
 
-    content = resp["choices"][0]["message"]["content"]
-    usage = resp.get("usage", {})
+    content = resp["choices"][0]["message"].get("content")
     latency = round(time.time() - started, 2)
-
     client.create_run(
         name=run_name, run_type=run_type,
         inputs={"messages": messages, "model": model,
                 "base_url": base_url, "params": {
                     "max_tokens": max_tokens, "temperature": temperature}},
-        outputs={"content": content, "usage": usage,
+        outputs={"content": content,
+                 "usage": resp.get("usage", {}),
                  "finish_reason": resp["choices"][0].get("finish_reason")},
         metadata={"project_lang": "python", "engine": "illustrace"},
         extra={"metadata": {**(extra or {}), "latency_s": latency}},
         end_time=round(started * 1000) + int(latency * 1000),
         status="success",
     )
+    return content, resp
+
+
+def traced_chat(run_name, base_url, api_key, model, messages,
+                max_tokens=8000, temperature=0.7, extra=None):
+    """convenience wrapper: returns the assistant message content only."""
+    content, _ = traced_call(run_name, base_url, api_key, model, messages,
+                            max_tokens=max_tokens, temperature=temperature,
+                            extra=extra)
     return content
 
 
 def log_note(run_name, note, extra=None):
     """a non-llm trace leaf: experiment decisions, batch verdicts, failures."""
-    import langsmith as ls
-
-    os.environ.setdefault("LANGSMITH_PROJECT", LANGSMITH_PROJECT)
-    os.environ.setdefault("LANGCHAIN_ENDPOINT", "https://eu.api.smith.langchain.com")
-    client = ls.Client(api_url="https://eu.api.smith.langchain.com")
-    import time as _t
-    return client.create_run(
+    return _client().create_run(
         name=run_name, run_type="chain",
         inputs={"note": note},
         outputs={"ok": True},
         extra={"metadata": extra or {}},
-        end_time=round(_t.time() * 1000),
+        end_time=round(time.time() * 1000),
         status="success",
     )

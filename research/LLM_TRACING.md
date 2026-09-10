@@ -61,3 +61,32 @@ about filter shapes — use the sdk.)
 langsmith bills per-trace, not per-token. $100 is enormous runway for
 illustrace's volume (tens of runs per batch). the token spend itself
 still goes to the provider (tensormux/nebius), unchanged.
+
+## the corpus outlives the access window
+
+langsmith access is temporary; the training corpus is not. two scripts
+close that loop:
+
+- `llm/export_traces.py` — pulls every llm run from the project into
+  `data/generated/ft/`: a raw jsonl (full pairs + usage) and an
+  openai-format `spec_drafts.openai.jsonl` ready for fine-tuning upload.
+  run it periodically; each export is a snapshot.
+- `llm/lora_train.py` — the qlora runner for the mi300x box (rocm pytorch
+  + peft, 4-bit nf4 base, r=64 on attention projections). `--dry-run`
+  validates the dataset anywhere; the full path loads the model only on
+  the box. default base: llama-3.3-70b (in the nebius catalog, so the
+  adapter can serve there once their fine_tuning/jobs backend stops
+  500ing, or locally on featherless-adjacent inference).
+
+fine-tune targets, in order:
+
+1. spec drafts — glm-5.2 trace pairs (hypothesis + context -> preregistered
+   spec) teach a model the house style; every build_spec.py run adds a
+   training pair automatically now.
+2. judge model (later) — human 2afc judgments from the xano `judgments`
+   table become the corpus; an exporter gets written when judgment volume
+   justifies it.
+
+xano integration: training_jobs (table 33) takes job_type="lora" — queue a
+job, the amd runner pulls it, trains from the exported jsonl, posts
+metrics + adapter uri back.

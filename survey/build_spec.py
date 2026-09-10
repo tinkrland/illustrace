@@ -40,6 +40,10 @@ def decode_params(name):
         return {"dimension": "roughness", "jitter": float(n[4:].replace("p", "."))}
     if n.startswith("grain_"):
         return {"dimension": "texture", "grain_amp": float(n[6:])}
+    if n.startswith("fid2_tapertoward"):
+        return {"dimension": "taper", "taper": int(n[16:]) / 100, "taper_dir": "toward"}
+    if n.startswith("fid2_taperaway"):
+        return {"dimension": "taper", "taper": int(n[14:]) / 100, "taper_dir": "away"}
     if n.startswith("fid2_taper"):
         return {"dimension": "taper", "taper": int(n[10:]) / 100}
     if n.startswith("fid2_width"):
@@ -140,17 +144,14 @@ def draft_spec(hypothesis, batch_name):
             )},
         ],
     }
-    req = urllib.request.Request(
-        NEBIUS_BASE + "/chat/completions",
-        data=json.dumps(body).encode(),
-        headers={
-            "Authorization": "Bearer " + nebius_key(),
-            "Content-Type": "application/json",
-        },
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from llm.trace import traced_call
+    content, out = traced_call(
+        f"{batch_name} spec draft (glm-5.2)",
+        NEBIUS_BASE, nebius_key(), NEBIUS_MODEL,
+        body["messages"], max_tokens=body["max_tokens"],
+        temperature=body["temperature"], extra={"batch": batch_name},
     )
-    t0 = time.time()
-    with urllib.request.urlopen(req, timeout=180) as r:
-        out = json.loads(r.read())
     choice = out["choices"][0]
     if choice.get("finish_reason") == "length":
         sys.exit("error: glm-5.2 output truncated at max_tokens; spec too long or "
@@ -165,10 +166,9 @@ def draft_spec(hypothesis, batch_name):
     if text.startswith("```"):
         text = re.sub(r"^```(json)?\s*", "", text)
         text = re.sub(r"\s*```$", "", text)
-    dt = time.time() - t0
     usage = out.get("usage", {})
-    print(f"[glm-5.2] {dt:.0f}s  in={usage.get('prompt_tokens','?')} "
-          f"out={usage.get('completion_tokens','?')} tokens")
+    print(f"[glm-5.2] in={usage.get('prompt_tokens','?')} "
+          f"out={usage.get('completion_tokens','?')} tokens (traced)")
     return json.loads(text)
 
 
