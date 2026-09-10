@@ -58,19 +58,48 @@ BRUSHES = {
 }
 
 
-def jitter_polyline(pts, sigma, seed):
-    """rough.js-style displacement. sigma=0 returns the clean path."""
-    if sigma <= 0:
+def jitter_polyline(pts, sigma, seed, sigma_lat=None, sigma_lin=None):
+    """rough.js-style displacement. sigma=0 returns the clean path.
+
+    optional jitter split (procreate-style): sigma_lat displaces perpendicular
+    to the local path direction (wobbly line), sigma_lin along it (speed /
+    density wobble). passing the split changes the code path — legacy calls
+    (both None) stay byte-identical so old stimuli reproduce exactly."""
+    if sigma_lat is None and sigma_lin is None:
+        if sigma <= 0:
+            return list(pts)
+        rng = random.Random(seed)
+        out = [pts[0]]
+        for j in range(len(pts) - 1):
+            x0, y0 = pts[j]
+            x1, y1 = pts[j + 1]
+            for f in (0.25, 0.5, 0.75):
+                out.append((x0 + (x1 - x0) * f + rng.gauss(0, sigma),
+                            y0 + (y1 - y0) * f + rng.gauss(0, sigma)))
+            out.append(pts[j + 1])  # vertices stay — dropping them cut corners
+        return out
+    sigma_lat = sigma_lat or 0.0
+    sigma_lin = sigma_lin or 0.0
+    if sigma_lat <= 0 and sigma_lin <= 0:
         return list(pts)
     rng = random.Random(seed)
     out = [pts[0]]
     for j in range(len(pts) - 1):
         x0, y0 = pts[j]
         x1, y1 = pts[j + 1]
+        dx, dy = x1 - x0, y1 - y0
+        seg = (dx * dx + dy * dy) ** 0.5 or 1.0
+        ux, uy = dx / seg, dy / seg
         for f in (0.25, 0.5, 0.75):
-            out.append((x0 + (x1 - x0) * f + rng.gauss(0, sigma),
-                        y0 + (y1 - y0) * f + rng.gauss(0, sigma)))
-        out.append(pts[j + 1])  # vertices stay — dropping them cut corners
+            bx, by = x0 + dx * f, y0 + dy * f
+            if sigma_lat:
+                g = rng.gauss(0, sigma_lat)
+                bx, by = bx - uy * g, by + ux * g
+            if sigma_lin:
+                g = rng.gauss(0, sigma_lin)
+                bx, by = bx + ux * g, by + uy * g
+            out.append((bx, by))
+        out.append(pts[j + 1])
     return out
 
 
@@ -87,12 +116,39 @@ def resample(pts, step=6):
     return out
 
 
-def bake_outline(pts, base_w, taper, sigma, seed, taper_dir=None):
+def bake_outline(pts, base_w, taper, sigma, seed, taper_dir=None,
+                  sigma_lat=None, sigma_lin=None, width_profile=None):
     """variable-width tapered stroke baked as a filled outline path
     (perfect-freehand pattern). taper = fraction of length spent easing in/out.
     taper_dir: None = symmetric (default), "toward" = ease out only
     (stroke narrows at the path end / tip), "away" = ease in only
-    (stroke starts thin, thickens toward the path end)."""
+    (stroke starts thin, thickens toward the path end).
+
+    width_profile (v2): list of (t, width_factor) control points, linearly
+    interpolated along arc-length t. subsumes taper (a symmetric taper is
+    [(0,0),(taper,1),(1-taper,1),(1,0)]). when both are given width_profile
+    is the parameter of record."""
+    if width_profile:
+        prof = sorted(width_profile)
+
+        def prof_factor(t):
+            if t <= prof[0][0]:
+                return prof[0][1]
+            if t >= prof[-1][0]:
+                return prof[-1][1]
+            for (t0, f0), (t1, f1) in zip(prof, prof[1:]):
+                if t0 <= t <= t1:
+                    u = (t - t0) / (t1 - t0) if t1 > t0 else 0.0
+                    return f0 + (f1 - f0) * u
+            return prof[-1][1]
+    else:
+        if taper_dir == "toward":
+            taper_in, taper_out = 0.0, taper
+        elif taper_dir == "away":
+            taper_in, taper_out = taper, 0.0
+        else:
+            taper_in, taper_out = taper, taper
+    p = resample(jitter_polyline(pts, sigma, seed, sigma_lat, sigma_lin))
     if taper_dir == "toward":
         taper_in, taper_out = 0.0, taper
     elif taper_dir == "away":
@@ -114,7 +170,9 @@ def bake_outline(pts, base_w, taper, sigma, seed, taper_dir=None):
         else: dx, dy = p[i + 1][0] - p[i - 1][0], p[i + 1][1] - p[i - 1][1]
         nrm = (dx * dx + dy * dy) ** 0.5 or 1.0
         nx, ny = -dy / nrm, dx / nrm
-        if taper > 0:
+        if width_profile:
+            w = base_w * prof_factor(t)
+        elif taper > 0:
             f = 1.0
             if taper_in > 0: f = min(f, t / taper_in)
             if taper_out > 0: f = min(f, (1 - t) / taper_out)
@@ -152,11 +210,28 @@ def derive_roles(path=REF_WARM):
 
 
 def stroke_d(name, brush, seed):
-    """path data for one stroked path under a brush recipe."""
+    """path data for one stroked path under a brush recipe.
+
+    v2 pass params: pass_scatter (sigma of a whole-pass offset — the
+    double-stroke misalignment of sketchy/charcoal), pass_rotation (max
+    degrees each pass rotates about its own centroid — misalignment that
+    keeps endpoints put). both seeded, both only visible with passes > 1."""
     pts = GEO[name]
     d = []
+    rng = random.Random(seed * 31 + 17)
+    ps = brush.get("pass_scatter", 0.0)
+    pr = brush.get("pass_rotation", 0.0)  # degrees
     for p in range(brush["passes"]):
-        j = jitter_polyline(pts, brush["jitter"], seed + p * 77)
+        j = jitter_polyline(pts, brush["jitter"], seed + p * 77,
+                            brush.get("jitter_lat"), brush.get("jitter_lin"))
+        if ps or pr:
+            ox, oy = (rng.gauss(0, ps), rng.gauss(0, ps)) if ps else (0.0, 0.0)
+            ang = math.radians(rng.uniform(-pr, pr)) if pr else 0.0
+            cx = sum(x for x, _ in j) / len(j)
+            cy = sum(y for _, y in j) / len(j)
+            ca, sa = math.cos(ang), math.sin(ang)
+            j = [(cx + (x - cx) * ca - (y - cy) * sa + ox,
+                  cy + (x - cx) * sa + (y - cy) * ca + oy) for x, y in j]
         if j[0] != j[-1] or len(j) > 2:
             d.append("M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in j))
     return " ".join(d)
@@ -187,11 +262,40 @@ def build_svg(roles, brush, textured=False, lighting=None, seed=7):
     <polygon points="226,392 244,392 270,470 200,470" class="fill-door" fill="{roles['door']}"/>
   </g>"""
 
-    if brush.get("taper"):
-        paths = [f'    <path class="stroke stroke-{name} baked-outline" data-brush="tapered" fill="{roles["stroke"]}" stroke="none" d="{bake_outline(GEO[name], brush["width"], brush["taper"], brush.get("jitter", 0.0), seed + sum(map(ord, name)), brush.get("taper_dir"))}"/>'
-                 for name in GEO]
+    # v2: opacity_falloff — alpha ramp along each path's dominant bbox axis,
+    # rendered as a per-path paint-server gradient (canonical svg, cairosvg-safe)
+    fade = brush.get("opacity_falloff")
+    fade_defs, fade_paint = "", ""
+    if fade:
+        a0, a1 = fade.get("start", 1.0), fade.get("end", 1.0)
+        grad = []
+        for name in GEO:
+            xs = [q[0] for q in GEO[name]]; ys = [q[1] for q in GEO[name]]
+            axis = ('x1="0" y1="0" x2="1" y2="0"' if (max(xs) - min(xs)) >= (max(ys) - min(ys))
+                    else 'x1="0" y1="0" x2="0" y2="1"')
+            grad.append(f'<linearGradient id="fade_{name}" {axis}>'
+                        f'<stop offset="0" stop-color="{roles["stroke"]}" stop-opacity="{a0}"/>'
+                        f'<stop offset="1" stop-color="{roles["stroke"]}" stop-opacity="{a1}"/>'
+                        f'</linearGradient>')
+        fade_defs = "".join(grad)
+
+    def baked_fill(name):
+        return f"url(#fade_{name})" if fade else roles["stroke"]
+
+    def linework_fade_attr(name):
+        return f' stroke="url(#fade_{name})"' if fade else ""
+
+    if brush.get("taper") or brush.get("width_profile"):
+        paths = []
+        for name in GEO:
+            d = bake_outline(GEO[name], brush["width"], brush.get("taper", 0.0),
+                             brush.get("jitter", 0.0), seed + sum(map(ord, name)),
+                             brush.get("taper_dir"), brush.get("jitter_lat"),
+                             brush.get("jitter_lin"), brush.get("width_profile"))
+            paths.append(f'    <path class="stroke stroke-{name} baked-outline" '
+                         f'data-brush="tapered" fill="{baked_fill(name)}" stroke="none" d="{d}"/>')
     else:
-        paths = [f'    <path class="stroke stroke-{name}" data-brush="linework" d="{stroke_d(name, brush, seed)}"/>'
+        paths = [f'    <path class="stroke stroke-{name}" data-brush="linework"{linework_fade_attr(name)} d="{stroke_d(name, brush, seed)}"/>'
                  for name in GEO]
     strokes = "\n".join(paths)
     strokes_block = f"""
@@ -213,7 +317,7 @@ def build_svg(roles, brush, textured=False, lighting=None, seed=7):
     <rect x="0" y="0" width="512" height="512" fill="url(#lgrad)"/>
   </g>"""
 
-    defs = f"<defs>{grain_filter if textured else ''}</defs>"
+    defs = f"<defs>{grain_filter if textured else ''}{fade_defs}</defs>"
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   {defs}
   <rect x="0" y="0" width="512" height="512" class="fill-bg" fill="{roles['bg']}"/>

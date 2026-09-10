@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs></defs>
+  <rect x="0" y="0" width="512" height="512" class="fill-bg" fill="#efb78e"/>
+
+  <g id="fills">
+    <rect x="0" y="392" width="512" height="120" class="fill-ground" fill="#68392c"/>
+    <rect x="140" y="220" width="190" height="172" class="fill-wall" fill="#c5664b"/>
+    <polygon points="120,222 235,130 350,222" class="fill-roof" fill="#f3843d"/>
+    <rect x="290" y="150" width="28" height="60" class="fill-roof" fill="#f3843d"/>
+    <rect x="218" y="310" width="34" height="82" class="fill-door" fill="#964f3b"/>
+    <rect x="162" y="250" width="44" height="44" class="fill-window" fill="#9c4d36"/>
+    <rect x="288" y="250" width="44" height="44" class="fill-window" fill="#9c4d36"/>
+    <rect x="430" y="320" width="16" height="72" class="fill-door" fill="#964f3b"/>
+    <ellipse cx="438" cy="242" rx="46" ry="46" class="fill-ground" fill="#68392c"/>
+    <polygon points="226,392 244,392 270,470 200,470" class="fill-door" fill="#964f3b"/>
+  </g>
+
+  <g id="strokes" class="brush-custom" stroke="#45251c"
+     stroke-width="5" stroke-linecap="square"
+     stroke-linejoin="round" fill="none">
+    <path class="stroke stroke-walls" data-brush="linework" d="M 140.0 220.0 L 140.0 261.8 L 140.0 308.3 L 140.0 348.0 L 140.0 392.0 L 186.1 392.0 L 230.8 392.0 L 281.5 392.0 L 330.0 392.0 L 330.0 344.0 L 330.0 304.1 L 330.0 258.3 L 330.0 220.0"/>
+    <path class="stroke stroke-roof" data-brush="linework" d="M 120.0 222.0 L 147.9 199.7 L 179.3 174.6 L 205.5 153.6 L 235.0 130.0 L 262.6 152.1 L 289.2 173.4 L 320.5 198.4 L 350.0 222.0"/>
+    <path class="stroke stroke-chimney" data-brush="linework" d="M 290.0 150.0 L 290.0 163.8 L 290.0 182.3 L 290.0 194.0 L 290.0 210.0 L 295.6 210.0 L 299.8 210.0 L 310.0 210.0 L 318.0 210.0 L 318.0 190.0 L 318.0 178.1 L 318.0 160.3 L 318.0 150.0"/>
+    <path class="stroke stroke-door" data-brush="linework" d="M 218.0 310.0 L 218.0 329.3 L 218.0 353.3 L 218.0 370.5 L 218.0 392.0 L 225.1 392.0 L 230.8 392.0 L 242.5 392.0 L 252.0 392.0 L 252.0 366.5 L 252.0 349.1 L 252.0 325.8 L 252.0 310.0"/>
+    <path class="stroke stroke-window_l" data-brush="linework" d="M 162.0 250.0 L 162.0 259.8 L 162.0 274.3 L 162.0 282.0 L 162.0 294.0 L 171.6 294.0 L 179.8 294.0 L 194.0 294.0 L 206.0 294.0 L 206.0 278.0 L 206.0 270.1 L 206.0 256.3 L 206.0 250.0 L 193.9 250.0 L 182.2 250.0 L 172.2 250.0 L 162.0 250.0"/>
+    <path class="stroke stroke-window_r" data-brush="linework" d="M 288.0 250.0 L 288.0 259.8 L 288.0 274.3 L 288.0 282.0 L 288.0 294.0 L 297.6 294.0 L 305.8 294.0 L 320.0 294.0 L 332.0 294.0 L 332.0 278.0 L 332.0 270.1 L 332.0 256.3 L 332.0 250.0 L 319.9 250.0 L 308.2 250.0 L 298.2 250.0 L 288.0 250.0"/>
+    <path class="stroke stroke-tree_trunk" data-brush="linework" d="M 430.0 320.0 L 430.0 336.8 L 430.0 358.3 L 430.0 373.0 L 430.0 392.0 L 432.6 392.0 L 433.8 392.0 L 441.0 392.0 L 446.0 392.0 L 446.0 369.0 L 446.0 354.1 L 446.0 333.3 L 446.0 320.0"/>
+    <path class="stroke stroke-ground" data-brush="linework" d="M 0.0 392.0 L 126.8 392.0 L 258.3 392.0 L 383.0 392.0 L 512.0 392.0"/>
+  </g>
+
+</svg>
