@@ -122,9 +122,11 @@ open questions:
 
 ## 4. brush parameter decomposition (what is a brush, parameterically)
 
-[research pending — sub-agent pass on procreate brush studio, krita
-engine, perfect-freehand parameters. working notes from the substrate's
-own brushes:]
+[catalog pass done — see research/BRUSH_CATALOGS.md for procreate's
+14 attributes, ibispaint's family, stamps, palettes, and polarr's recipe
+architecture. conclusion: the substrate is missing 4 params (width_profile,
+lateral/linear jitter split, opacity_falloff, per-pass scatter/rotation),
+not 40. working notes from the substrate's own brushes:]
 
 current `BRUSHES` in the substrate already decompose as: width, taper,
 taper_dir, jitter (position noise sigma), grain_amp (texture), textured
