@@ -20,6 +20,15 @@ the idea was seeded by a p5.js sketch, used purely as inspo for the parameter sp
 
 the sketch is random and animated; the factory is neither. in inkora, animation is at most a preview affordance and randomness is at most a browsing affordance. the saved asset is the deterministic program: base radius, resolution, noise seed, complexity/sharpness/displacement/chaos/variance, plus the manual per-point drag offsets. reopen reproduces the exact mark. export is layered svg first, png second.
 
+## adoption terms (how much can be taken)
+
+all of it, because the source is our own p5 sketch: there is no permission question, it is our code. but the repo stance is inspo only. the sketch is deliberately not committed, and the factory is not a port. what gets taken is the design, not the implementation posture:
+
+- **fully takeable**: the parameter vocabulary (structure: complexity, sharpness, displacement, chaos, variance; appearance: fill, gradient, border, texture, mask, material, effect; interaction: inspect mode with per-point dragging), plus the general insight that people want these marks sculptable, not rolled
+- **not taken**: the implementation approach. the sketch is noise-driven, random, and animated; the factory inverts that posture (deterministic saved programs, randomness as a browsing affordance only). the build is a re-expression of the same parameter surface under the editable-preset contract, not a code lift
+
+since the sketch is ours, it can be dropped into `vendor/` or referenced directly the day the build starts, no ask needed.
+
 ## studio role
 
 blob marks are the most-composed factory asset: they pair with type (fontasy), get sealed (sigilry), get stitched (weaverly), get printed (analogistry). first citizen of the studio.
