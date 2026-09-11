@@ -1,12 +1,15 @@
-# inkora (blob factory)
+# inkora (mark factory)
 
-the organic-mark factory. people love abstract blobs, flower-shaped blobs, amorphous organic silhouettes, the kind of shape that becomes a logo mark, an app icon, a sticker, an album cover. today they get these by drawing them by hand or by lucking into a random generator and screenshotting it. inkora makes them as editable parametric marks: you sculpt, you save, you reopen and it's the same shape.
+the shape-mark factory. people love abstract blobs, flower-shaped blobs, amorphous organic silhouettes, and, in their current flavor, the geometric "futuristic" vocabulary, squircles, faceted prisms, hyperbolic curves, chrome-y orbitals, the kind of shape that becomes a logo mark, an app icon, a sticker, an album cover. today they get these by drawing them by hand or by lucking into a random generator and screenshotting it. inkora makes them as editable parametric marks: you sculpt, you save, you reopen and it's the same shape.
 
 ## what it makes
 
-- abstract blob marks: noise-displaced closed silhouettes, from smooth pebble to thorny flower
-- parametric outlines with directly draggable control points, inspect-mode style
-- appearance as recipe layers: fill, gradient, border (solid/dashed/dotted), texture (grain), mask, material, effect, each independently toggleable and styled
+three shape families, one parametric model:
+
+- **organic blobs**: noise-displaced closed silhouettes, from smooth pebble to thorny
+- **botanical / flowy forms**: petal-count, bloom, curl, and asymmetry parameters, the flower-shaped and ribbon-flow marks
+- **futuristic geometry**: analytic-curve primitives, superellipse/squircle, faceted prisms, starbursts and hyperbolic arcs, the "deemed futuristic this decade" vocabulary. since "futuristic" is a moving target (what read as sci-fi in 2012 is retro now), these ship as preset families over the same parameters, so the vocabulary can be restyled without rebuilding anything
+- all of them as parametric outlines with directly draggable control points, inspect-mode style, with appearance as recipe layers: fill, gradient, border (solid/dashed/dotted), texture (grain), mask, material, effect, each independently toggleable and styled
 
 ## the parameter surface (from the p5 sketch that seeded this)
 
@@ -31,7 +34,7 @@ since the sketch is ours, it gets pooled straight into the repo the day the buil
 
 ## studio role
 
-blob marks are the most-composed factory asset: they pair with type (fontasy), get sealed (sigilry), get stitched (weaverly), get printed (analogistry). first citizen of the studio.
+shape marks are the most-composed factory asset: they pair with type (fontasy), get sealed (sigilry), get stitched (weaverly), get printed (analogistry). first citizen of the studio.
 
 ## status
 
