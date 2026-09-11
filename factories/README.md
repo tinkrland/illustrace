@@ -23,7 +23,7 @@ the long game is a studio where factory outputs compose: a wordmark from the fon
 | [fontasy](/factories/fontasy) | fonts, glyph sheets, wordmarks | parked, readme only |
 | [inkora](/factories/inkora) | abstract blobs and organic marks | parked, readme only |
 | [ikonic](/factories/ikonic) | consistent-style icon kits | parked, readme only |
-| [weaverly](/factories/weaverly) | stitched, embroidered, pixelated media | parked, readme only |
+| [weaverly](/factories/weaverly) | stitched, woven, laced, beaded media | parked, readme only |
 | [analogistry](/factories/analogistry) | analog print process treatments | parked, readme only |
 | [sigilry](/factories/sigilry) | emblems, seals, stamps, monograms, crests | parked, readme only |
 | [patterns](/factories/patterns) | repeat patterns and tiles | parked, readme only |
