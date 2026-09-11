@@ -1,0 +1,239 @@
+{
+  "version": 2,
+  "batch": "batch_2",
+  "about": "illustrace stylebench human-judgment validation, batch_2. preregistered spec: survey/specs/batch_2.json. ground truth comes from parametric svg stimuli: the gt side is the one with the provably higher parameter (or the spec-declared hypothesis). anchor question is a warm-up and is not scored. catch pairs are identical images: 'no difference' is the correct answer.",
+  "questions": [
+    {
+      "id": "b2a",
+      "kind": "anchor",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher / more hand-drawn?",
+      "left": "../data/generated/arch_svg/jit_0p00.png",
+      "right": "../data/generated/arch_svg/jit_3p75.png",
+      "gt": "right",
+      "scored": false,
+      "note": "warm-up, extreme difference, not scored"
+    },
+    {
+      "id": "b2j1",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "../data/generated/arch_svg/jit_0p00.png",
+      "right": "../data/generated/arch_svg/jit_1p25.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2j2",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels smoother?",
+      "left": "../data/generated/arch_svg/jit_0p00.png",
+      "right": "../data/generated/arch_svg/jit_1p25.png",
+      "gt": "left",
+      "scored": true,
+      "note": "polarity reversal: same stimulus pair as b2j1, inverted prompt"
+    },
+    {
+      "id": "b2j3",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "../data/generated/arch_svg/jit_0p00.png",
+      "right": "../data/generated/arch_svg/jit_3p75.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2t1",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "../data/generated/arch_svg/fid2_taper15.png",
+      "right": "../data/generated/arch_svg/fid2_taper60.png",
+      "gt": "left",
+      "scored": true,
+      "note": "hypothesis inverted per pilot: uniform width reads as rougher, heavy calligraphic taper reads as smoother"
+    },
+    {
+      "id": "b2t2",
+      "kind": "pair",
+      "dimension": "line_character",
+      "prompt": "which linework feels more calligraphic / has more varied stroke width?",
+      "left": "../data/generated/arch_svg/fid2_taper15.png",
+      "right": "../data/generated/arch_svg/fid2_taper60.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2t3",
+      "kind": "pair",
+      "dimension": "line_character",
+      "prompt": "which linework feels more calligraphic / has more varied stroke width?",
+      "left": "../data/generated/arch_svg/fid2_taper15.png",
+      "right": "../data/generated/arch_svg/fid2_taper30.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2t4",
+      "kind": "pair",
+      "dimension": "roughness",
+      "prompt": "which linework feels rougher?",
+      "left": "../data/generated/arch_svg/b2_jit2.png",
+      "right": "../data/generated/arch_svg/fid2_taper60.png",
+      "gt": "left",
+      "scored": true,
+      "note": "cross-cue: uniform width + jitter 2.0 vs heavy taper, does jitter roughness dominate"
+    },
+    {
+      "id": "b2g1",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_0.png",
+      "right": "../data/generated/arch_svg/grain_8.png",
+      "gt": "right",
+      "scored": true,
+      "note": "pilot retest: this pair was missed at n=1"
+    },
+    {
+      "id": "b2g2",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_8.png",
+      "right": "../data/generated/arch_svg/grain_14.png",
+      "gt": "right",
+      "scored": true,
+      "note": "pilot retest: this pair was a confident hit"
+    },
+    {
+      "id": "b2g3",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_8.png",
+      "right": "../data/generated/arch_svg/grain_11.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2g4",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_11.png",
+      "right": "../data/generated/arch_svg/grain_14.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2g5",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_0.png",
+      "right": "../data/generated/arch_svg/grain_11.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2g6",
+      "kind": "pair",
+      "dimension": "texture",
+      "prompt": "which image feels more textured / grainy?",
+      "left": "../data/generated/arch_svg/grain_0.png",
+      "right": "../data/generated/arch_svg/grain_14.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2g7",
+      "kind": "same_different",
+      "dimension": "texture",
+      "prompt": "do these two images look the same or different?",
+      "left": "../data/generated/arch_svg/grain_0.png",
+      "right": "../data/generated/arch_svg/grain_8.png",
+      "gt": "different",
+      "scored": false,
+      "note": "d-prime separation: same/different judgment on the pair the pilot missed under which-is-more"
+    },
+    {
+      "id": "b2l1",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "../data/generated/arch_svg/fid2_light0.png",
+      "right": "../data/generated/arch_svg/fid2_light50.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2l2",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "../data/generated/arch_svg/fid2_light25.png",
+      "right": "../data/generated/arch_svg/fid2_light75.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2l3",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "../data/generated/arch_svg/fid2_light0.png",
+      "right": "../data/generated/arch_svg/fid2_light75.png",
+      "gt": "right",
+      "scored": true,
+      "note": null
+    },
+    {
+      "id": "b2l4",
+      "kind": "pair",
+      "dimension": "lighting",
+      "prompt": "which one feels brighter / more strongly lit?",
+      "left": "../data/generated/arch_svg/fid2_light50.png",
+      "right": "../data/generated/arch_svg/fid2_light75.png",
+      "gt": "right",
+      "scored": true,
+      "note": "JND probe at the small 0.5-0.75 delta"
+    }
+  ],
+  "catches": [
+    {
+      "id": "b2c1",
+      "image": "../data/generated/arch_svg/grain_8.png",
+      "position": 5,
+      "prompt": "which image feels more textured / grainy?",
+      "dimension": "texture"
+    },
+    {
+      "id": "b2c2",
+      "image": "../data/generated/arch_svg/fid2_taper30.png",
+      "position": 12,
+      "prompt": "which linework feels more calligraphic / has more varied stroke width?",
+      "dimension": "line_character"
+    },
+    {
+      "id": "b2c3",
+      "image": "../data/generated/arch_svg/jit_2p50.png",
+      "position": 19,
+      "prompt": "which linework feels rougher?",
+      "dimension": "roughness"
+    }
+  ]
+}
