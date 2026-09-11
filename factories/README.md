@@ -26,7 +26,7 @@ the long game is a studio where factory outputs compose: a wordmark from the fon
 | [weaverly](/factories/weaverly) | stitched, woven, laced, beaded media | parked, readme only |
 | [analogistry](/factories/analogistry) | analog print process treatments | parked, readme only |
 | [sigilry](/factories/sigilry) | emblems, seals, stamps, monograms, crests | parked, readme only |
-| [patterns](/factories/patterns) | repeat patterns and tiles | parked, readme only |
+| [patterns](/factories/patterns) | repeat patterns and surface design | parked, readme only |
 | [filigree](/factories/filigree) | flourishes, ornaments, decorative detail | parked, readme only |
 
 ## status
