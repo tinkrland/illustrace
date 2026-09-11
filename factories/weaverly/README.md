@@ -16,7 +16,7 @@ the repo is building cross-stitch first, and its corrections there are the disci
 
 ## adoption terms (how much can be taken)
 
-a lot, with one checkbox to tick. weaverly is same-project-team work like the fontasy family, so the engines, the grammar discipline, and the code are adoptable in principle. but unlike the fontasy repos (MIT), the repo currently posts no license file, so before wholesale code reuse, get the license added (MIT, like the siblings) or the perms reconfirmed for this one specifically. what is already fully takeable now, being design rather than code: the structural grammar thesis, the cross-stitch grid corrections as the discipline spec, and the engine-per-medium architecture decision.
+all of it. weaverly is same-project-team work like the fontasy family, and the owner (karla) marked the repo explicitly in its description as free use, cc0, for liat. so the engines, the grammar discipline, and the code are adoptable wholesale: cloned into `vendor/` when the build starts, reused directly, citable by name. (the repo itself carries no license file, so the grant lives in the owner's public note; if anyone else ever wants to reuse what illustrace lifted from here, the cc0 grant is the thing to point at, not MIT.)
 
 ## what it makes
 
