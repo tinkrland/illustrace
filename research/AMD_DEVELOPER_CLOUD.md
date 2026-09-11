@@ -78,6 +78,14 @@ for now, add auth when the runner goes multi-user):
 
 - `POST /training_jobs_ingest` (57) — queue a job
 - `GET /training_jobs_list?status=queued` (56) — runner claims queued work
+- `POST /training_jobs_update` (62) — runner flips status with a shared
+  secret: claims queued -> running, posts results -> done/failed with
+  metrics/params/artifact_uri/gpu_hours. wrong secret or invalid status
+  returns ok:false and writes nothing. secret lives in the
+  $ILLUSTRACE_RUNNER_SECRET env (runner + this workspace); the allowed
+  transitions are running|done|failed, requeueing is meta-api-only by
+  design so the ledger can't be rewound by the runner. verified
+  end-to-end 2026-09-11, job 1 exercised and reset
 - `POST /node_graphs_ingest` (58) / `GET /node_graphs_list` (59)
 - `POST /presets_ingest` (60) / `GET /presets_list` (61)
 
@@ -100,9 +108,8 @@ the measurement records and the ui document are one thing.
 
 known gaps (next provisioning round):
 
-- no status-update endpoint yet (claim/results transitions) — needs db.update
-  xanoscript + a shared secret so only the runner can flip job status
 - no auth on any endpoint — fine while single-user, must change before
-  anything public
+  anything public (training_jobs_update has its shared secret; the rest
+  are open)
 - datasets table has no ingest endpoint yet; manifests go in via meta api
   bulk insert for now
