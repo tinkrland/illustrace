@@ -14,11 +14,11 @@ stylized only, forever. no photorealism, no real-person likeness, same scope rul
 
 ### picrewify
 
-the first axis: features swap within the style. hair, nose, height, build, proportions, accessories. the character is fitted as a set of editable part slots in her own art style, so changing the hair changes *her* hair drawn *her* way, not a generic hair asset pasted on. this is identity as a parametric layer. the user asks for brunette and taller and gets exactly that, at the strength asked for, with zero surprise.
+the first axis: features swap within the style. hair, nose, height, build, proportions, accessories. the character is fitted as a set of editable part slots in her own art style, so changing the hair changes *her* hair drawn *her* way, not a generic hair asset pasted on. this is identity as a parametric layer. the user asks for brunette and taller and gets exactly that, at the strength asked for, with zero surprise. [characraft](/characraft) is the product surface this pillar builds toward: the actual picrew-style create-and-save flow.
 
 ### rigposer
 
-the second axis: pose. the drawing is limb-aware, a 2d rig living under the flat image, so the character re-poses like a real doll: fold her up, sit her down, turn her shoulders. the output stays a flat stylized drawing indistinguishable from one the original artist made in that pose. the rig is invisible scaffolding, never the deliverable.
+the second axis: pose. the drawing is limb-aware, a 2d rig living under the flat image, so the character re-poses like a real doll: fold her up, sit her down, turn her shoulders. the output stays a flat stylized drawing indistinguishable from one the original artist made in that pose. the rig is invisible scaffolding, never the deliverable. this is what makes a [characraft](/characraft) character reusable across scenes instead of a single saved pose.
 
 ### camera angle switcher
 
@@ -27,6 +27,11 @@ the third axis: viewpoint. the same character redrawn from a different angle, wi
 ### backgrounds (explicitly not scope)
 
 set design is an afterthought and is not part of charatrace. characters pose in the void. maybe someday, much much later, after illustrace is done and charatrace has earned its own pillars, backgrounds get a research pass. until then: nothing, and that's a decision, not a gap.
+
+## the folders so far
+
+- [characraft](/characraft): the character creator, presets plus picrew-style customization plus save-to-account plus reusable posing. parked, presets not designed yet.
+- [factories](/factories): charatrace's own factories (separate from illustrace's), the expressive and doodled asset families closer to the character herself. [emotica](/factories/emotica) (consistent-style emoticon and expression sets) and [scribbleria](/factories/scribbleria) (scribbled, loose-line doodle marks, likely source of characraft's doodled base linework).
 
 ## what it inherits
 
