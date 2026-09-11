@@ -14,7 +14,7 @@ ornament wants to be procedural: a filigree is a growth program (branch, curl, l
 
 ## provenance
 
-same-project-team adjacent: jakob's rogo (rope/pole generative svg, procedural mark-making) is the closest adoptable technique, citable by name, clone in `vendor/` context per the research scan.
+[jakob-bock/rogo](https://github.com/jakob-bock/rogo) [same-team, free use] (rope/pole generative svg, procedural mark-making) is the closest adoptable technique, citable by name, pooled straight in when the build starts.
 
 ## studio role
 

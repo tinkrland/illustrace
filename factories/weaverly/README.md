@@ -4,7 +4,7 @@ the media-translation factory. it takes an asset and renders it into textile med
 
 ## the structural grammar insight (from the repo)
 
-named after karla's weaverly (https://github.com/kqrla/weaverly, same-project-team, perms confirmed, typescript). its core thesis, adopted wholesale: these are not one filter with different skins. each medium obeys a completely different structural grammar and needs a fundamentally separate generation engine:
+named after [kqrla/weaverly](https://github.com/kqrla/weaverly), karla's, same team as us, typescript. its core thesis, adopted wholesale: these are not one filter with different skins. each medium obeys a completely different structural grammar and needs a fundamentally separate generation engine:
 
 - **cross-stitch** = discrete embroidery lattice
 - **weaving** = over-under thread simulation
@@ -16,7 +16,7 @@ the repo is building cross-stitch first, and its corrections there are the disci
 
 ## adoption terms (how much can be taken)
 
-all of it. weaverly is same-project-team work like the fontasy family, and the owner (karla) marked the repo explicitly in its description as free use, cc0, for liat. so the engines, the grammar discipline, and the code are adoptable wholesale: cloned into `vendor/` when the build starts, reused directly, citable by name. (the repo itself carries no license file, so the grant lives in the owner's public note; if anyone else ever wants to reuse what illustrace lifted from here, the cc0 grant is the thing to point at, not MIT.)
+all of it. [kqrla/weaverly](https://github.com/kqrla/weaverly) [same-team, free use cc0 for liat, per the owner's repo note] is karla's, same team as us, so the engines, the grammar discipline, and the code are pooled wholesale straight into the repo when the build starts: reused directly, citable by name, no third-party adoption dance.
 
 ## what it makes
 

@@ -12,10 +12,13 @@ outputs ship as real font files (.otf, .ttf, .woff, .woff2) *and* as the layered
 
 ## adoption terms (how much can be taken)
 
-everything. this is the most takeable factory in the folder. the source projects are same-project-team work (karla's), permission to use the code was confirmed outright on 2026-09-09, and all three repos are MIT, so they are citable by name in public docs as well. concretely:
+everything. this is the most takeable factory in the folder. the sources are karla's, same team as us, so this is pooling resources between teammates rather than adopting third-party work:
 
-- **code can be reused wholesale**, cloned into `vendor/` when the build starts, not just studied
-- **techniques are adoptable with attribution**: fontasy_fork's k-means color zones (the adoptable per-region vectorization path), bead and texture modes; fontasy-mask's pattern-as-mask, edge stitching, grain overlays, and per-letter overrides
+- [kqrla/fontasy](https://github.com/kqrla/fontasy) [same-team, free use, mit] — the ingestion path: scan, detect, vectorize, export
+- [kqrla/fontasy_fork](https://github.com/kqrla/fontasy_fork) [same-team, free use, mit] — extended glyph extractor, k-means color zones (the adoptable per-region vectorization path), bead and texture modes
+- [kqrla/fontasy-mask](https://github.com/kqrla/fontasy-mask) [same-team, free use, mit] — pattern-as-mask, edge stitching, grain overlays, per-letter overrides
+
+- **code is pooled wholesale** straight into the repo when the build starts, not just studied
 - **ui patterns are a proven shape worth copying**: the figma plugin + standalone web app split that all three repos share
 
 see `research/OSS_TOOL_SCAN.md` for the full scan and `research/STYLE_ONTOLOGY.md` for the typography decision that brought word-bearing outputs into scope: only the editable forms count; flattened static renders of type stay a non-goal.
