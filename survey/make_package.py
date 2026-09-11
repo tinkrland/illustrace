@@ -9,6 +9,7 @@ import json
 import os
 import re
 import shutil
+import sys
 import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +18,7 @@ IMG_DIR = os.path.join(ROOT, "data", "generated", "arch_svg")
 PKG_DIR = os.path.join(ROOT, "dist", "survey_package")
 ZIP_PATH = os.path.join(ROOT, "dist", "stylebench_survey.zip")
 
+JUDGE_README_HEAD = "illustrace stylebench - human judgment survey"
 JUDGE_README = """illustrace stylebench - human judgment survey
 
 1. unzip this folder somewhere
@@ -34,20 +36,23 @@ what humans actually perceive. takes about 5 minutes. thanks!
 """
 
 
-def build():
+def build(batch=None):
     # fresh package dir
+    global ZIP_PATH
     if os.path.exists(PKG_DIR):
         shutil.rmtree(PKG_DIR)
     os.makedirs(os.path.join(PKG_DIR, "images"))
 
     # stimuli: load, copy images, rewrite paths to images/<name>
-    with open(os.path.join(HERE, "stimuli.json")) as f:
+    stim_file = "stimuli_%s.json" % batch if batch else "stimuli.json"
+    with open(os.path.join(HERE, stim_file)) as f:
         stimuli = json.load(f)
+    if batch:
+        ZIP_PATH = os.path.join(ROOT, "dist", "stylebench_survey_%s.zip" % batch)
 
     used = set()
 
-    def ship(name):
-        src = os.path.join(IMG_DIR, name)
+    def ship(name, src):
         if not os.path.exists(src):
             raise SystemExit("missing image: " + src)
         if name not in used:
@@ -55,9 +60,11 @@ def build():
             used.add(name)
 
     def rewrite(p):
-        name = os.path.basename(p)
-        ship(name)
-        return "images/" + name
+        # stimuli paths are repo-relative ("../data/generated/...") and may
+        # point at arch_svg or substrate_v2 — resolve from the path itself
+        src = os.path.join(ROOT, p.replace("../", "", 1))
+        ship(os.path.basename(p), src)
+        return "images/" + os.path.basename(p)
 
     for q in stimuli["questions"]:
         for side in ("left", "right"):
@@ -82,6 +89,9 @@ def build():
 
     with open(os.path.join(PKG_DIR, "README.txt"), "w") as f:
         f.write(JUDGE_README)
+        if batch:
+            f.write("\n\nthis package is the %s session (%d questions).\n"
+                    % (batch, len(stimuli["questions"])))
 
     # verify: embedded json parses, every path resolves inside the package
     m = re.search(r'id="stimuli-data">\n(.*?)\n</script>', open(os.path.join(PKG_DIR, "index.html")).read(), re.S)
@@ -107,4 +117,5 @@ def build():
 
 
 if __name__ == "__main__":
-    build()
+    args = [a for a in sys.argv[1:]]
+    build(args[0] if args else None)

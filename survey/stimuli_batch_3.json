@@ -1,0 +1,173 @@
+{
+  "version": 3,
+  "batch": "batch_3",
+  "about": "illustrace stylebench human-judgment validation, batch_3. preregistered spec: survey/specs/batch_3.json. ground truth comes from parametric svg stimuli: the gt side is the one with the provably higher parameter (or the spec-declared hypothesis). anchor question is a warm-up and is not scored. catch pairs are identical images: 'no difference' is the correct answer.",
+  "questions": [
+    {
+      "id": "b3a",
+      "kind": "anchor",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width3.png",
+      "right": "../data/generated/arch_svg/fid2_width9.png",
+      "gt": "right",
+      "scored": false,
+      "note": "warm-up, extreme width delta=6, not scored"
+    },
+    {
+      "id": "b3w1",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width3.png",
+      "right": "../data/generated/arch_svg/fid2_width5.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=2, low end; fine step where signal expected strong per pilot agreement=1.0"
+    },
+    {
+      "id": "b3w2",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width5.png",
+      "right": "../data/generated/arch_svg/fid2_width7.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=2, mid range; KEY TEST \u2014 hypothesis predicts judges cannot distinguish 5v7"
+    },
+    {
+      "id": "b3w3",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width7.png",
+      "right": "../data/generated/arch_svg/fid2_width9.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=2, high end; fine step, pairs with b3w1 and b3w2 to test nonlinearity"
+    },
+    {
+      "id": "b3w4",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width3.png",
+      "right": "../data/generated/arch_svg/fid2_width7.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=4, low-mid bridge; coarser step to confirm JND is below 4"
+    },
+    {
+      "id": "b3w5",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width5.png",
+      "right": "../data/generated/arch_svg/fid2_width9.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=4, mid-high bridge; coarser step to confirm JND is below 4"
+    },
+    {
+      "id": "b3w6",
+      "kind": "pair",
+      "dimension": "line_weight",
+      "prompt": "which linework feels heavier / thicker?",
+      "left": "../data/generated/arch_svg/fid2_width3.png",
+      "right": "../data/generated/arch_svg/fid2_width9.png",
+      "gt": "right",
+      "scored": true,
+      "note": "delta=6, extreme; scored validation that judges separate 3v9 as hypothesis predicts"
+    },
+    {
+      "id": "b3t1",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "../data/generated/arch_svg/fid2_tapertoward30.png",
+      "right": "../data/generated/arch_svg/fid2_taperaway30.png",
+      "gt": "left",
+      "scored": true,
+      "note": "same magnitude 0.3, direction effect: toward-tip vs away-from-tip; hypothesis: toward = more hand-drawn"
+    },
+    {
+      "id": "b3t2",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "../data/generated/arch_svg/fid2_tapertoward60.png",
+      "right": "../data/generated/arch_svg/fid2_taperaway60.png",
+      "gt": "left",
+      "scored": true,
+      "note": "same magnitude 0.6, direction effect at high taper; hypothesis: toward = more hand-drawn"
+    },
+    {
+      "id": "b3t3",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "../data/generated/arch_svg/fid2_tapertoward15.png",
+      "right": "../data/generated/arch_svg/fid2_taperaway30.png",
+      "gt": "left",
+      "scored": true,
+      "note": "direction vs magnitude conflict: toward-low 0.15 vs away-mid 0.3; tests whether direction or magnitude dominates hand-drawnness perception"
+    },
+    {
+      "id": "b3t4",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "../data/generated/arch_svg/fid2_tapertoward60.png",
+      "right": "../data/generated/arch_svg/fid2_taperaway30.png",
+      "gt": "left",
+      "scored": true,
+      "note": "direction and magnitude aligned: toward-high 0.6 vs away-mid 0.3; both cues favor left, expected easy pass"
+    },
+    {
+      "id": "b3t5",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework has more taper?",
+      "left": "../data/generated/arch_svg/fid2_taper30.png",
+      "right": "../data/generated/arch_svg/fid2_taper60.png",
+      "gt": "right",
+      "scored": true,
+      "note": "taper magnitude discrimination control; validates judges can perceive taper amount before interpreting direction results"
+    },
+    {
+      "id": "b3t6",
+      "kind": "pair",
+      "dimension": "taper",
+      "prompt": "which linework feels more hand-drawn?",
+      "left": "../data/generated/arch_svg/fid2_tapertoward15.png",
+      "right": "../data/generated/arch_svg/fid2_taperaway60.png",
+      "gt": "left",
+      "scored": true,
+      "note": "extreme direction vs magnitude conflict: toward-low 0.15 vs away-high 0.6; if judges pick right, magnitude fully dominates direction"
+    }
+  ],
+  "catches": [
+    {
+      "id": "b3c1",
+      "image": "../data/generated/arch_svg/fid2_width5.png",
+      "position": 4,
+      "prompt": "which linework feels heavier / thicker?",
+      "dimension": "line_weight"
+    },
+    {
+      "id": "b3c2",
+      "image": "../data/generated/arch_svg/fid2_taper30.png",
+      "position": 9,
+      "prompt": "which linework feels more hand-drawn?",
+      "dimension": "taper"
+    },
+    {
+      "id": "b3c3",
+      "image": "../data/generated/arch_svg/grain_8.png",
+      "position": 14,
+      "prompt": "which image feels more textured / grainy?",
+      "dimension": "texture"
+    }
+  ]
+}
