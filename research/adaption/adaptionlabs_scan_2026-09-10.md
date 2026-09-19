@@ -132,3 +132,23 @@ Illustrace currently integrates two AdaptionLabs concepts (documented in `illust
 1. **API Status**: Confirmed 503 Service Temporarily Unavailable on `api.adaptionlabs.ai` across 7 endpoint path variations via HTTP/HTTPS GET requests. Confirmed HTTP 200 OK on `adaptionlabs.ai`.
 2. **Documentation & Blog Scraping**: Used Firecrawl (`POST https://api.firecrawl.dev/v1/scrape`) to retrieve full content for homepage, product pages (`/invent-a-dataset`, `/auto-scientist`), and research blog posts (`/blog/autoscientist-api`, `/blog/multimodal-autoscientist`, `/blog/agent-memory-write-time`, `/blog/a-better-harness-can-unlock-smaller-models`).
 3. **Illustrace Codebase Audit**: Read and analyzed `illustrace/README.md`, `research/VALIDATION_LOOP.md`, `research/STYLEBENCH_THESIS.md`, `research/adaption/upload_preferences.py`, `survey/build_batch.py`, `survey/analyze_batch.py`, and `engine/registry.py`.
+
+---
+
+## Postscript (2026-09-19): the API was never down
+
+The 503s documented above were real, but the diagnosis was wrong: `api.adaptionlabs.ai`
+is a dead load balancer, and the actual service lives at
+**`https://api.prod.adaptionlabs.ai`** (discovered from the `adaption` pip SDK's
+`_client.py` default, not from guessing). All the 503 probing in this report hit
+the wrong host.
+
+Corrected status (verified live, both `pt_live_*` keys work, full access):
+
+* `datasets.list` -> 5 datasets, including the waspify strategy/constraint benchmarks
+  and the substrate subject-space passes 1-3.
+* `autoscientist.list` -> 1 run (cancelled).
+* `training_models.list` -> 18 models: gemma-4-31B (incl. VLM), gpt-oss-120b/20b,
+  nemotron-3-super-120b, qwen3.5-122b, llama-3.3-70b, mixtral, and smaller ones.
+* Docs at `docs.adaptionlabs.ai`; products are adaptive data (dataset optimization)
+  and autoscientist (automated research loop that trains a model to a goal).
