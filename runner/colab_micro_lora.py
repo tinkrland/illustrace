@@ -66,7 +66,15 @@ def setup_kohya():
         return
     sh(["git", "clone", "--depth", "1",
         "https://github.com/kohya-ss/sd-scripts", KOHYA_DIR])
-    sh(["pip", "install", "-q", "-r", f"{KOHYA_DIR}/requirements.txt"])
+    # requirements.txt ends in "-e ." (installs sd-scripts itself as an
+    # editable package) -- pip only resolves that relative to cwd, so it
+    # must run from inside KOHYA_DIR, not /content
+    cwd = os.getcwd()
+    os.chdir(KOHYA_DIR)
+    try:
+        sh(["pip", "install", "-q", "-r", "requirements.txt"])
+    finally:
+        os.chdir(cwd)
     sh(["pip", "install", "-q", "accelerate"])
 
 
