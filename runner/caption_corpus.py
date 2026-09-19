@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""caption the style_a corpus with nebius vision (minicpm-v).
+"""caption a micro corpus with nebius vision (minicpm-v).
 
 subject-only captions per the packaging spec: the trigger carries the
 style, so captions describe what is depicted and never the medium.
 writes <stem>.txt next to each image; safe to rerun (skips captioned).
+usage: caption_corpus.py --dir data/micro/digital_watercolor --trigger dgtlwc
 """
 import base64
 import json
@@ -11,9 +12,14 @@ import os
 import sys
 import urllib.request
 
-CORPUS = os.path.join(os.path.dirname(__file__), "..", "data", "micro", "style_a")
+import argparse
+_ap = argparse.ArgumentParser()
+_ap.add_argument("--dir", default="contemporary_pop")
+_ap.add_argument("--trigger", default="skrfrnt")
+_args = _ap.parse_args()
+CORPUS = os.path.join(os.path.dirname(__file__), "..", "data", "micro", _args.dir)
 MODEL = "openbmb/MiniCPM-V-4_5"
-TRIGGER = "skrfrnt"
+TRIGGER = _args.trigger
 
 
 def key():

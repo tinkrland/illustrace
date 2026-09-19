@@ -8,7 +8,7 @@ run inside a colab cell (gpu runtime):
 
     !git clone https://github.com/tinkrland/illustrace /content/illustrace
     from google.colab import files
-    up = files.upload()                     # the style_a corpus zip
+    up = files.upload()                     # the corpus zip (pop lane)
     !unzip -q {list(up)[0]} -d /content/illustrace/data/micro/storefronts
     %env HF_TOKEN=hf_...        # from an account that accepted the
                                  # flux.1-dev license
@@ -31,13 +31,18 @@ import sys
 import time
 
 # --- config ------------------------------------------------------------
-DATASET_DIR = "/content/illustrace/data/micro/style_a"
+# two micro-corpora, same pipeline: "contemporary_pop" (already packaged)
+# and "digital_watercolor" (captions pending). the cell sets the lane via
+# env vars: %env DATASET_DIR=... %env TRIGGER=... -- defaults are the pop
+# lane so old cells keep working.
+DATASET_DIR = os.environ.get(
+    "DATASET_DIR", "/content/illustrace/data/micro/contemporary_pop")
 OUT_DIR = ("/content/drive/MyDrive/illustrace_adapters"
            if os.path.isdir("/content/drive/MyDrive") else "/content/adapters")
 KOHYA_DIR = "/content/sd-scripts"
 WEIGHTS_DIR = "/content/flux1-dev"
-TRIGGER = "skrfrnt"     # no-english-subword, same rule as the v0 spec
-EPOCHS = 10             # micro corpus: 15 imgs x 3 repeats x 10 epochs
+TRIGGER = os.environ.get("TRIGGER", "skrfrnt")  # per-lane, no english subword
+EPOCHS = 10             # micro corpus: imgs x repeats x epochs
 REPEATS = 3             # = 450 steps, 1.5-2.5h on a t4
 SAVE_EVERY = 2
 LR = 1e-4

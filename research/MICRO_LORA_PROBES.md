@@ -24,9 +24,14 @@ style split: the new 14 share loose wobbly strokes (width ~4.9, cv up
 to 1.3) while ref_20-23 are fine uniform lines (width ~2.5, cv ~0.34,
 pairwise 1.13 among themselves). same artist, different technique:
 merging them would have trained a mush. liat confirmed the split
-independently; the 14 new images are the corpus (data/micro/style_a,
-gitignored), the 4 old refs stay out and keep their role as probe
-targets for other lanes.
+independently; the 14 new images are the corpus (data/micro/contemporary_pop,
+gitignored, lane name "contemporary pop", trigger skrfrnt), the 4 old
+refs stay out and keep their role as probe targets for other lanes.
+
+a second lane landed later: "digital watercolor"
+(data/micro/digital_watercolor, trigger dgtlwc), 40 unique images from
+a 41-file zip (one byte-dupe). captions pending; same pipeline:
+caption -> profile -> split -> zip -> colab.
 
 this is the thesis doing its job: the measurement caught an
 incoherent corpus before a gpu-hour was spent on it.
