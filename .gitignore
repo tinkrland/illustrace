@@ -7,3 +7,4 @@ survey/inbox/*
 survey/processed/*
 !survey/processed/.gitkeep
 survey/judgments_out.json
+adapters/
