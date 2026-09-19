@@ -61,11 +61,18 @@ def check_gpu():
 
 
 def setup_kohya():
-    if os.path.isdir(os.path.join(KOHYA_DIR, "flux_train_network.py")):
+    train_script = os.path.join(KOHYA_DIR, "flux_train_network.py")
+    if os.path.isdir(KOHYA_DIR) and os.path.exists(train_script):
         print("kohya present")
-        return
-    sh(["git", "clone", "--depth", "1",
-        "https://github.com/kohya-ss/sd-scripts", KOHYA_DIR])
+    else:
+        # partial clone from a crashed run: clear it out, start over
+        if os.path.isdir(KOHYA_DIR):
+            print("partial sd-scripts found, recloning")
+            shutil.rmtree(KOHYA_DIR)
+        sh(["git", "clone", "--depth", "1",
+            "https://github.com/kohya-ss/sd-scripts", KOHYA_DIR])
+    # pip runs every time (idempotent, fast when already satisfied):
+    # an interrupted install must heal on rerun, not be skipped.
     # requirements.txt ends in "-e ." (installs sd-scripts itself as an
     # editable package) -- pip only resolves that relative to cwd, so it
     # must run from inside KOHYA_DIR, not /content
