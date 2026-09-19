@@ -102,23 +102,28 @@ content/style disentanglement, reference-based generation, controllable editing,
 
 ## what exists so far
 
-a fully deterministic engine, nothing neural, on purpose. current hard numbers: 94 tests passing, 46 parameters in the registry, 7 validated, 4 controlled research runs.
+the core engine is deterministic on purpose; the learned layers around it (the llm compiler, the style adapters) exist to be *constrained* by it, not to replace it. current hard numbers: 128 tests passing, 46 parameters in the registry, 7 validated, 4 controlled research runs.
 
 - style measurements on raster and on vector-ground-truth fill regions (the scale-invariant construction), [here](/engine/analyzer.py) and [here](/engine/texture_gt.py)
 - one transfer operator so far, palette transfer with strength-as-distance-traveled, [here](/engine/operators.py)
 - the parameter registry as code, renders a status ladder (candidate → measurable → validated → controllable) into [the parameter matrix](/results/PARAMETER_MATRIX.md), registry lives [here](/engine/registry.py)
 - controlled stimulus pairs where exactly one style factor changes, plus the parametric svg substrate (brush recipes, texture, lighting) that serves as ground truth, [here](/benchmarks)
 - the ten-dimension decomposition, the granularity question, the metrology rules, [here](/research/STYLE_ONTOLOGY.md)
-- pairwise forced-choice human-judgment app (catch pairs, confidence, ingest + validation), built and tested, validation runs pending, [here](/survey)
-- control-plane toolkit mirroring every run, [here](/xano)
+- the human-judgment lane, built and waiting on judges: pairwise forced-choice survey app (catch pairs, confidence, ingest + validation), a pilot judged (n=1, directional only), and batches 2–4 packaged for the n=5 study, [here](/survey)
+- the **llm semantic compiler**: plain-language style hypothesis in, schema-valid preregistration spec out (validator-enforced, never auto-promoted), plus a langsmith eval ledger and the qlora path for a spec/judge model, [here](/llm)
+- the **style lora engine**: public-domain painter corpora ingested from wikidata (monet, van gogh, hokusai), measured into inspo profiles, an adapter probe that scores style fidelity with cie76 deltae in lab space (self-test passes at dE 0.0, cross-artist fails at dE 38.5 — it catches leakage), a kohya packaging spec, and a node-based composer ui with strength wires, [here](/research/STYLE_LORA_ENGINE.md) and [here](/engine)
+- the **amd runner lane**: a training_jobs queue + non-rewindable ledger in xano, a claimed-status endpoint with shared-secret auth, and a preregistered fitter experiment ladder (fx0 measurability → fx3 real-image transfer) with kill conditions, [here](/research/FITTER_EXPERIMENTS.md)
+- control-plane toolkit mirroring every run, judgment, job, graph, and preset — eight live tables, [here](/xano)
 - the run records: fidelity, granularity, anchor, texture ground truth, [here](/results)
+- parked concept stubs: readme-only [factories](/factories) for editable-asset mini-generators (fonts, blobs, icons, weave), a future factory studio
 
 the test-1 batch landed: value_range exact against the area mixture, stroke_directionality rotation-exact with a tie caveat, shape_complexity pinned to the vector source (raster proxies answered a 23% ground-truth change with 3%, which is the finding). next in research-first order: human-judgment validation, because a metric that doesn't track what a human calls "rougher linework" is just a number wearing a lab coat.
 
 ## where it breaks (honest)
 
-- **no metric is human-validated yet.** the survey tool exists; the validation study has not run. until it does, "validated" means internally consistent under ground truth, not artist-agreed.
+- **no metric is human-validated yet.** the survey tool exists, a pilot is judged (n=1, directional), and the n=5 study batches are packaged but not run. until real judges land, "validated" means internally consistent under ground truth, not artist-agreed.
 - **one transfer operator.** palette v0. the interesting operators (stroke, texture) are deliberately queued behind validation.
+- **the learned layers are pre-training.** the llm compiler drafts specs, the adapter probe and composer exist, and the fitter ladder is preregistered — but nothing has trained yet (amd access pending). the whole learned stack is design + queue, zero checkpoints.
 - **2d svg substrate only.** the 3d decomposition lives in research; nothing renders it.
 - **stylized-only scope.** findings may not transfer to photorealism; that's fine, it's excluded on purpose.
 
@@ -127,12 +132,14 @@ the test-1 batch landed: value_range exact against the area mixture, stroke_dire
 ```
 application/   style composer, the pilot tool this research is for
 benchmarks/    stimulus pairs + the parametric svg substrate
-engine/        analyzer, metrics, operators, registry, texture ground truth
-research/      thesis, ontology, prior art, editable-presets thread
+engine/        analyzer, metrics, operators, registry, inspo profiles, adapter probe
+factories/     parked readme-only stubs (fonts, blobs, icons, weave)
+llm/           semantic compiler + eval ledger + spec/judge qlora path
+research/      thesis, ontology, prior art, lora engine, fitter ladder, editable-presets thread
 results/       run records + the parameter matrix
-survey/        human-judgment validation app
-tests/         87 offline tests
-xano/          control-plane toolkit
+survey/        human-judgment validation app (pilot judged, batches 2-4 packaged)
+tests/         128 offline tests
+xano/          control-plane toolkit (8 live tables, amd runner queue)
 ```
 
 ## the application layer
