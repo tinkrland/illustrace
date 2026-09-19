@@ -102,7 +102,7 @@ content/style disentanglement, reference-based generation, controllable editing,
 
 ## what exists so far
 
-the core engine is deterministic on purpose; the learned layers around it (the llm compiler, the style adapters) exist to be *constrained* by it, not to replace it. current hard numbers: 128 tests passing, 46 parameters in the registry, 7 validated, 4 controlled research runs.
+the core engine is deterministic on purpose; the learned layers around it (the llm compiler, the style adapters) exist to be *constrained* by it, not to replace it. current hard numbers: 160 tests passing, 46 parameters in the registry, 7 validated, 4 controlled research runs.
 
 - style measurements on raster and on vector-ground-truth fill regions (the scale-invariant construction), [here](/engine/analyzer.py) and [here](/engine/texture_gt.py)
 - one transfer operator so far, palette transfer with strength-as-distance-traveled, [here](/engine/operators.py)
@@ -111,9 +111,9 @@ the core engine is deterministic on purpose; the learned layers around it (the l
 - the ten-dimension decomposition, the granularity question, the metrology rules, [here](/research/STYLE_ONTOLOGY.md)
 - the human-judgment lane, built and waiting on judges: pairwise forced-choice survey app (catch pairs, confidence, ingest + validation), a pilot judged (n=1, directional only), and batches 2–4 packaged for the n=5 study, [here](/survey)
 - the **llm semantic compiler**: plain-language style hypothesis in, schema-valid preregistration spec out (validator-enforced, never auto-promoted), plus a langsmith eval ledger and the qlora path for a spec/judge model, [here](/llm)
-- the **style lora engine**: public-domain painter corpora ingested from wikidata (monet, van gogh, hokusai), measured into inspo profiles, an adapter probe that scores style fidelity with cie76 deltae in lab space (self-test passes at dE 0.0, cross-artist fails at dE 38.5 — it catches leakage), a kohya packaging spec, and a node-based composer ui with strength wires, [here](/research/STYLE_LORA_ENGINE.md) and [here](/engine)
-- the **amd runner lane**: a training_jobs queue + non-rewindable ledger in xano, a claimed-status endpoint with shared-secret auth, and a preregistered fitter experiment ladder (fx0 measurability → fx3 real-image transfer) with kill conditions, [here](/research/FITTER_EXPERIMENTS.md)
-- control-plane toolkit mirroring every run, judgment, job, graph, and preset — eight live tables, [here](/xano)
+- the **style lora engine**: public-domain painter corpora ingested from wikidata (monet, van gogh, hokusai), measured into inspo profiles, an adapter probe that scores style fidelity with cie76 deltae in lab space (self-test passes at dE 0.0, cross-artist fails at dE 38.5, so it catches leakage), a kohya packaging spec, and a node-based composer ui with strength wires, [here](/research/STYLE_LORA_ENGINE.md) and [here](/engine)
+- the **gpu runner lane**: a xano job queue with a non-rewindable ledger, a pull-model runner that trains kohya flux style-loras on an a100, and a preregistered fitter ladder (fx0 measurability to fx3 real-image transfer), [here](/runner) and [here](/research/FITTER_EXPERIMENTS.md)
+- control-plane toolkit mirroring every run, judgment, job, graph, and preset, eight live tables, [here](/xano)
 - the run records: fidelity, granularity, anchor, texture ground truth, [here](/results)
 - parked concept stubs: readme-only [factories](/factories) for editable-asset mini-generators (fonts, blobs, icons, weave), a future factory studio
 
@@ -121,9 +121,9 @@ the test-1 batch landed: value_range exact against the area mixture, stroke_dire
 
 ## where it breaks (honest)
 
-- **no metric is human-validated yet.** the survey tool exists, a pilot is judged (n=1, directional), and the n=5 study batches are packaged but not run. until real judges land, "validated" means internally consistent under ground truth, not artist-agreed.
+- **human validation is pilot-stage.** one judge, 12 pairs: roughness, line weight, and color temperature track the metrics, taper got refuted, and the pilot caught two stimuli bugs (an inverted lighting prompt, a grain step below the perceptual floor). real, but n=1 directional; the n=5 study is packaged and waiting on judges.
 - **one transfer operator.** palette v0. the interesting operators (stroke, texture) are deliberately queued behind validation.
-- **the learned layers are pre-training.** the llm compiler drafts specs, the adapter probe and composer exist, and the fitter ladder is preregistered — but nothing has trained yet (amd access pending). the whole learned stack is design + queue, zero checkpoints.
+- **the learned layers are pre-training.** the llm compiler drafts specs, the adapter probe and composer exist, and the fitter ladder is preregistered, but nothing has trained yet (gpu provisioning in progress). the whole learned stack is design + queue, zero checkpoints.
 - **2d svg substrate only.** the 3d decomposition lives in research; nothing renders it.
 - **stylized-only scope.** findings may not transfer to photorealism; that's fine, it's excluded on purpose.
 
@@ -136,9 +136,10 @@ engine/        analyzer, metrics, operators, registry, inspo profiles, adapter p
 factories/     parked readme-only stubs (fonts, blobs, icons, weave)
 llm/           semantic compiler + eval ledger + spec/judge qlora path
 research/      thesis, ontology, prior art, lora engine, fitter ladder, editable-presets thread
+runner/        the gpu runner (claims xano jobs, kohya flux loras, posts results)
 results/       run records + the parameter matrix
 survey/        human-judgment validation app (pilot judged, batches 2-4 packaged)
-tests/         128 offline tests
+tests/         160 offline tests
 xano/          control-plane toolkit (8 live tables, amd runner queue)
 ```
 
@@ -155,7 +156,7 @@ the full concept doc lives in [application/README.md](/application/README.md).
 
 ## reference points (not affiliations)
 
-nothing here is a flagship of anything. illustrace is a research project that thinks style should be measurable. it isn't part of a program or ecosystem — these are just reference points it keeps around, nothing more:
+nothing here is a flagship of anything. illustrace is a research project that thinks style should be measurable. it isn't part of a program or ecosystem; these are just reference points it keeps around, nothing more:
 
 | reference | why it's here |
 |---|---|

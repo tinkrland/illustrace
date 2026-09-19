@@ -1,5 +1,5 @@
 ---
-title: fitter experiment specs (amd mi300x runner)
+title: fitter experiment specs (gpu runner, box-agnostic)
 summary: the experiment ladder for factor-fitters, the inverse models that map image crops to recipe params. every run is preregistered on xano, every gate is written before the run. fx1 is queued as training job 1
 status: spec (draft 2, glm-5.2 critique folded in 2026-09-11)
 ---
