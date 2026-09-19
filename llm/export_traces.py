@@ -2,9 +2,11 @@
 
 langsmith access is temporary; the training corpus is not. this pulls every
 llm run from the illustrace project and emits chat-format training pairs
-(messages -> assistant content) to data/generated/ft/ — the same format the
-nebius fine_tuning/jobs endpoint (once its backend stops 500ing) and the
-mi300x lora runner both consume.
+(messages -> assistant content) to data/generated/ft/, the same format the
+nebius tokenfactory fine-tuning endpoint and the mi300x lora runner both
+consume. (the 09-10 "nebius 500s" finding was our bug, fixed 2026-09-19:
+exact whitelist model id, full chat shape, explicit hyperparameters. see
+llm/lora_train.py --backend nebius.)
 
 usage:
     python3 llm/export_traces.py                 # all llm runs
