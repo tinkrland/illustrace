@@ -8,3 +8,4 @@ survey/processed/*
 !survey/processed/.gitkeep
 survey/judgments_out.json
 adapters/
+data/micro/

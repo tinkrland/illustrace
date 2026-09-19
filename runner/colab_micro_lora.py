@@ -7,9 +7,15 @@ research/MICRO_LORA_PROBES.md for the rationale.
 run inside a colab cell (gpu runtime):
 
     !git clone https://github.com/tinkrland/illustrace /content/illustrace
+    from google.colab import files
+    up = files.upload()                     # the storefront corpus zip
+    !unzip -q {list(up)[0]} -d /content/illustrace/data/micro/storefronts
     %env HF_TOKEN=hf_...        # from an account that accepted the
                                  # flux.1-dev license
     !python /content/illustrace/runner/colab_micro_lora.py
+
+the corpus ships as a zip upload, not via the repo: living-artist
+references stay out of the public repo (see research/MICRO_LORA_PROBES.md).
 
 expects the dataset at DATASET_DIR: images + one caption .txt per image
 (same stem). if metadata.jsonl is missing it is built on the fly.
