@@ -8,7 +8,7 @@ run inside a colab cell (gpu runtime):
 
     !git clone https://github.com/tinkrland/illustrace /content/illustrace
     from google.colab import files
-    up = files.upload()                     # the storefront corpus zip
+    up = files.upload()                     # the style_a corpus zip
     !unzip -q {list(up)[0]} -d /content/illustrace/data/micro/storefronts
     %env HF_TOKEN=hf_...        # from an account that accepted the
                                  # flux.1-dev license
@@ -31,7 +31,7 @@ import sys
 import time
 
 # --- config ------------------------------------------------------------
-DATASET_DIR = "/content/illustrace/data/micro/storefronts"
+DATASET_DIR = "/content/illustrace/data/micro/style_a"
 OUT_DIR = ("/content/drive/MyDrive/illustrace_adapters"
            if os.path.isdir("/content/drive/MyDrive") else "/content/adapters")
 KOHYA_DIR = "/content/sd-scripts"

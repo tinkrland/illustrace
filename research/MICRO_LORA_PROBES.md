@@ -16,12 +16,20 @@ captions, kohya config, adapter save, probe scoring, promotion rules.
 ## what to train on
 
 the reference pool is 24 images, and per the redundancy matrix they are
-24 *different* styles: one image each, no exploitable family except
-ref_20-23 (ink + watercolor storefronts, one hand, pairwise similarity
-0.34-0.62 while everything else sits near zero). so "10-20 refs" means
-one thing: the storefront family plus more images from the same series,
-which liat has (they arrived as whatsapp images; there are more where
-those came from).
+24 *different* styles: one image each, the only cluster being
+ref_20-23 (ink + watercolor storefronts, one hand). liat then sent a
+batch of 15 (one byte-duplicate, 14 unique) from the actual inspo
+artist. the profile harness was run before packaging and caught a
+style split: the new 14 share loose wobbly strokes (width ~4.9, cv up
+to 1.3) while ref_20-23 are fine uniform lines (width ~2.5, cv ~0.34,
+pairwise 1.13 among themselves). same artist, different technique:
+merging them would have trained a mush. liat confirmed the split
+independently; the 14 new images are the corpus (data/micro/style_a,
+gitignored), the 4 old refs stay out and keep their role as probe
+targets for other lanes.
+
+this is the thesis doing its job: the measurement caught an
+incoherent corpus before a gpu-hour was spent on it.
 
 alternatives considered:
 

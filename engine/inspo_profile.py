@@ -131,7 +131,11 @@ def main():
     else:
         out = {"n": 1, "profiles": profiles}
 
-    out_path = os.path.join(OUT_DIR, "profiles.json")
+    # profiles.json is the composer library's 24-ref source of truth:
+    # profiling any other dir writes its own file instead of clobbering it
+    slug = ("profiles.json" if os.path.abspath(args.refs) == os.path.abspath(REFS)
+            else "profiles_" + os.path.basename(os.path.normpath(args.refs)) + ".json")
+    out_path = os.path.join(OUT_DIR, slug)
     with open(out_path, "w") as f:
         json.dump(out, f, indent=1)
 
