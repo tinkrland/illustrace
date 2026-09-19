@@ -8,6 +8,10 @@ status: application-layer concept doc — the practical tool built on the resear
 factors. this folder is what happens if the answer is yes: **style composer** — the
 illustrace application layer that applies the pilot research as an actual workflow.
 
+for the why behind the approach (multi-reference mixing, routing without
+parameter bleed, and why the black-box path is rejected on purpose), see
+[positioning.md](positioning.md).
+
 illustrace (practical implementation concept) aims to rethink how "style transfer" works.
 instead of treating a reference image as something to copy wholesale, illustrace treats
 every visual style as a collection of independent artistic attributes that can be
