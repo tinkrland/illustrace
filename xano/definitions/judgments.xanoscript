@@ -1,0 +1,18 @@
+# table id 26, workspace 1, branch v1. provisioned 2026-09-10 for the
+# human-judgment survey. see xano/PROVISIONING.md "judgments provisioning".
+table judgments {
+  int id
+  text judge_id
+  text dimension
+  text stimulus_a_id
+  text stimulus_b_id
+  text chosen
+  text confidence
+  bool is_catch_pair
+  bool noise_flag
+  int reaction_ms
+  text session_id
+  text question_id
+  json raw
+  timestamp created_at?=now
+}

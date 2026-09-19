@@ -1,0 +1,16 @@
+# endpoint id 56, group stylebench. GET /training_jobs_list?status=queued.
+# the amd runner polls this to claim work (lowest id first).
+query training_jobs_list verb=GET {
+  input {
+    text status?
+  }
+
+  stack {
+    db.query training_jobs as $rows {
+      where = ($input.status == "" || $input.status == null) ? true : ($db.training_jobs.status == $input.status)
+      sort = {id: "asc"}
+    }
+  }
+
+  response = $rows
+}

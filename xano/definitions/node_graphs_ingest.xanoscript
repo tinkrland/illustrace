@@ -1,0 +1,27 @@
+# endpoint id 58, group stylebench. POST /node_graphs_ingest.
+# each save is a new row; the composer increments graph_version client-side.
+query node_graphs_ingest verb=POST {
+  input {
+    json graph
+    int graph_version?
+    text status?
+  }
+
+  stack {
+    var $version_val {
+      value = $input.graph_version ?? 1
+    }
+    var $status_val {
+      value = $input.status ?? "draft"
+    }
+    db.add node_graphs {
+      data = {
+        graph          : $input.graph
+        graph_version  : $version_val
+        status         : $status_val
+      }
+    } as $record
+  }
+
+  response = $record
+}

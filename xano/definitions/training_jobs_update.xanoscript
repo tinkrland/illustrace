@@ -1,0 +1,57 @@
+# endpoint id 62, group stylebench. POST /training_jobs_update.
+# runner-only status transitions (claim queued->running, post results
+# ->done/failed) gated by a shared secret so the runner can never rewind
+# the ledger (allowed transitions are running|done|failed; requeueing is
+# meta-api-only by design). secret is $ILLUSTRACE_RUNNER_SECRET — this file
+# has the literal value redacted to a placeholder; substitute the real
+# secret before re-provisioning (see xano/README.md). verified end-to-end
+# 2026-09-11: wrong secret -> unauthorized, invalid status -> rejected with
+# the allowed list, valid claim/results transitions write through.
+query training_jobs_update verb=POST {
+  input {
+    int id
+    text secret
+    text status?
+    json metrics?
+    json params?
+    text artifact_uri?
+    json gpu_hours?
+  }
+
+  stack {
+    conditional {
+      if ($input.secret == "{{ILLUSTRACE_RUNNER_SECRET}}") {
+        conditional {
+          if ($input.status == "running" || $input.status == "done" || $input.status == "failed") {
+            db.edit training_jobs {
+              field_name = "id"
+              field_value = $input.id
+              data = {
+                status       : $input.status
+                metrics      : $input.metrics
+                params       : $input.params
+                artifact_uri : $input.artifact_uri
+                gpu_hours    : $input.gpu_hours
+              }
+            } as $r
+            var $result {
+              value = {ok: true, job: $r}
+            }
+          }
+          else {
+            var $result {
+              value = {ok: false, error: "invalid status transition", allowed: ["running", "done", "failed"]}
+            }
+          }
+        }
+      }
+      else {
+        var $result {
+          value = {ok: false, error: "unauthorized"}
+        }
+      }
+    }
+  }
+
+  response = $result
+}

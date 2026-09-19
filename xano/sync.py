@@ -38,16 +38,16 @@ def _load_run_file(path):
 
 
 def _coerce_run(raw):
-    """map the on-disk run format to the runs schema shape.
+    """map the on-disk run format to the stylebench_runs schema shape.
 
-    on-disk files use 'experiment' (string name) and lack 'experiment_id' /
-    'id' since those are assigned by xano on insert. we set sentinel values
-    (0) for id and experiment_id so schema presence-checks pass; xano ignores
-    id=0 on insert.
+    on-disk files use 'experiment' as the string name (matches the live
+    table's text field directly, no experiment_id lookup needed) and lack
+    'id' since xano assigns it on insert. sentinel id=0 passes the schema's
+    presence-check; xano ignores id=0 on insert.
     """
     return {
         "id": raw.get("id", 0),
-        "experiment_id": raw.get("experiment_id", 0),
+        "experiment": raw.get("experiment", ""),
         "subject": raw.get("subject", ""),
         "requested": raw.get("requested", raw.get("experiment", "")),
         "params": raw.get("params", raw.get("profiles", {})),
@@ -110,7 +110,7 @@ def sync_runs(runs_dir=None, dry_run=False, post_fn=None):
             continue
 
         record = _coerce_run(raw)
-        errors = _schema.validate("runs", record)
+        errors = _schema.validate("stylebench_runs", record)
 
         if errors:
             reason = "; ".join(errors)

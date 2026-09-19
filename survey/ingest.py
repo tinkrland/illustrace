@@ -1,30 +1,33 @@
-"""survey/ingest.py — normalize downloaded survey results into human_judgments records.
+"""survey/ingest.py — normalize downloaded survey results into records shaped for
+the LIVE xano `judgments` table (id 26; reconciled 2026-09-19 — this used to emit
+a "human_judgments" shape for a table that was never actually provisioned).
 
 usage:
     python survey/ingest.py results.json               # normalize + write judgments_out.json
     python survey/ingest.py results.json --dry-run     # validate only, no file written
 
-run_id derivation
------------------
-question ids (q01–q12) are mapped to a stable integer run_id via a small fixed table
-(RUN_ID_MAP). the mapping is: each question_id string is hashed with a simple djb2-style
-hash, then reduced mod 9000 + 1000 to stay in a readable positive range. this is
-deterministic across python versions because it avoids hash() (which is randomised).
-the mapping is printed in the summary so downstream consumers can reproduce it.
+session_id
+----------
+derived the same way scripts/sync_judgments.py derives it:
+judge_id + started_at (digits only, last 9), so the local ledger and the
+remote table agree on session identity without a round-trip.
 
-score
------
+score (local-only field)
+------------------------
 1 if the judge's chosen filename matches the ground-truth side, 0 otherwise.
-catch pairs (gt == null in stimuli.json) get score = None and a note.
+catch pairs (gt == null in stimuli.json) get score = None. `score` is kept on
+the record for build_summary() but is NOT a column in the live table — the
+xano schema validator ignores extra fields, and scripts/sync_judgments.py
+omits it when posting.
 
 validation
 ----------
-every normalized record is passed through xano.schema.validate('human_judgments').
+every normalized record is passed through xano.schema.validate('judgments').
 records that fail validation are skipped with a reason printed to stderr.
 
 output
 ------
-survey/judgments_out.json — list of validated human_judgments records
+survey/judgments_out.json — {"records": [...], "summary": {...}}
 summary printed to stdout: per-dimension agreement vs gt, catch-pair consistency rate.
 """
 
@@ -71,29 +74,10 @@ def _build_gt_map(stimuli):
             "gt_file": gt_file,
             "dimension": q["dimension"],
             "note": q.get("note"),
+            "left_file": os.path.basename(q["left"]),
+            "right_file": os.path.basename(q["right"]),
         }
     return gt_map
-
-
-# ---------------------------------------------------------------------------
-# deterministic run_id derivation
-# ---------------------------------------------------------------------------
-
-def _djb2(s):
-    """djb2 hash — deterministic, no stdlib randomisation."""
-    h = 5381
-    for c in s.encode("utf-8"):
-        h = ((h << 5) + h + c) & 0xFFFFFFFF
-    return h
-
-
-def run_id_for(question_id):
-    """return a stable positive int run_id for a question_id string.
-
-    algorithm: djb2(question_id) mod 9000 + 1000 → range [1000, 9999].
-    deterministic across all python versions (no hash() randomisation).
-    """
-    return _djb2(question_id) % 9000 + 1000
 
 
 # ---------------------------------------------------------------------------
@@ -105,11 +89,22 @@ def _make_id(seq):
     return seq + 1
 
 
-def normalize_answer(answer, seq, gt_map, judge_id, ingested_at):
-    """convert one answer dict into a human_judgments-shaped record.
+def _session_id(results):
+    """derive the session id the same way scripts/sync_judgments.py does."""
+    sid = (results.get("judge_id", "anonymous") + "_" +
+           str(results.get("started_at", "")).replace(":", "").replace("-", "")[-9:])
+    return sid
+
+
+def normalize_answer(answer, seq, gt_map, judge_id, ingested_at, session_id=""):
+    """convert one answer dict into a live-`judgments`-table-shaped record.
+
+    stimulus ids prefer the answer's own left/right file labels and fall back
+    to the stimuli.json ground truth (which is authoritative for scoring).
+    `score` is a local-only extra field: 1 correct, 0 wrong, None for catch
+    pairs. xano's validator ignores extra keys; sync_judgments omits it.
 
     returns (record_dict, skip_reason_or_None).
-    skip_reason is a non-empty string when the answer should be skipped.
     """
     qid = answer.get("question_id", "")
     if not qid:
@@ -127,33 +122,24 @@ def normalize_answer(answer, seq, gt_map, judge_id, ingested_at):
     dimension = answer.get("dimension") or gt_info["dimension"]
 
     # score: 1 if correct, 0 if wrong, None for catch pairs
-    if gt_file is None:
-        score = None
-        score_note = "catch pair — no ground truth"
-    else:
-        score = 1 if chosen == gt_file else 0
-        score_note = None
-
-    # build notes field: confidence + question_id + any catch/note
-    conf = answer.get("confidence", "unknown")
-    notes_parts = [
-        "confidence: %s" % conf,
-        "question_id: %s" % qid,
-    ]
-    if score_note:
-        notes_parts.append(score_note)
-    if gt_info.get("note"):
-        notes_parts.append(gt_info["note"])
-    notes = "; ".join(notes_parts)
+    score = None if gt_file is None else (1 if chosen == gt_file else 0)
 
     rec = {
-        "id":         _make_id(seq),
-        "run_id":     run_id_for(qid),
-        "judge_id":   str(judge_id) if judge_id else "anonymous",
-        "dimension":  dimension,
-        "score":      score,        # may be None for catch pairs
-        "notes":      notes,
-        "created_at": ingested_at,
+        "id":             _make_id(seq),
+        "judge_id":       str(judge_id) if judge_id else "anonymous",
+        "dimension":      dimension,
+        "stimulus_a_id":  answer.get("left_file") or gt_info["left_file"],
+        "stimulus_b_id":  answer.get("right_file") or gt_info["right_file"],
+        "chosen":         chosen,
+        "confidence":     answer.get("confidence", ""),
+        "is_catch_pair":  gt_file is None,
+        "noise_flag":     False,
+        "reaction_ms":    answer.get("elapsed_ms", 0),
+        "session_id":     session_id,
+        "question_id":    qid,
+        "raw":            answer,
+        "score":          score,        # local-only; not a live column
+        "created_at":     ingested_at,
     }
     return rec, None
 
@@ -163,24 +149,13 @@ def normalize_answer(answer, seq, gt_map, judge_id, ingested_at):
 # ---------------------------------------------------------------------------
 
 def validate_record(rec):
-    """run xano.schema.validate; handle None score (catch pairs) gracefully.
+    """run xano.schema.validate against the live `judgments` table shape.
 
-    the xano schema requires score to be non-None (it's a required field).
-    for catch pairs we temporarily substitute -1 (a sentinel outside 0–10 that
-    would normally fail score_range) — but we skip that range check by not
-    substituting; instead we remove the score field before validation and
-    re-insert after, then validate the structural fields only.
-
-    actually: schema.validate marks 'score' required and None as missing.
-    catch pairs legitimately have score=None. we validate them with score=0
-    (a structural placeholder) so all *other* fields are checked; then we
-    restore score=None in the final record and note the special status.
+    `score` is a local-only extra field (the live table has no such column),
+    and None scores on catch pairs are fine — the validator checks only the
+    fields it knows and ignores extras.
     """
-    if rec.get("score") is None:
-        # validate structure with a placeholder that satisfies schema constraints
-        probe = dict(rec, score=0)
-        return validate("human_judgments", probe)
-    return validate("human_judgments", rec)
+    return validate("judgments", rec)
 
 
 # ---------------------------------------------------------------------------
@@ -258,6 +233,7 @@ def ingest(results_path, dry_run=False, stimuli_path=None):
         return [], {}, []
 
     judge_id = results.get("judge_id", "anonymous") or "anonymous"
+    session_id = _session_id(results)
     answers = results.get("answers", [])
     if not isinstance(answers, list):
         print("[ingest] 'answers' must be a list", file=sys.stderr)
@@ -272,7 +248,8 @@ def ingest(results_path, dry_run=False, stimuli_path=None):
             skipped.append({"seq": seq, "reason": "answer is not a dict"})
             continue
 
-        rec, skip_reason = normalize_answer(answer, seq, gt_map, judge_id, ingested_at)
+        rec, skip_reason = normalize_answer(answer, seq, gt_map, judge_id,
+                                            ingested_at, session_id=session_id)
         if skip_reason:
             skipped.append({"seq": seq, "question_id": answer.get("question_id"), "reason": skip_reason})
             print("[ingest] skip answer %d: %s" % (seq, skip_reason), file=sys.stderr)
@@ -316,7 +293,7 @@ def _print_summary(summary):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="ingest survey results into human_judgments records")
+    parser = argparse.ArgumentParser(description="ingest survey results into live judgments-table records")
     parser.add_argument("results", help="path to the downloaded survey results JSON file")
     parser.add_argument("--dry-run", action="store_true", help="validate only; do not write output file")
     args = parser.parse_args()

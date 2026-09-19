@@ -1,0 +1,15 @@
+# endpoint id 61, group stylebench. GET /presets_list?graph_id=N.
+query presets_list verb=GET {
+  input {
+    int graph_id?
+  }
+
+  stack {
+    db.query presets as $rows {
+      where = ($input.graph_id == null) ? true : ($db.presets.graph_id == $input.graph_id)
+      sort = {id: "desc"}
+    }
+  }
+
+  response = $rows
+}

@@ -1,0 +1,10 @@
+# table id 35, workspace 1, branch v1. node-ui documents (the inspiration
+# composer's canvas). each save is a new row (graph_version++), never
+# mutated, so old graphs stay queryable. provisioned 2026-09-10.
+table node_graphs {
+  int id
+  json graph          # {nodes:[{id,type,image|component|preset,...}], edges:[{from,to}]}
+  int graph_version
+  text status          # draft | validated | superseded
+  timestamp created_at?=now
+}

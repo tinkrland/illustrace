@@ -1,0 +1,35 @@
+# endpoint id 57, group stylebench. POST /training_jobs_ingest.
+# queues a job (default status "queued" if the caller omits it).
+query training_jobs_ingest verb=POST {
+  input {
+    text job_type
+    text status?
+    text target_factor
+    text hardware
+    text dataset_ref
+    json params?
+    text notes?
+  }
+
+  stack {
+    var $status_val {
+      value = $input.status ?? "queued"
+    }
+    db.add training_jobs {
+      data = {
+        job_type       : $input.job_type
+        status         : $status_val
+        target_factor  : $input.target_factor
+        hardware       : $input.hardware
+        dataset_ref    : $input.dataset_ref
+        params         : $input.params
+        metrics        : {}
+        artifact_uri   : ""
+        gpu_hours      : 0
+        notes          : $input.notes
+      }
+    } as $record
+  }
+
+  response = $record
+}

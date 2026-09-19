@@ -1,0 +1,11 @@
+# table id 34, workspace 1, branch v1. substrate sweeps + reference uploads
+# feeding training. provisioned 2026-09-10. no ingest endpoint yet — manifests
+# go in via the meta api bulk-content insert (see xano/README.md).
+table datasets {
+  int id
+  text name
+  text source
+  json manifest
+  int image_count
+  timestamp created_at?=now
+}

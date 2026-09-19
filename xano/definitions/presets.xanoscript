@@ -1,0 +1,9 @@
+# table id 36, workspace 1, branch v1. saved recipes = style slots (what the
+# composer's "save as preset" writes). provisioned 2026-09-10.
+table presets {
+  int id
+  json recipe           # {components, strengths, extraction settings}
+  int recipe_version
+  int graph_id           # references node_graphs.id it was extracted from
+  timestamp created_at?=now
+}

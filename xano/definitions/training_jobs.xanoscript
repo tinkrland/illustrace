@@ -1,0 +1,17 @@
+# table id 33, workspace 1, branch v1. the lora/fitter job queue + ledger for
+# the amd mi300x runner (pull model: runner claims work, posts results back).
+# provisioned 2026-09-10. see research/AMD_DEVELOPER_CLOUD.md.
+table training_jobs {
+  int id
+  text job_type       # fitter | lora | batch_render
+  text status         # queued | running | done | failed
+  text target_factor
+  text hardware
+  text dataset_ref
+  json params
+  json metrics
+  text artifact_uri
+  decimal gpu_hours
+  text notes
+  timestamp created_at?=now
+}

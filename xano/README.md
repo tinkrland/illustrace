@@ -1,20 +1,32 @@
 # xano — stylebench control plane
 
-queryable mirror of every run, asset, experiment, and human judgment. local json
-in `results/runs/` stays the source of truth; xano is the read side (filter by
-experiment, aggregate scores, export workspace snapshots).
+queryable mirror of every run, asset, experiment, human judgment, training
+job, node graph, and preset. local json in `results/runs/` stays the source
+of truth; xano is the read side (filter by experiment, aggregate scores,
+export workspace snapshots) plus the write side for the survey app and the
+amd runner.
 
 ## env vars
 
 | var | purpose |
 |-----|---------|
-| `XANO_API_TOKEN` | bearer token for both the runtime api (`api:o_C6f1ff`) and the metadata api (`api:meta`). provisioned 2026-09-08, metadata token expires 2026-09-15 — renew from xano settings > metadata api. |
+| `XANO_API_TOKEN` | token for the metadata api (`api:meta`) and bulk-content calls. the *runtime* endpoints (`api:o_C6f1ff`) are public and need no auth. metadata tokens expire (~2 weeks); renew from xano settings > metadata api. |
+| `ILLUSTRACE_RUNNER_SECRET` | shared secret for `POST /training_jobs_update` (runner-only status transitions). lives in the runner env + this workspace; never in the repo. |
 
-## endpoint map
+## bases
 
-### runtime api (live)
+| surface | base |
+|---------|------|
+| runtime api | `https://xpnx-e4ie-cfuf.z7.xano.io/api:o_C6f1ff` |
+| metadata api | `https://xpnx-e4ie-cfuf.z7.xano.io/api:meta` |
 
-base: `https://xpnx-e4ie-cfuf.z7.xano.io/api:o_C6f1ff`
+note: `api.xano.com` does NOT resolve in the sandbox — always use the instance
+host for metadata calls too (this bit us: `client.py` pointed at the wrong host
+and every metadata call silently fail-softed to `None`).
+
+## endpoint map (live)
+
+### stylebench runs/assets (provisioned 2026-09-08)
 
 | method | path | function | status |
 |--------|------|----------|--------|
@@ -23,36 +35,39 @@ base: `https://xpnx-e4ie-cfuf.z7.xano.io/api:o_C6f1ff`
 | GET | `/run?id=N` | `client.get_run(rid)` | ✅ live |
 | POST | `/assets` | `client.post_asset(asset)` | ✅ live |
 
-### metadata api (control-plane introspection)
+### judgments (provisioned 2026-09-10)
 
-base: `https://api.xano.com`
+| method | path | status |
+|--------|------|--------|
+| POST | `/judgments` | ✅ live — the survey app posts each answer directly (cors allows any origin incl. `null` for `file://` pages); 12 pilot records synced |
 
-| method | path | function | status |
-|--------|------|----------|--------|
-| GET | `/api:meta/instance` | `client.list_instances()` | ✅ live |
-| GET | `/api:meta/workspace` | `client.list_workspaces(instance_id)` | ✅ live |
-| GET | `/api:meta/workspace/{id}/branch` | `client.list_branches(instance_id, workspace_id)` | ✅ live |
-| GET | `/api:meta/workspace/{id}/export?branch=main` | `client.export_workspace(instance_id, workspace_id)` | ✅ live |
+### amd backbone (provisioned 2026-09-10/11) — see [research/AMD_DEVELOPER_CLOUD.md](../research/AMD_DEVELOPER_CLOUD.md)
 
-all metadata calls fail-soft — they return `None` or `[]` with a one-line print
-on any network or auth failure, never raise.
+| method | path | purpose | status |
+|--------|------|---------|--------|
+| POST | `/training_jobs_ingest` | queue a job (fitter/lora/batch_render) | ✅ live (id 57) |
+| GET | `/training_jobs_list?status=queued` | runner claims queued work | ✅ live (id 56) |
+| POST | `/training_jobs_update` | runner flips status (shared secret; ledger non-rewindable by design) | ✅ live (id 62), verified end-to-end 2026-09-11 |
+| POST | `/node_graphs_ingest` / GET `/node_graphs_list` | composer canvas save/list | ✅ live (ids 58/59) |
+| POST | `/presets_ingest` / GET `/presets_list` | pin/list saved recipes | ✅ live (ids 60/61) |
 
-## tables (pending xano provisioning)
+## tables (all live — ids from the provisioning notes)
 
-the six control-plane tables below extend the three existing ones
-(`stylebench_runs`, `stylebench_assets`, `stylebench_experiments`). they are
-defined in `xano/schema.py` but **not yet provisioned** in the xano instance —
-provisioning them requires re-running the metadata api create-table calls
-(see `PROVISIONING.md` for the exact pattern).
+| table | id | provisioned | feeds |
+|-------|----|-------------|-------|
+| `stylebench_runs` | 15 | 2026-09-08 | run mirroring (`xano/sync.py`) |
+| `stylebench_assets` | 16 | 2026-09-08 | asset mirroring |
+| `stylebench_experiments` | 17 | 2026-09-08 | experiment registry |
+| `judgments` | 26 | 2026-09-10 | survey app + `scripts/sync_judgments.py` |
+| `training_jobs` | 33 | 2026-09-10 | amd runner queue + ledger |
+| `datasets` | 34 | 2026-09-10 | substrate sweeps / reference uploads (no ingest endpoint yet — meta-api bulk insert only) |
+| `node_graphs` | 35 | 2026-09-10 | composer canvas saves (append-only, graph_version++) |
+| `presets` | 36 | 2026-09-10 | saved recipes referencing graph_id |
 
-| table | key fields | status |
-|-------|-----------|--------|
-| `projects` | id, name, description, created_at | ⏳ pending |
-| `assets` | id, project_id, kind, name, file_url, style_profile (json) | ⏳ pending (extends existing) |
-| `transfer_requests` | id, project_id, asset_id, components (json), strengths (json), status, created_at, completed_at | ⏳ pending |
-| `experiments` | id, project_id, name, description, hypothesis, created_at | ⏳ pending (extends existing) |
-| `runs` | id, experiment_id, subject, requested, params (json), metrics (json), verdict, artifacts (json), created_at | ✅ live (as `stylebench_runs`) |
-| `human_judgments` | id, run_id, judge_id, dimension, score, notes, created_at | ⏳ pending |
+the table and endpoint definitions live in [definitions/](definitions/) as
+xanoscript (the amd round was reconstructed 2026-09-19 from the provisioning
+notes — see definitions/README.md for the fidelity caveat and the expired
+metadata-token situation).
 
 ## usage
 
@@ -61,7 +76,7 @@ provisioning them requires re-running the metadata api create-table calls
 ```python
 from xano.schema import validate
 
-errors = validate("runs", my_record)
+errors = validate("stylebench_runs", my_record)
 if errors:
     print("invalid:", errors)
 ```
@@ -69,38 +84,22 @@ if errors:
 ### sync results/runs/ to xano
 
 ```sh
-# validate + post everything
-python -m xano.sync
-
-# validate only (no network calls)
-python -m xano.sync --dry-run
-
-# custom directory
-python -m xano.sync path/to/my/runs --dry-run
+python -m xano.sync             # validate + post everything
+python -m xano.sync --dry-run   # validate only (no network calls)
 ```
 
-`sync_runs()` is also importable for programmatic use:
-
-```python
-from xano.sync import sync_runs
-
-summary = sync_runs(dry_run=True)
-print(summary)
-# {"found": 6, "valid": 6, "invalid": 0, "synced": 0, "skipped_reasons": []}
-```
+`sync_runs()` is also importable for programmatic use.
 
 ### metadata api
 
 ```python
 from xano import client
 
-instances = client.list_instances()
-workspaces = client.list_workspaces(instance_id="xpnx-e4ie-cfuf")
-branches = client.list_branches("xpnx-e4ie-cfuf", workspace_id=1)
-export = client.export_workspace("xpnx-e4ie-cfuf", workspace_id=1, branch="main")
-
-# raw call
-result = client.meta_call("GET", "/api:meta/workspace/1/table")
+client.list_instances()
+client.list_workspaces("xpnx-e4ie-cfuf")
+client.list_branches("xpnx-e4ie-cfuf", workspace_id=1)
+client.export_workspace("xpnx-e4ie-cfuf", workspace_id=1, branch="main")
+client.meta_call("GET", "/api:meta/workspace/1/table")
 ```
 
 ## module layout
@@ -110,21 +109,20 @@ xano/
   client.py        runtime api (post_run, post_asset, get_run, list_runs)
                    + metadata api (meta_call, list_instances, list_workspaces,
                                    list_branches, export_workspace)
-  schema.py        dataclasses + validate() for all six tables
-  sync.py          results/runs/ → xano harness; --dry-run mode
-  PROVISIONING.md  how the instance and endpoints were provisioned
-  definitions/     xanoscript payloads for tables and endpoints
+  schema.py        dataclasses + validate() for the eight live tables
+  sync.py          results/runs/ -> xano harness; --dry-run mode
+  PROVISIONING.md  provisioning history: what exists, how, and the gotchas
+  definitions/     xanoscript payloads for tables and endpoints (+ fidelity notes)
   README.md        this file
 ```
 
-## what is live vs pending
+## known gaps (next provisioning round)
 
-**live**: `stylebench_runs`, `stylebench_assets`, `stylebench_experiments` tables
-and their four endpoints exist in workspace "anne's Workspace #1", branch v1.
-`client.post_run`, `post_asset`, `get_run`, `list_runs` all work today.
-
-**pending**: the five new tables (`projects`, `transfer_requests`,
-`human_judgments`, and the extended `assets` / `experiments` with `project_id`)
-need to be provisioned via the metadata api before the corresponding client
-functions can write to them. the schema definitions and validation in
-`schema.py` are ready; the xanoscript create-table calls are the only gap.
+- no auth on any endpoint except `training_jobs_update` — fine while
+  single-user, must change before anything public.
+- `datasets` has no ingest endpoint; manifests go in via the meta api bulk
+  insert (body key `items`).
+- the original runs/assets endpoints (ids 18-21) were never captured as
+  xanoscript in `definitions/` — low priority (stable, unlikely to change).
+- metadata token expires ~every two weeks; renew before any provisioning or
+  reconciliation work.

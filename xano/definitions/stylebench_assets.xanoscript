@@ -1,0 +1,9 @@
+# table id 16, workspace 1, branch v1. provisioned 2026-09-08.
+table stylebench_assets {
+  int id
+  text kind
+  text name
+  text file_url
+  json style_profile
+  timestamp created_at?=now
+}

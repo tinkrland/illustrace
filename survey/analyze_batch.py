@@ -29,12 +29,13 @@ def score_answer(q_spec, choice):
     kind = q_spec.get("kind", "pair")
     l, r = q_spec.get("left"), q_spec.get("right")
     if kind == "catch" or (l is not None and l == r):
-        # catch pair: expected answer is "no difference" ("identical")
-        return "nodiff" if choice in ("nodiff", "no_difference", "same", "identical", None) else "incorrect"
+        # catch pair: honest "no difference" is the ideal answer; picking a
+        # side on identical images is noise. (the old code returned "nodiff"
+        # for the honest answer and had an unreachable "correct" branch —
+        # test_catch pinned the intended semantics, fixed 2026-09-19)
+        return "correct" if choice in ("nodiff", "no_difference", "same", "identical", None) else "incorrect"
     if kind == "same_different":
         return "correct" if choice == q_spec["gt"] else "incorrect"
-    if kind == "catch":
-        return "correct" if choice == "identical" else "incorrect"
     if not q_spec.get("scored", True):
         return "unscorable"
     if choice == "identical":

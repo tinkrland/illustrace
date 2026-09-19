@@ -100,3 +100,49 @@ metadata bulk-content endpoint (`items` array, not `records`).
   syntax error; just `text judge_id`).
 - `db.add <table> { data = { col: $input.x } } as $var` is the real insert
   form (`db.insert` does not exist).
+
+---
+
+# amd backbone provisioning — DONE (2026-09-10, verified 2026-09-11)
+
+four tables + six endpoints for the lora/fitter runner and the node ui.
+full field lists and the job flow live in `research/AMD_DEVELOPER_CLOUD.md`;
+the xanoscript payloads are in `definitions/` (see below for the fidelity
+caveat).
+
+tables: `training_jobs` (33), `datasets` (34), `node_graphs` (35),
+`presets` (36) — all in workspace 1, group stylebench.
+
+endpoints (canonical api:o_C6f1ff):
+- `POST /training_jobs_ingest` (57), `GET /training_jobs_list` (56)
+- `POST /training_jobs_update` (62) — shared secret in $ILLUSTRACE_RUNNER_SECRET;
+  allowed transitions running|done|failed only, requeue is meta-api-only so
+  the runner can't rewind the ledger. verified end-to-end 2026-09-11 with
+  job 1 (wrong secret -> unauthorized; bad status -> rejected; valid
+  claim/results -> writes through)
+- `POST /node_graphs_ingest` (58) / `GET /node_graphs_list` (59)
+- `POST /presets_ingest` (60) / `GET /presets_list` (61)
+
+job 1 (fitter pilot: jitter_lat, mi300x, substrate_v2_sweep) was queued,
+exercised through both transitions, and reset to queued.
+
+## repo reconciliation (2026-09-19)
+
+this round was provisioned live but its xanoscript never made it into the
+repo — the gap that made "xano stuff isn't being pushed" true. closed by
+reconstructing all payloads into `xano/definitions/` from the notes in this
+file and `research/AMD_DEVELOPER_CLOUD.md`. caveats:
+
+- the reconstruction has NOT been diffed against a live meta-api export
+  (the metadata token expired 2026-09-15). renew it, export, and diff
+  before treating definitions/ as byte-exact.
+- `training_jobs_update.xanoscript` has the secret redacted to
+  `{{ILLUSTRACE_RUNNER_SECRET}}`.
+- `xano/schema.py` was rewritten to describe the eight live tables (the old
+  version described a speculative six-table plan — projects,
+  transfer_requests, human_judgments — that was superseded and never
+  provisioned); `xano/sync.py` and `survey/ingest.py` were realigned to it;
+  the tests were rewritten to match (128 passing).
+- `xano/client.py` pointed at `api.xano.com` for metadata calls, which does
+  not resolve in the sandbox — every metadata call silently fail-softed.
+  fixed to the instance host.

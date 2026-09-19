@@ -6,7 +6,10 @@ endpoints: POST /runs, GET /runs?experiment=&, GET /run?id=, POST /assets
 
 provisioned 2026-09-08 via the xano metadata api (token: $XANO_API_TOKEN, aud xano:meta).
 
-metadata api: https://api.xano.com/api:meta  (bearer $XANO_API_TOKEN, aud xano:meta)
+metadata api: https://xpnx-e4ie-cfuf.z7.xano.io/api:meta  (bearer $XANO_API_TOKEN, aud xano:meta)
+  (api.xano.com does NOT resolve in the sandbox — instance host required; this
+  was wrong here until the 2026-09-19 reconciliation pass, silently fail-soft
+  the whole time)
   list_instances()                         GET  /api:meta/instance
   list_workspaces(instance_id)             GET  /api:meta/workspace
   list_branches(instance_id, workspace_id) GET  /api:meta/workspace/{workspace_id}/branch
@@ -18,7 +21,7 @@ import urllib.request
 import urllib.error
 
 BASE = "https://xpnx-e4ie-cfuf.z7.xano.io/api:o_C6f1ff"
-META_BASE = "https://api.xano.com"
+META_BASE = "https://xpnx-e4ie-cfuf.z7.xano.io"
 TOKEN = os.environ.get("XANO_API_TOKEN", "")
 
 

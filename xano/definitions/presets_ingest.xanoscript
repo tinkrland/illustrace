@@ -1,0 +1,24 @@
+# endpoint id 60, group stylebench. POST /presets_ingest.
+# users pin presets referencing the graph_id they were extracted from.
+query presets_ingest verb=POST {
+  input {
+    json recipe
+    int recipe_version?
+    int graph_id
+  }
+
+  stack {
+    var $version_val {
+      value = $input.recipe_version ?? 1
+    }
+    db.add presets {
+      data = {
+        recipe          : $input.recipe
+        recipe_version  : $version_val
+        graph_id        : $input.graph_id
+      }
+    } as $record
+  }
+
+  response = $record
+}

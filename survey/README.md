@@ -106,28 +106,40 @@ fields:
 
 ---
 
-## normalized (human_judgments) record format
+## normalized record format (live xano `judgments` table shape)
 
-after `ingest.py`, `judgments_out.json` contains records shaped for the xano
-`human_judgments` table (see `xano/schema.py`):
+after `ingest.py`, `judgments_out.json` contains records shaped for the **live**
+xano `judgments` table (id 26; see `xano/schema.py` and `xano/definitions/judgments.xanoscript`).
+this replaces the old `human_judgments` shape, which described a table that was
+never actually provisioned (2026-09-19 reconciliation):
 
 ```json
 {
   "id": 1,
-  "run_id": 4521,
   "judge_id": "jdoe",
   "dimension": "roughness",
+  "stimulus_a_id": "jit_0p00.png",
+  "stimulus_b_id": "jit_1p25.png",
+  "chosen": "jit_1p25.png",
+  "confidence": "pretty sure",
+  "is_catch_pair": false,
+  "noise_flag": false,
+  "reaction_ms": 3210,
+  "session_id": "jdoe_000000000",
+  "question_id": "q01",
+  "raw": { "...": "the full original answer" },
   "score": 1,
-  "notes": "confidence: pretty sure; question_id: q01",
   "created_at": "2024-01-01T10:10:00Z"
 }
 ```
 
 fields:
-- `run_id` — derived deterministically from `question_id` via `djb2(question_id) mod 9000 + 1000`.
-  stable across python versions (does not use `hash()` which is session-randomised).
-- `score` — `1` if choice matches ground truth, `0` if wrong, `null` for catch pairs.
-- `notes` — concatenation of confidence, question_id, and any catch/note strings.
+- `session_id` — derived the same way as `scripts/sync_judgments.py` derives it
+  (judge_id + started_at, digits only, last 9), so local and remote agree.
+- `score` — **local-only extra**: `1` if choice matches ground truth, `0` if wrong,
+  `null` for catch pairs. not a column in the live table; kept on the record for
+  the agreement summary. the validator ignores it, sync omits it.
+- `raw` — the full original answer payload, for forensics.
 
 ---
 

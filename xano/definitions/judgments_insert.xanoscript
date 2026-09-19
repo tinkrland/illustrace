@@ -1,0 +1,40 @@
+# endpoint id 42, group stylebench (canonical o_C6f1ff). POST /judgments.
+# provisioned 2026-09-10. survey/index.html posts directly to this (cors
+# allows any origin incl. null for file:// pages).
+query judgments verb=POST {
+  input {
+    text judge_id?
+    text dimension
+    text stimulus_a_id
+    text stimulus_b_id
+    text chosen
+    text confidence?
+    bool is_catch_pair?
+    bool noise_flag?
+    int reaction_ms?
+    text session_id
+    text question_id
+    json raw?
+  }
+
+  stack {
+    db.add judgments {
+      data = {
+        judge_id       : $input.judge_id
+        dimension      : $input.dimension
+        stimulus_a_id  : $input.stimulus_a_id
+        stimulus_b_id  : $input.stimulus_b_id
+        chosen         : $input.chosen
+        confidence     : $input.confidence
+        is_catch_pair  : $input.is_catch_pair
+        noise_flag     : $input.noise_flag
+        reaction_ms    : $input.reaction_ms
+        session_id     : $input.session_id
+        question_id    : $input.question_id
+        raw            : $input.raw
+      }
+    } as $record
+  }
+
+  response = $record
+}

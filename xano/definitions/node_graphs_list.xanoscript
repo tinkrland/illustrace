@@ -1,0 +1,15 @@
+# endpoint id 59, group stylebench. GET /node_graphs_list.
+query node_graphs_list verb=GET {
+  input {
+    text status?
+  }
+
+  stack {
+    db.query node_graphs as $rows {
+      where = ($input.status == "" || $input.status == null) ? true : ($db.node_graphs.status == $input.status)
+      sort = {id: "desc"}
+    }
+  }
+
+  response = $rows
+}

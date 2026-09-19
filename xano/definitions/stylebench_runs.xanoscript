@@ -1,0 +1,13 @@
+# table id 15, workspace 1, branch v1 (mostly canonical o_C6f1ff, group "stylebench")
+# provisioned 2026-09-08. see xano/PROVISIONING.md.
+table stylebench_runs {
+  int id
+  text experiment
+  text subject
+  text requested
+  json params
+  json metrics
+  text verdict
+  json artifacts
+  timestamp created_at?=now
+}
