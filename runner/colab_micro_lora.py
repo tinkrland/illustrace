@@ -173,7 +173,16 @@ caption_dropout_rate = 0.1
            "--save_precision", "fp16",
            "--cache_latents_to_disk",
            "--cache_text_encoder_outputs_to_disk",
-           "--persistent_data_loader_workers"]
+           "--persistent_data_loader_workers",
+           # colab t4: ~15GB vram but only ~12GB system RAM. without
+           # --lowram, kohya loads the 23.8GB flux checkpoint through
+           # host RAM before moving it to the gpu and gets OOM-killed
+           # with no traceback (silent death, exactly what happened on
+           # the first live run). --lowram loads straight to vram
+           # instead. blocks_to_swap is a small vram safety margin on
+           # top of that.
+           "--lowram",
+           "--blocks_to_swap", "8"]
     t0 = time.time()
     if subprocess.run(cmd).returncode != 0:
         raise SystemExit("kohya failed: scroll up for the log; nothing "
