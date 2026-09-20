@@ -102,14 +102,15 @@ content/style disentanglement, reference-based generation, controllable editing,
 
 ## what exists so far
 
-the core engine is deterministic on purpose; the learned layers around it (the llm compiler, the style adapters) exist to be *constrained* by it, not to replace it. current hard numbers: 160 tests passing, 46 parameters in the registry, 7 validated, 4 controlled research runs.
+the core engine is deterministic on purpose; the learned layers around it (the llm compiler, the style adapters) exist to be *constrained* by it, not to replace it. flux shows up below as one substrate the adapter lane trains on, nothing more: the benchmark scores any generator or editor, the classical operators run with no generator at all, and a different backbone would not change a single claim. current hard numbers: 178 tests passing, 46 parameters in the registry, 7 validated, 4 controlled research runs.
 
 - style measurements on raster and on vector-ground-truth fill regions (the scale-invariant construction), [here](/engine/analyzer.py) and [here](/engine/texture_gt.py)
-- one transfer operator so far, palette transfer with strength-as-distance-traveled, [here](/engine/operators.py)
+- the classical operator set: palette, stroke, texture, edge, value, color-zone, shading. strength-as-distance-traveled on each, independence checked against measured noise floors, [here](/engine/operators.py)
+- the **diffusion noise floor protocol**: no-op jitter ladders (resample, warp, grain, bleed, unsharp, tint, webp, and the combo proxy) that give every metric an uncertainty bar before any operator effect gets believed, [here](/engine/noise_floor.py)
 - the parameter registry as code, renders a status ladder (candidate → measurable → validated → controllable) into [the parameter matrix](/results/PARAMETER_MATRIX.md), registry lives [here](/engine/registry.py)
 - controlled stimulus pairs where exactly one style factor changes, plus the parametric svg substrate (brush recipes, texture, lighting) that serves as ground truth, [here](/benchmarks)
 - the ten-dimension decomposition, the granularity question, the metrology rules, [here](/research/STYLE_ONTOLOGY.md)
-- the human-judgment lane, built and waiting on judges: pairwise forced-choice survey app (catch pairs, confidence, ingest + validation), a pilot judged (n=1, directional only), and batches 2–4 packaged for the n=5 study, [here](/survey)
+- the human-judgment lane, built and waiting on judges: pairwise forced-choice survey app (catch pairs, confidence, ingest + validation), an early pilot judged (directional), and batches 2–4 packaged for the full study, [here](/survey)
 - the **llm semantic compiler**: plain-language style hypothesis in, schema-valid preregistration spec out (validator-enforced, never auto-promoted), plus a langsmith eval ledger and the qlora path for a spec/judge model, [here](/llm)
 - the **style lora engine**: public-domain painter corpora ingested from wikidata (monet, van gogh, hokusai), measured into inspo profiles, an adapter probe that scores style fidelity with cie76 deltae in lab space (self-test passes at dE 0.0, cross-artist fails at dE 38.5, so it catches leakage), a kohya packaging spec, and a node-based composer ui with strength wires, [here](/research/STYLE_LORA_ENGINE.md) and [here](/engine)
 - the **gpu runner lane**: a xano job queue with a non-rewindable ledger, a pull-model runner that trains kohya flux style-loras on an a100, and a preregistered fitter ladder (fx0 measurability to fx3 real-image transfer), [here](/runner) and [here](/research/FITTER_EXPERIMENTS.md)
@@ -121,8 +122,8 @@ the test-1 batch landed: value_range exact against the area mixture, stroke_dire
 
 ## where it breaks (honest)
 
-- **human validation is pilot-stage.** one judge, 12 pairs: roughness, line weight, and color temperature track the metrics, taper got refuted, and the pilot caught two stimuli bugs (an inverted lighting prompt, a grain step below the perceptual floor). real, but n=1 directional; the n=5 study is packaged and waiting on judges.
-- **one transfer operator.** palette v0. the interesting operators (stroke, texture) are deliberately queued behind validation.
+- **human validation is pilot-stage.** one judge, 12 pairs: roughness, line weight, and color temperature track the metrics, taper got refuted, and the pilot caught two stimuli bugs (an inverted lighting prompt, a grain step below the perceptual floor). real, but pilot-stage; the full study is packaged and waiting on judges.
+- **transfer operators are young.** palette, stroke, texture, edge, value, color-zone, shading exist as deterministic classical baselines; the learned operators are deliberately queued behind validation.
 - **the learned layers are pre-training.** the llm compiler drafts specs, the adapter probe and composer exist, and the fitter ladder is preregistered, but nothing has trained yet (gpu provisioning in progress). the whole learned stack is design + queue, zero checkpoints.
 - **2d svg substrate only.** the 3d decomposition lives in research; nothing renders it.
 - **stylized-only scope.** findings may not transfer to photorealism; that's fine, it's excluded on purpose.
@@ -152,6 +153,8 @@ research without a tool at the end is a hobby. `application/` holds **style comp
 - references mixed across components (stroke from a, color from b)
 - presets that store *recipes, not rendered images*
 
+the composer is node-based, and every node carries two axes kept separate on purpose: **priority order** and **influence**. priority order settles fights: when two nodes claim the same pixels, the order decides who paints first and who blends under. influence decides reach: how far a reference's say extends, scoped to the factor it was wired to, so a stroke reference can set the linework without leaking its palette or composition into everything downstream. that scoping is the anti-bleed design: multi-image, multi-parameter inspo (stroke from a, color from b, edges from c) is the whole point, and the known failure mode of multi-reference systems is precisely that the references bleed into each other. here a reference never attaches to "the image," it attaches to a factor node, with an influence slider, in a priority lane, and the benchmark's leakage claim measures whether that actually held.
+
 the full concept doc lives in [application/README.md](/application/README.md).
 
 ## reference points (not affiliations)
@@ -160,6 +163,7 @@ nothing here is a flagship of anything. illustrace is a research project that th
 
 | reference | why it's here |
 |---|---|
-| *nova3d* | where parametric preset styles could eventually go |
-| *openscad* | programmatic geometry done right |
 | classic *stylometry* | the computational linguistics kind, for the whole "measure how something is made" attitude |
+| *metrology* | the measurement-science attitude: every claim carries an uncertainty bar, which is what the noise floors are |
+
+(the 3d thread keeps its own references in the [editable-presets research](/research/EDITABLE_PRESETS_RESEARCH.md).)

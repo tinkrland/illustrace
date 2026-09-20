@@ -284,3 +284,255 @@ def edge_transfer(img, ref_img, strength=1.0):
             else: hi = mix
         out_img = Image.fromarray(np.clip(cand, 0, 255).astype(np.uint8))
     return out_img
+
+
+# ---------------------------------------------------------------------------
+# v0.3: value, color-zone, and shading operators (classical baselines for the
+# remaining 2d factors). design guards from the gpt-5 robustness pass
+# (2026-09-20): value moves l* only with soft toe/shoulder and stroke-mask
+# damping; zones shift chroma without replacing it and freeze l*; shading
+# quantizes l* with dither so flat regions do not band.
+# ---------------------------------------------------------------------------
+
+def _lab_l(img):
+    """luma channel only, the safe single-factor path (chroma untouched)."""
+    return _as_array(img).astype(np.float64) @ [0.299, 0.587, 0.114]
+
+
+def _interior_mask(img):
+    from engine.analyzer import stroke_mask
+    a = _as_array(img)
+    m = stroke_mask(img)
+    bg = np.zeros(a.shape[:2], bool)
+    bg[0, :] = bg[-1, :] = True
+    bg = (np.abs(a - a[0, 0]).sum(-1) < 60)
+    return ~m & ~bg
+
+
+def value_transfer(img, ref_img, strength=1.0):
+    """close the value_range gap with a monotone luma curve.
+
+    value_range reads p95-p5 of luma, so the operator remaps exactly that
+    window: img's [p5, p95] luma span stretches (or squeezes) toward the
+    reference's span, centered on img's own mid value. chroma is
+    untouched by construction, strokes get half strength (thin linework
+    should not crush), and the curve is flat outside the window so
+    nothing clips hard.
+
+    honest limit: value_range is a spread readout, not a histogram shape.
+    two images can share a span and distribute mass inside it very
+    differently; this closes the spread, not the distribution.
+    """
+    assert 0.0 <= strength <= 1.0
+    from engine.analyzer import value_range, stroke_mask
+    a = _as_array(img).astype(np.float64)
+    li = _lab_l(img)
+    lr = _lab_l(ref_img)
+    v_in, v_ref = value_range(img), value_range(ref_img)
+    target = v_in + (v_ref - v_in) * strength
+    if abs(target - v_in) < 1.0:
+        return img
+
+    p5i, p95i = np.percentile(li, [5, 95])
+    mid = (p5i + p95i) / 2
+    # damp mask: half strength on strokes, and near strong gradients
+    gx = np.zeros_like(li); gy = np.zeros_like(li)
+    gx[:, 1:-1] = li[:, 2:] - li[:, :-2]
+    gy[1:-1, :] = li[2:, :] - li[:-2, :]
+    g = np.sqrt(gx ** 2 + gy ** 2)
+    damp = 1.0 - 0.5 * (g > np.percentile(g, 95))
+    m = stroke_mask(img).astype(np.float64)
+    blend = damp * (1.0 - 0.5 * m)
+
+    # fixed-point loop: damping steals some of the applied stretch, so
+    # inflate the window until the *measured* value_range lands on target
+    window = target
+    best = img
+    for _ in range(4):
+        lo_t, hi_t = mid - window / 2, mid + window / 2
+        new_l = np.interp(li, [p5i, p95i], [lo_t, hi_t])
+        new_l = new_l * blend + li * (1 - blend)
+        out = a.copy()
+        d = new_l - li
+        for c in range(3):
+            out[..., c] = np.clip(out[..., c] + d, 0, 255)
+        cand = Image.fromarray(out.astype(np.uint8))
+        got = value_range(cand)
+        best = cand
+        if abs(got - target) < 1.5:
+            return cand
+        window *= max(0.5, target / max(1.0, got))
+    return best
+
+
+def color_zone_transfer(img, ref_img, strength=1.0, k=6, min_zone_frac=0.01):
+    """recolor whole color zones coherently toward the reference's zones.
+
+    k-means zones in (a*-ish, b*-ish) chroma space on both images, zones
+    matched by centroid proximity, then each zone's chroma is *shifted*
+    (not replaced) toward its matched reference zone by strength. l* is
+    frozen everywhere, per-pixel chroma residuals survive, zones below
+    min_zone_frac are merged into their nearest big neighbor, and zone
+    borders are feathered so no new hard edges are minted.
+
+    distinct from palette_transfer: that moves per-pixel cluster
+    membership; this moves shape-coherent regions as units, so the
+    palette moves without breaking flat fills or gradients inside a zone.
+
+    honest limit: zone matching is centroid-based; a target whose zones
+    have no chroma analogue in the reference gets its nearest-zone
+    colour, which is a mapping choice, not a truth.
+    """
+    assert 0.0 <= strength <= 1.0
+    from engine.metrics import palette_distance
+    from engine.analyzer import palette
+    a = _as_array(img).astype(np.float64)
+    r = _as_array(ref_img).astype(np.float64)
+
+    def zones(arr):
+        """hand-rolled seeded k-means on opponent chroma axes (l*-free)."""
+        h, w = arr.shape[:2]
+        ca = arr[..., 0] - (arr[..., 1] + arr[..., 2]) / 2
+        cb = arr[..., 2] - (arr[..., 0] + arr[..., 1]) / 2
+        feat = np.stack([ca.ravel(), cb.ravel()], 1)
+        rng = np.random.default_rng(0)
+        idx = rng.choice(len(feat), size=min(8000, len(feat)), replace=False)
+        samp = feat[idx]
+        cents = samp[np.linspace(0, len(samp) - 1, k).astype(int)]
+        for _ in range(10):
+            d = ((samp[:, None, :] - cents[None, :, :]) ** 2).sum(-1)
+            lab = d.argmin(1)
+            for z in range(k):
+                pts = samp[lab == z]
+                if len(pts):
+                    cents[z] = pts.mean(0)
+        d = ((feat[:, None, :] - cents[None, :, :]) ** 2).sum(-1)
+        labels = d.argmin(1)
+        sizes = np.bincount(labels, minlength=k) / len(feat)
+        return labels.reshape(h, w), cents, sizes
+
+    lab_i, cents_i, sizes_i = zones(a)
+    lab_r, cents_r, sizes_r = zones(r)
+
+    # prune tiny zones: merge their pixels into the nearest surviving centroid
+    big_i = np.where(sizes_i >= min_zone_frac)[0]
+    if len(big_i) == 0:
+        return img
+    def relabel(lab, cents, big):
+        remap = {int(b): int(i) for i, b in enumerate(big)}
+        cents_big = cents[big]
+        for z in range(len(cents)):
+            if z not in remap:
+                d = np.linalg.norm(cents[z] - cents_big, axis=1)
+                remap[z] = int(np.argmin(d))
+        return np.vectorize(remap.__getitem__)(lab), cents_big
+    lab_i, cents_i = relabel(lab_i, cents_i, big_i)
+    big_r = np.where(sizes_r >= min_zone_frac)[0]
+    if len(big_r) == 0:
+        return img
+    lab_r, cents_r = relabel(lab_r, cents_r, big_r)
+
+    # match zones img->ref: hungarian assignment on a size-aware cost, so
+    # dominant regions pair with dominant regions (a background is a
+    # background) instead of the nearest tiny chroma accident
+    from scipy.optimize import linear_sum_assignment
+    ni, nr = len(cents_i), len(cents_r)
+    si_big = sizes_i[big_i] + 1e-3
+    sr_big = sizes_r[big_r] + 1e-3
+    cost = np.zeros((ni, nr))
+    for x in range(ni):
+        for y in range(nr):
+            d = np.linalg.norm(cents_r[y] - cents_i[x])
+            size_pen = abs(np.log(si_big[x]) - np.log(sr_big[y]))
+            cost[x, y] = d * (1.0 + 1.5 * size_pen)
+    rows, cols = linear_sum_assignment(cost)
+    match = {int(r): int(c) for r, c in zip(rows, cols)}
+
+    # apply shifts as exact luma-preserving (dR, dG, dB) triples: solve
+    # [ca; cb; luma] = A @ [dR; dG; dB] with the luma row pinned to 0, so
+    # the value factor is frozen by construction, not corrected after
+    A = np.array([[1.0, -0.5, -0.5],
+                  [-0.5, -0.5, 1.0],
+                  [0.299, 0.587, 0.114]])
+    Ainv = np.linalg.inv(A)
+    from scipy import ndimage
+    d_rgb = np.zeros_like(a)
+    delta_map = np.zeros(a.shape[:2])
+    for i, j in match.items():
+        d_ca, d_cb = (cents_r[j] - cents_i[i]) * strength
+        d = Ainv @ np.array([d_ca, d_cb, 0.0])
+        core = lab_i == i
+        feather = ndimage.binary_dilation(core, iterations=1) & ~core
+        for c in range(3):
+            d_rgb[..., c][core] = d[c]
+            d_rgb[..., c][feather] = d[c] * 0.5
+        delta_map[core] = 1.0
+        delta_map[feather] = 0.5
+    # per-pixel attenuation so no channel clips (luma stays exact where alpha=1)
+    alpha = np.ones(a.shape[:2])
+    for c in range(3):
+        d = d_rgb[..., c]
+        pos, neg = d > 0, d < 0
+        alpha[pos] = np.minimum(alpha[pos], (255 - a[..., c][pos]) / d[pos])
+        alpha[neg] = np.minimum(alpha[neg], -a[..., c][neg] / d[neg])
+    alpha = np.clip(alpha, 0, 1)[..., None]
+    out = np.clip(a + d_rgb * alpha, 0, 255)
+    return Image.fromarray(out.astype(np.uint8))
+
+
+def _interior_levels(img):
+    """how many luma levels carry 95% of the interior pixels. flat = few."""
+    m = _interior_mask(img)
+    if m.sum() < 100:
+        return 1
+    lum = _lab_l(img)[m].astype(int)
+    hist = np.bincount(lum, minlength=256)
+    order = np.argsort(-hist)
+    cum = np.cumsum(hist[order])
+    return int(np.searchsorted(cum, 0.95 * lum.size) + 1)
+
+
+def shading_transfer(img, ref_img, strength=1.0, seed=0):
+    """flatten rendering toward the reference's interior level count.
+
+    rendering language proxy: how many distinct luma levels carry the
+    interior. the operator quantizes interior luma to the top-mass
+    levels, count interpolated between img and ref by strength, with
+    seeded dither so flat regions do not band. strokes and background
+    are untouched; color stays because quantization is a luma-bin snap
+    and chroma rides along per pixel.
+
+    honest limit: this is the flattening dial only. toward a *more*
+    levels-rich reference it is a no-op (adding gradient complexity is
+    the learned operators' job), and a level count is a crude readout of
+    shading style: two renders can share a count and differ in how the
+    levels are arranged.
+    """
+    assert 0.0 <= strength <= 1.0
+    from scipy import ndimage
+    n_in = _interior_levels(img)
+    n_ref = _interior_levels(ref_img)
+    target = int(round(n_in + (n_ref - n_in) * strength))
+    if target >= n_in or target < 1:
+        return img
+    interior = _interior_mask(img)
+    feather = ndimage.binary_dilation(interior) & ~interior
+    li = _lab_l(img)
+    rng = np.random.default_rng(seed)
+    q = li + rng.normal(0, 1.5, li.shape)
+    hist = np.bincount(q[interior].astype(int).clip(0, 255), minlength=256)
+    reps = np.sort(np.argsort(-hist)[:target])
+    out_l = li.copy()
+    idx = np.clip(np.searchsorted(reps, q) - 1, 0, len(reps) - 1)
+    snapped = reps[idx]
+    up = np.clip(idx + 1, 0, len(reps) - 1)
+    closer = np.abs(reps[up] - q) < np.abs(snapped - q)
+    snapped = np.where(closer, reps[up], snapped)
+    out_l[interior] = snapped[interior]
+    out_l[feather] = (snapped[feather] + li[feather]) / 2
+    a = _as_array(img).astype(np.float64)
+    out = a.copy()
+    d = out_l - li
+    for c in range(3):
+        out[..., c] = np.clip(out[..., c] + d, 0, 255)
+    return Image.fromarray(out.astype(np.uint8))
