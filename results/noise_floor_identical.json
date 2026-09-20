@@ -1,0 +1,50 @@
+{
+  "n_pairs": 8,
+  "metrics": {
+    "stroke_mean": {
+      "mean_abs_delta": 0.0,
+      "std_delta": 0.0,
+      "p95_abs_delta": 0.0,
+      "n": 8
+    },
+    "stroke_cv": {
+      "mean_abs_delta": 0.0,
+      "std_delta": 0.0,
+      "p95_abs_delta": 0.0,
+      "n": 8
+    },
+    "edge_entropy": {
+      "mean_abs_delta": 0.0,
+      "std_delta": 0.0,
+      "p95_abs_delta": 0.0,
+      "n": 8
+    },
+    "texture_energy": {
+      "mean_abs_delta": 0.0,
+      "std_delta": 0.0,
+      "p95_abs_delta": 0.0,
+      "n": 8
+    },
+    "value_range": {
+      "mean_abs_delta": 0.0,
+      "std_delta": 0.0,
+      "p95_abs_delta": 0.0,
+      "n": 8
+    },
+    "stroke_axis": {
+      "mean_abs_delta": 0.0,
+      "std_delta": 0.0,
+      "p95_abs_delta": 0.0,
+      "n": 0
+    }
+  },
+  "verdict": {
+    "stroke_mean": "operator effect must exceed p95=0.0000 to count as a result",
+    "stroke_cv": "operator effect must exceed p95=0.0000 to count as a result",
+    "edge_entropy": "operator effect must exceed p95=0.0000 to count as a result",
+    "texture_energy": "operator effect must exceed p95=0.0000 to count as a result",
+    "value_range": "operator effect must exceed p95=0.0000 to count as a result",
+    "stroke_axis": "operator effect must exceed p95=0.0000 to count as a result"
+  },
+  "mode": "identical"
+}

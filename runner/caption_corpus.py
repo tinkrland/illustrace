@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""caption a micro corpus with nebius vision (minicpm-v).
+"""caption a micro corpus with a vision model (nebius minicpm-v or openai).
+
+backends: --backend nebius (default, minicpm-v) or --backend openai
+(gpt-5-mini via the openai project key, the free-tokens path per the
+llm ladder in llm/README.md).
 
 subject-only captions per the packaging spec: the trigger carries the
 style, so captions describe what is depicted and never the medium.
@@ -16,9 +20,13 @@ import argparse
 _ap = argparse.ArgumentParser()
 _ap.add_argument("--dir", default="contemporary_pop")
 _ap.add_argument("--trigger", default="skrfrnt")
+_ap.add_argument("--backend", default="nebius", choices=["nebius", "openai"])
+_ap.add_argument("--model", default=None)
 _args = _ap.parse_args()
+BACKEND = _args.backend
 CORPUS = os.path.join(os.path.dirname(__file__), "..", "data", "micro", _args.dir)
-MODEL = "openbmb/MiniCPM-V-4_5"
+MODEL = _args.model or {"nebius": "openbmb/MiniCPM-V-4_5",
+                        "openai": "gpt-5-mini"}[_args.backend]
 TRIGGER = _args.trigger
 
 
@@ -38,27 +46,49 @@ def key():
     return f"v1.{kid}.{sec}"
 
 
+def _openai_key():
+    k = os.environ.get("OPENAI_PROJECT_KEY", "").strip()
+    if not k:
+        p = "/app/.agents/.env"
+        if os.path.exists(p):
+            for line in open(p):
+                if line.startswith("export OPENAI_PROJECT_KEY"):
+                    k = line.split("=", 1)[1].strip().strip('"').strip()
+    if not k:
+        raise SystemExit("no openai key: export OPENAI_PROJECT_KEY")
+    return k
+
+
 def caption(path):
     b64 = base64.b64encode(open(path, "rb").read()).decode()
-    req = urllib.request.Request(
-        "https://api.tokenfactory.nebius.com/v1/chat/completions",
-        data=json.dumps({
-            "model": MODEL,
-            "max_tokens": 120,
-            "temperature": 0.3,
-            "messages": [{"role": "user", "content": [
-                {"type": "image_url", "image_url": {
-                    "url": f"data:image/jpeg;base64,{b64}"}},
-                {"type": "text", "text":
-                 "Describe only WHAT is depicted in this illustration: the "
-                 "subject, its setting, and notable objects. One clause of "
-                 "at most 20 words, lowercase, no style words (no mentions "
-                 "of medium, technique, colors of the brushwork, or "
-                 "'illustration style'). Just the subject, e.g. 'a "
-                 "two-story corner bakery with striped awnings and bikes "
-                 "parked outside'."}]}]}).encode(),
-        headers={"Authorization": "Bearer " + key(),
-                 "Content-Type": "application/json"})
+    prompt_text = (
+        "Describe only WHAT is depicted in this illustration: the "
+        "subject, its setting, and notable objects. One clause of "
+        "at most 20 words, lowercase, no style words (no mentions "
+        "of medium, technique, colors of the brushwork, or "
+        "illustration style). Just the subject, e.g. a "
+        "two-story corner bakery with striped awnings and bikes "
+        "parked outside.")
+    if BACKEND == "openai":
+        url = "https://api.openai.com/v1/chat/completions"
+        body = {"model": MODEL, "max_completion_tokens": 2000,
+                "messages": [{"role": "user", "content": [
+                    {"type": "image_url", "image_url": {
+                        "url": "data:image/jpeg;base64," + b64}},
+                    {"type": "text", "text": prompt_text}]}]}
+        headers = {"Authorization": "Bearer " + _openai_key(),
+                   "Content-Type": "application/json"}
+    else:
+        url = "https://api.tokenfactory.nebius.com/v1/chat/completions"
+        body = {"model": MODEL, "max_tokens": 120, "temperature": 0.3,
+                "messages": [{"role": "user", "content": [
+                    {"type": "image_url", "image_url": {
+                        "url": "data:image/jpeg;base64," + b64}},
+                    {"type": "text", "text": prompt_text}]}]}
+        headers = {"Authorization": "Bearer " + key(),
+                   "Content-Type": "application/json"}
+    req = urllib.request.Request(url, data=json.dumps(body).encode(),
+                                 headers=headers)
     r = json.load(urllib.request.urlopen(req, timeout=300))
     return r["choices"][0]["message"]["content"].strip().strip('".')
 

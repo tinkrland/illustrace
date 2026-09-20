@@ -1,5 +1,20 @@
 # xano — stylebench control plane
 
+**what xano is here, and is not.** xano is *not* the permanent ml pipeline;
+it is a rapid telemetry buffer. it exists so a continuous human-in-the-loop
+evaluation loop (runs, judgments, survey ingestion, training-job ledger)
+stands up in weeks instead of months: a control plane we could provision
+with tables + public endpoints on day one, no backend code to write, no
+postgres to host, no schema migrations to babysit while the data model
+itself is still moving. the bet is data collection over premature backend
+optimization: every judgment pair flowing in now is worth more than a
+clean kafka topic would be. xano runs postgres behind the hood, our schema
+is plain tables, and the request contract (list/claim/update) is small,
+so when scale or contention shows up (more than one concurrent runner,
+real push traffic), the whole surface migrates to hosted postgres with the
+runner changing only its base url. that day is deliberately not today:
+telemetry first, infrastructure when the data earns it.
+
 queryable mirror of every run, asset, experiment, human judgment, training
 job, node graph, and preset. local json in `results/runs/` stays the source
 of truth; xano is the read side (filter by experiment, aggregate scores,
