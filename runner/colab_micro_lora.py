@@ -40,7 +40,9 @@ DATASET_DIR = os.environ.get(
 OUT_DIR = ("/content/drive/MyDrive/illustrace_adapters"
            if os.path.isdir("/content/drive/MyDrive") else "/content/adapters")
 KOHYA_DIR = "/content/sd-scripts"
-WEIGHTS_DIR = "/content/flux1-dev"
+WEIGHTS_DIR = ("/content/drive/MyDrive/illustrace_flux_weights"
+               if os.path.isdir("/content/drive/MyDrive")
+               else "/content/flux1-dev")
 TRIGGER = os.environ.get("TRIGGER", "skrfrnt")  # per-lane, no english subword
 EPOCHS = 10             # micro corpus: imgs x repeats x epochs
 REPEATS = 3             # = 450 steps, 1.5-2.5h on a t4
@@ -98,12 +100,19 @@ def fetch_weights():
         return
     os.makedirs(WEIGHTS_DIR, exist_ok=True)
     tok = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
-    env = dict(os.environ, HF_TOKEN=tok) if tok else None
-    if env is None:
+    if not tok:
         raise SystemExit("HF_TOKEN not set: flux.1-dev is license-gated, "
                          "accept the license on hf and pass a token")
+    try:  # hf_transfer: parallel chunks, roughly 3-5x the download speed
+        sh(["pip", "install", "-q", "hf_transfer"])
+        os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
+    except Exception:
+        pass
     sh(["huggingface-cli", "download", "black-forest-labs/FLUX.1-dev",
         *want, "--local-dir", WEIGHTS_DIR])
+    print("weights cached to", WEIGHTS_DIR,
+          "(drive" if WEIGHTS_DIR.startswith("/content/drive")
+          else "local: mount drive to stop re-downloading per session", ")")
 
 
 def build_metadata():
@@ -153,6 +162,13 @@ caption_dropout_rate = 0.1
   num_repeats = {REPEATS}
 """)
     os.makedirs(OUT_DIR, exist_ok=True)
+    import glob as _glob
+    # resume from any saved state in OUT_DIR (drive-backed): a session that
+    # dies mid-run restarts from the last epoch boundary, not from zero
+    states = sorted(_glob.glob(os.path.join(OUT_DIR, "*-state")))
+    resume = ["--resume", states[-1]] if states else []
+    if resume:
+        print("resuming from", states[-1])
     cmd = ["accelerate", "launch",
            "--num_cpu_threads_per_process", "2",
            os.path.join(KOHYA_DIR, "flux_train_network.py"),
@@ -169,6 +185,7 @@ caption_dropout_rate = 0.1
            "--learning_rate", str(LR),
            "--max_train_epochs", str(EPOCHS),
            "--save_every_n_epochs", str(SAVE_EVERY),
+           "--save_state",
            "--timestep_sampling", "shift",
            "--discrete_flow_shift", "3.1582",
            "--model_prediction_type", "raw",
@@ -187,7 +204,7 @@ caption_dropout_rate = 0.1
            # instead. blocks_to_swap is a small vram safety margin on
            # top of that.
            "--lowram",
-           "--blocks_to_swap", "8"]
+           "--blocks_to_swap", "8"] + resume
     t0 = time.time()
     if subprocess.run(cmd).returncode != 0:
         raise SystemExit("kohya failed: scroll up for the log; nothing "

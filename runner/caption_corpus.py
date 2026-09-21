@@ -94,9 +94,10 @@ def caption(path):
 
 
 if __name__ == "__main__":
-    imgs = sorted(f for f in os.listdir(CORPUS) if f.endswith(".jpg"))
+    imgs = sorted(f for f in os.listdir(CORPUS)
+                  if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp")))
     for i, f in enumerate(imgs, 1):
-        stem = os.path.join(CORPUS, f[:-4])
+        stem = os.path.join(CORPUS, os.path.splitext(f)[0])
         if os.path.exists(stem + ".txt"):
             print(f"[{i}/{len(imgs)}] cached: {f[:-4]}"); continue
         c = caption(os.path.join(CORPUS, f))
