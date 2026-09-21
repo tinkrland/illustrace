@@ -603,7 +603,8 @@ $("#save").addEventListener("click", async () => {
 });
 
 // ---------- library ----------
-const items = INSPOS; (() => {
+const items = INSPOS;
+{
   const el = $("#inspos");
   el.innerHTML = "";
   for (const it of items) {
@@ -645,7 +646,7 @@ const items = INSPOS; (() => {
     });
     el.appendChild(d);
   }
-});
+}
 function addNode(n) {
   n.id = nid();
   if (n.factor && n.factor !== "subject") n.strength = n.strength ?? 1;
