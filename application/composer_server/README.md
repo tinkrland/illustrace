@@ -15,39 +15,36 @@ no dependencies beyond the repo's (stdlib server, the operators as-is):
     python3 application/composer_server/server.py
     # http://localhost:8642  (COMPOSER_PORT to change)
 
-## the graph
+## the canvas
 
-- **source** — an inspo image (library in the sidebar: subjects + the
-  painter corpora). the whole point of multiple sources: one is the base,
-  others are per-factor references.
-- **op** — one of the 7 operators (palette, stroke, texture, edges, value,
-  color_zones, shading). two inputs: `base` (the image being made) and
-  `ref` (the image the factor is taken from). a strength slider per node.
-- **preview** — shows the rendered result of whatever is wired into it.
+flat, not chained: every inspo image wires straight to the **generation
+node** in the middle. the canvas is informally divided into labeled
+sections — subject, palette, stroke, texture, edges, value, color
+zones, shading — and dropping an image into a section is how you say
+what it contributes ("take the palette from this corner"). sections are
+informal by design: passing a node through a section re-assigns it live,
+but any image can be overridden per-image from its menu.
 
-wires: drag from an output dot to an input dot; click a wire to delete it;
-click an input to unplug it. one input port accepts one wire (a factor has
-one reference — that constraint is the design).
+- **subject** — the image being made. one image, the base of the chain.
+- **factor sections** — one inspo image per contribution, each with its
+  own strength and crit tag.
+- **generation** — the preset hub; every wire ends here. it renders the
+  deterministic factor chain derived from the sections (subject as base,
+  then one operator per image in a fixed order: palette, value,
+  color_zones, shading, texture, stroke, edges), so the same arrangement
+  of sections renders the same pixels every time.
 
-each operator owns a wire color (palette green, stroke pink, texture
-orange, edges cyan, value blue, color_zones yellow, shading purple — the
-sidebar operator list doubles as the legend). only `ref` wires are colored
-by their operator; `base`/`in` wires stay neutral grey, since the image
-being made isn't a style factor. a source node that feeds one or more
-`ref` ports grows a matching dot per connection — click a dot to open an
-inline slider that's the same strength value as the operator node's own
-slider (two views of one number, so you can dial a factor without hunting
-down which op node it's wired to). a source node also carries its own
-crit-tag: a free-text note ("just the linework, not the palette") scoped
-to that specific reference image, saved into the recipe as `tag` — display
-only for now, no operator reads it yet.
+interactions: drag an image from the library into a section; drag a node
+between sections to re-assign it; **right-click any image** for its menu —
+which section it feeds, its strength, its crit tag (a free-text note
+scoped to that image, saved into the recipe), or remove it. clicking a
+wire opens the same menu. `generate` renders the graph; `save preset`
+writes the recipe json plus renders to `results/composer/`.
 
-one deliberate omission: there's no "object/subject" reference type or
-color here, even though it's an obvious fourth bucket alongside style
-factors. subject/composition transfer stays a disabled-by-default bucket
-in illustrace (surprise is a bug, and identity/subject transfer is the
-part most likely to produce it) — so there's nothing honest to wire that
-color to yet.
+**the sections vs the old op-chain:** the op-chain view (explicit
+operator nodes wired base→ref) still exists in the executor — the section
+canvas compiles to it at run time. the ui is what the user thinks in
+("this corner is my palette inspo"), the executor is what actually runs.
 
 ## endpoints
 

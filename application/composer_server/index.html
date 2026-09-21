@@ -341,8 +341,8 @@ function renderGen(g) {
     g.dataset.dragWired = "1";
     g.addEventListener("mousedown", ev => {
       if (ev.button !== 0) return;
-      if (ev.target.closest("button")) return;
       closeMenu();
+      if (ev.target.closest("button")) return;
       selected?.classList.remove("selected"); selected = g;
       g.classList.add("selected");
       const ox = ev.clientX / view.z - gen.x,
