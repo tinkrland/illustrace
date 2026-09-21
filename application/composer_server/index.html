@@ -71,6 +71,28 @@
     font-size: 11px; background: #1b1b1fd0; padding: 4px 8px;
     border-radius: 6px; border: 1px solid #2a2a30; }
   #status { font-size: 11px; color: #8a8a94; min-width: 120px; }
+
+  .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    margin-right: 6px; flex-shrink: 0; }
+  .ops button { display: flex; align-items: center; }
+  .ref-dots { display: flex; gap: 5px; padding: 6px 0 0; flex-wrap: wrap; }
+  .ref-dots .dot { width: 10px; height: 10px; border-radius: 50%; cursor: pointer;
+    border: 1.5px solid #14141688; flex-shrink: 0; }
+  .ref-dots .dot.open { outline: 1.5px solid #e6e6e6; }
+  .ref-slider { display: flex; align-items: center; gap: 6px; font-size: 10px;
+    color: #b6b6bc; padding-top: 6px; }
+  .ref-slider input { flex: 1; }
+  .ref-slider .oplabel { min-width: 44px; }
+  .tagrow { display: flex; align-items: center; padding-top: 6px; gap: 4px; }
+  .tagicon { cursor: pointer; font-size: 12px; color: #8a8a94;
+    line-height: 1; }
+  .tagicon.filled { color: #cdbf6a; }
+  .tagicon:hover { color: #e6e6e6; }
+  .tagrow .taghint { font-size: 9px; color: #5c5c64; }
+  .tagbox textarea { width: 100%; margin-top: 4px; resize: vertical;
+    min-height: 34px; background: #141416; border: 1px solid #34343c;
+    border-radius: 5px; color: #e6e6e6; font: inherit; font-size: 11px;
+    padding: 4px 6px; }
 </style>
 </head>
 <body>
@@ -100,6 +122,19 @@
 "use strict";
 // ---------- state ----------
 const OPS = ["palette","stroke","texture","edges","value","color_zones","shading"];
+// each op owns a wire/dot color -- the "type of connection" the sketch
+// asked for. base/content wires stay neutral: they aren't a style
+// factor, they're the image being made. (subject/object reference is
+// deliberately not one of these -- illustrace keeps composition/subject
+// transfer a disabled-by-default bucket, so there's no honest color to
+// give it yet.)
+const OP_COLORS = {
+  palette: "#7fd88f", stroke: "#ec7fb0", texture: "#e8a35a",
+  edges: "#6fc7d9", value: "#6f95d9", color_zones: "#d9c85a",
+  shading: "#b98ce0",
+};
+const BASE_COLOR = "#6a6a72";
+
 let nodes = [], edges = [], seq = 0;
 let view = { x: 0, y: 0, z: 1 };
 let selected = null, dragWire = null;
@@ -182,10 +217,15 @@ function draw() {
   let paths = "";
   for (const e of edges) {
     const a = portPos(nodes.find(n => n.id === e.from), "out", null);
-    const b = portPos(nodes.find(n => n.id === e.to), "in", e.port);
+    const target = nodes.find(n => n.id === e.to);
+    const b = portPos(target, "in", e.port);
+    // a ref wire is colored by the operator it's feeding; base/in wires
+    // (the content itself, not a style factor) stay neutral.
+    const color = (e.port === "ref" && target)
+      ? (OP_COLORS[target.op] || BASE_COLOR) : BASE_COLOR;
     if (a && b) paths +=
-      `<path d="${wirePath(a, b)}" fill="none" stroke="#5c7050"
-        stroke-width="1.6" vector-effect="non-scaling-stroke"
+      `<path d="${wirePath(a, b)}" fill="none" stroke="${color}"
+        stroke-width="1.8" vector-effect="non-scaling-stroke"
         data-edge="${e.from}->${e.to}:${e.port}"
         style="cursor:pointer" pointer-events="stroke"/>`;
   }
@@ -204,14 +244,52 @@ function draw() {
     }));
 }
 function renderNode(el, n) {
-  if (el.dataset.rendered === "ok" && el.dataset.strength === String(n.strength)
-      && !n.img && n.type !== "preview") return;
-  el.dataset.rendered = "ok"; el.dataset.strength = n.strength ?? "";
+  // a source's ref-dots + tag box depend on live edges/downstream strength,
+  // not just this node's own fields -- the cache key has to see all of it,
+  // or a dot could go stale after a wire change.
+  const refEdges = n.type === "source"
+    ? edges.filter(e => e.from === n.id && e.port === "ref") : [];
+  const sig = JSON.stringify([n.strength, n.img || "", n.err || "",
+    refEdges.map(e => e.to + ":" + (nodes.find(x => x.id === e.to)?.strength)),
+    n._openDot, n._tagOpen, n.tag || ""]);
+  if (el.dataset.sig === sig) return;
+  el.dataset.sig = sig;
   let h = `<div class="head"><span>${n.title || n.type}</span>
     <span class="kind">${n.type}</span>
     <span class="del" data-del="${n.id}">&times;</span></div><div class="body">`;
   if (n.type === "source") {
     h += `<img src="/api/thumb?path=${encodeURIComponent(n.path)}" draggable="false">`;
+    if (refEdges.length) {
+      // one dot per style factor this reference currently feeds, colored
+      // by that operator -- click a dot to dial its percentage right here,
+      // instead of hunting down the operator node it's wired to.
+      h += `<div class="ref-dots">`;
+      for (const e of refEdges) {
+        const op = nodes.find(x => x.id === e.to);
+        if (!op) continue;
+        h += `<div class="dot${n._openDot === op.id ? " open" : ""}"
+          style="background:${OP_COLORS[op.op] || BASE_COLOR}"
+          data-dot="${op.id}"
+          title="${op.op} · ${Math.round((op.strength ?? 1) * 100)}%">
+          </div>`;
+      }
+      h += `</div>`;
+      const openOp = nodes.find(x => x.id === n._openDot);
+      if (openOp) h += `<div class="ref-slider">
+          <span class="oplabel">${openOp.op}</span>
+          <input type="range" min="0" max="1" step="0.05"
+            value="${openOp.strength ?? 1}" data-dotstrength="${openOp.id}">
+          <span data-dotval="${openOp.id}">
+            ${Math.round((openOp.strength ?? 1) * 100)}%</span></div>`;
+    }
+    // crit tag: a free-text note pinned to this specific reference, not
+    // the whole graph -- "just the brushwork, not the palette" lives here.
+    h += `<div class="tagrow"><span class="tagicon${n.tag ? " filled" : ""}"
+        data-tagicon="${n.id}" title="crit tag for this image">&#128172;</span>
+        <span class="taghint">${n.tag ? "tag set" : "crit tag"}</span></div>`;
+    if (n._tagOpen) h += `<div class="tagbox"><textarea data-tagbox="${n.id}"
+        placeholder="e.g. just the brushwork, not the palette"
+        >${n.tag || ""}</textarea></div>`;
   } else if (n.type === "op") {
     h += `<div class="slider-row">strength
       <input type="range" min="0" max="1" step="0.05" value="${n.strength ?? 1}"
@@ -243,20 +321,52 @@ function renderNode(el, n) {
     el.querySelector(`[data-sval="${n.id}"]`).textContent =
       Math.round(n.strength * 100) + "%";
   });
-  el.addEventListener("mousedown", ev => {
-    if (ev.target.closest(".port") || ev.target.closest("input")) return;
-    selected?.classList.remove("selected"); selected = el;
-    el.classList.add("selected");
-    const ox = ev.clientX / view.z - n.x, oy = ev.clientY / view.z - n.y;
-    const mv = e => { n.x = e.clientX / view.z - ox;
-      n.y = e.clientY / view.z - oy; el.style.left = n.x + "px";
-      el.style.top = n.y + "px"; draw(); };
-    const up = () => { window.removeEventListener("mousemove", mv);
-      window.removeEventListener("mouseup", up); };
-    window.addEventListener("mousemove", mv);
-    window.addEventListener("mouseup", up);
+  el.querySelectorAll("[data-dot]").forEach(d => d.addEventListener("click", ev => {
     ev.stopPropagation();
+    n._openDot = n._openDot === d.dataset.dot ? null : d.dataset.dot;
+    draw();
+  }));
+  el.querySelector("[data-dotstrength]")?.addEventListener("input", ev => {
+    const op = nodes.find(x => x.id === ev.target.dataset.dotstrength);
+    op.strength = parseFloat(ev.target.value);
+    el.querySelector(`[data-dotval="${op.id}"]`).textContent =
+      Math.round(op.strength * 100) + "%";
+    // this dot mirrors the operator node's own slider -- keep both in sync
+    // without a full redraw so the drag stays smooth.
+    const opEl = document.getElementById(op.id);
+    const opSlider = opEl?.querySelector(`[data-strength="${op.id}"]`);
+    if (opSlider) { opSlider.value = op.strength;
+      opEl.querySelector(`[data-sval="${op.id}"]`).textContent =
+        Math.round(op.strength * 100) + "%"; }
   });
+  el.querySelector(`[data-tagicon="${n.id}"]`)?.addEventListener("click", ev => {
+    ev.stopPropagation(); n._tagOpen = !n._tagOpen; draw();
+  });
+  const tagbox = el.querySelector(`[data-tagbox="${n.id}"]`);
+  tagbox?.addEventListener("input", ev => { n.tag = ev.target.value; });
+  tagbox?.addEventListener("mousedown", ev => ev.stopPropagation());
+  if (!el.dataset.dragWired) {
+    // wired once per element, not once per render -- renderNode now runs
+    // far more often (dots, tag box) and this used to stack a fresh drag
+    // listener on every one of those, piling up duplicate handlers.
+    el.dataset.dragWired = "1";
+    el.addEventListener("mousedown", ev => {
+      if (ev.target.closest(".port") || ev.target.closest("input")
+          || ev.target.closest(".dot") || ev.target.closest(".tagicon")
+          || ev.target.closest("textarea")) return;
+      selected?.classList.remove("selected"); selected = el;
+      el.classList.add("selected");
+      const ox = ev.clientX / view.z - n.x, oy = ev.clientY / view.z - n.y;
+      const mv = e => { n.x = e.clientX / view.z - ox;
+        n.y = e.clientY / view.z - oy; el.style.left = n.x + "px";
+        el.style.top = n.y + "px"; draw(); };
+      const up = () => { window.removeEventListener("mousemove", mv);
+        window.removeEventListener("mouseup", up); };
+      window.addEventListener("mousemove", mv);
+      window.addEventListener("mouseup", up);
+      ev.stopPropagation();
+    });
+  }
 }
 function wireNode(el, n) {  // port dragging (created once per element)
   el.addEventListener("mousedown", ev => {
@@ -294,7 +404,7 @@ function wireNode(el, n) {  // port dragging (created once per element)
 const graphJSON = () => ({
   nodes: nodes.map(n => {
     const o = { id: n.id, type: n.type };
-    if (n.type === "source") o.path = n.path;
+    if (n.type === "source") { o.path = n.path; if (n.tag) o.tag = n.tag; }
     if (n.type === "op") { o.op = n.op; o.strength = n.strength ?? 1; }
     return o;
   }),
@@ -359,7 +469,8 @@ fetch("/api/inspos").then(r => r.json()).then(items => {
 });
 for (const op of OPS) {
   const b = document.createElement("button");
-  b.textContent = op;
+  b.innerHTML = `<span class="swatch" style="background:${OP_COLORS[op]}">
+    </span>${op}`;
   b.addEventListener("mousedown", ev => {
     ev.preventDefault();
     const r = canvas.getBoundingClientRect();
