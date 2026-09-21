@@ -29,6 +29,26 @@ wires: drag from an output dot to an input dot; click a wire to delete it;
 click an input to unplug it. one input port accepts one wire (a factor has
 one reference — that constraint is the design).
 
+each operator owns a wire color (palette green, stroke pink, texture
+orange, edges cyan, value blue, color_zones yellow, shading purple — the
+sidebar operator list doubles as the legend). only `ref` wires are colored
+by their operator; `base`/`in` wires stay neutral grey, since the image
+being made isn't a style factor. a source node that feeds one or more
+`ref` ports grows a matching dot per connection — click a dot to open an
+inline slider that's the same strength value as the operator node's own
+slider (two views of one number, so you can dial a factor without hunting
+down which op node it's wired to). a source node also carries its own
+crit-tag: a free-text note ("just the linework, not the palette") scoped
+to that specific reference image, saved into the recipe as `tag` — display
+only for now, no operator reads it yet.
+
+one deliberate omission: there's no "object/subject" reference type or
+color here, even though it's an obvious fourth bucket alongside style
+factors. subject/composition transfer stays a disabled-by-default bucket
+in illustrace (surprise is a bug, and identity/subject transfer is the
+part most likely to produce it) — so there's nothing honest to wire that
+color to yet.
+
 ## endpoints
 
 | route | what |
