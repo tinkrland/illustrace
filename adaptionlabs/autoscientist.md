@@ -37,5 +37,5 @@ the invented corpus is the only judge available at launch, which is circular (th
 | thing | id |
 |---|---|
 | invented dataset | fb3e1081-9501-4140-aa27-85acd42a1bae (illustrace-style-wrangler-v1, 500 rows) |
-| autoscientist experiment | (lands in run_info.json when the dataset finishes) |
-| corpus file | style_wrangler_v1.jsonl (downloads automatically when the dataset completes) |
+| autoscientist experiment | 8a376b64-3ca4-45d6-a2b8-14f884bbe42e (llama-4-scout, instruction method, +500 domain / +250 general augmentation, target win rate 0.8, max 3 iterations, status at launch: running) |
+| corpus file | style_wrangler_v1.jsonl (500 rows, downloaded, committed) |

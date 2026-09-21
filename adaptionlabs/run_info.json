@@ -1,0 +1,10 @@
+{
+  "id": "8a376b64-3ca4-45d6-a2b8-14f884bbe42e",
+  "status": "running",
+  "model": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+  "dataset_id": "fb3e1081-9501-4140-aa27-85acd42a1bae",
+  "training_method": "instruction",
+  "data_format": null,
+  "target_win_rate": 0.8,
+  "max_iterations": 3.0
+}

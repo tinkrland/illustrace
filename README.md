@@ -19,10 +19,12 @@ the pattern is borrowed from ao3's tag wrangling: users tag freely, a wrangler (
 
 | domain | question |
 |---|---|
-| render/ | what did the marks do to the surface? |
+| render/ | what did the marks do to the picture plane? |
 | construction/ | where is the camera? |
 | spatial/ | how is depth built, and what belongs to which layer? |
 | palette/ | what is the color doing? |
+| textures/ | what covers the surfaces of the depicted things? |
+| materials/ | what do the depicted things read as being made of? |
 
 they are separate folders because conflating them is what makes style transfer apply the wrong shadow direction when you asked for a wash, or treat "pastel" as both a medium and a color mood at once. each domain is one orthogonal dial cluster. users can turn them independently. the engine should too.
 
@@ -33,7 +35,9 @@ they are separate folders because conflating them is what makes style transfer a
 | render/ | seeded. five canonicals from nine session images, synonyms from real user language. the template everything else is copied from. |
 | construction/ | researched, unseeded. axes and candidate canonicals exist but no real image has blessed any of them yet. |
 | spatial/ | researched, unseeded. depth-cue vocabulary from perceptual psychology and art foundations. |
-| palette/ | researched, unseeded. deliberately last. color is the domain most prone to confidently wrong taxonomies. |
+| palette/ | researched, unseeded. deliberately late. color is the domain most prone to confidently wrong taxonomies. |
+| textures/ | researched, unseeded. surface-pattern grammar (stipple, weave, scales, grain, speckle). |
+| materials/ | researched, unseeded. substance claims (metal, glass, fabric, water, fur). the least externally-grounded folder: perception science and pipeline vocabulary, no art-education precedent. |
 | adaptionlabs/ | the machine side: a synthetic style-description dataset (invented via adaptive data) and an autoscientist run that trains a wrangler model on it. |
 
 ## the one rule that keeps this honest
