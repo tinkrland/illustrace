@@ -179,3 +179,82 @@ def shape_proxies(img):
     area = float(m.sum())
     return {"perim_area": perim / max(np.sqrt(area), 1.0),
             "boundary_entropy": edge_direction_entropy(img)}
+
+
+def texture_energy_bp(img, sigma=3.0):
+    """band-passed texture energy: the diffusion-native instrument.
+
+    texture_energy reads raw gradient energy over interiors, which makes
+    it conflate *grain* (the thing it means to measure) with low
+    frequency bleed and denoise overshoot (the diffusion mess). this
+    variant high-passes first (lum minus its gaussian blur) and measures
+    gradient energy of the residual, so grain survives and bleed, which
+    is smooth by construction, does not.
+
+    honest limit: high-passing also amplifies jpeg ringing and sampler
+    grain, so the jpeg/grain floors for this variant are *higher* than
+    the raw one. the trade is deliberate: latent bleed is the mess a
+    diffusion pipeline adds that a codec does not.
+    """
+    from scipy import ndimage
+    a = _as_array(img)
+    lum = a @ [0.299, 0.587, 0.114]
+    base = ndimage.gaussian_filter(lum, sigma)
+    hp = lum - base
+    gx = np.zeros_like(hp); gy = np.zeros_like(hp)
+    gx[:, 1:-1] = hp[:, 2:] - hp[:, :-2]
+    gy[1:-1, :] = hp[2:, :] - hp[:-2, :]
+    m = stroke_mask(img)
+    bg = (np.abs(a - a[0, 0]).sum(-1) < 30)
+    interior = ~m & ~bg
+    if interior.sum() < 100:
+        return 0.0
+    g = np.sqrt(gx ** 2 + gy ** 2)
+    return float(g[interior].mean())
+
+
+def value_range_pal(img, k=6):
+    """palette-anchored value range: the diffusion-native instrument.
+
+    value_range reads pixel percentiles, so any perturbation that
+    invents intermediate colors (latent bleed invented floors of 50-75
+    on the raster corpus) moves it more than most operator effects. this
+    variant measures the same quantity over the *palette* instead: k
+    means centroids with their masses, spread read as a mass-weighted
+    p95-p5 of centroid luma. bleed creates intermediate colors, but they
+    are small-mass clusters; the dominant colors barely move.
+
+    honest limit: a reference with many equally-weighted colors near the
+    spread edges can wobble when cluster membership shuffles.
+    """
+    cents, masses = palette_masses(img, k)
+    if cents is None or len(cents) < 2:
+        return 0.0
+    lum = cents @ [0.299, 0.587, 0.114]
+    order = np.argsort(lum)
+    cum = np.cumsum(masses[order]) / masses.sum()
+    lo = float(lum[order][np.searchsorted(cum, 0.05)])
+    hi = float(lum[order][np.searchsorted(cum, 0.95)])
+    return hi - lo
+
+
+def palette_masses(img, k=6, iters=12, sample=8000):
+    """k-means palette as (centroids, masses), mass = pixel share."""
+    a = _as_array(img)
+    h, w = a.shape[:2]
+    feat = a.reshape(-1, 3).astype(np.float64)
+    idx = np.random.default_rng(0).choice(len(feat), size=sample,
+                                          replace=len(feat) < sample)
+    samp = feat[idx]
+    cents = samp[np.linspace(0, len(samp) - 1, k).astype(int)]
+    for _ in range(iters):
+        d = ((samp[:, None, :] - cents[None, :, :]) ** 2).sum(-1)
+        lab = d.argmin(1)
+        for z in range(k):
+            pts = samp[lab == z]
+            if len(pts):
+                cents[z] = pts.mean(0)
+    d = ((feat[:, None, :] - cents[None, :, :]) ** 2).sum(-1)
+    labels = d.argmin(1)
+    masses = np.bincount(labels, minlength=k) / len(feat)
+    return cents, masses

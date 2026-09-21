@@ -47,14 +47,23 @@ from engine.analyzer import (edge_direction_entropy, palette,
                               stroke_axis, stroke_width_stats,
                               texture_energy, value_range)
 
+from engine.analyzer import texture_energy_bp, value_range_pal
+
 METRICS = {
     "stroke_mean": lambda im: stroke_width_stats(im)[0],
     "stroke_cv": lambda im: stroke_width_stats(im)[1],
     "edge_entropy": edge_direction_entropy,
     "texture_energy": texture_energy,
+    "texture_bp": texture_energy_bp,     # fine band: grain vs jpeg/ringing
     "value_range": value_range,
+    "value_pal": value_range_pal,        # palette-anchored: bleed-robust
     "stroke_axis": lambda im: stroke_axis(im)[0],  # dominant mark angle
+    "stroke_conc": lambda im: stroke_axis(im)[1],  # axis concentration:
+    # low conc means the angle is a near-tie between axes and can flip 90
+    # degrees under any perturbation (the arch-corpus failure mode)
 }
+
+CIRCULAR = {"stroke_axis"}  # axial angles: 0 and 179 are 1 apart, not 179
 
 
 def read_metric(img, name):
@@ -123,15 +132,27 @@ def perturb_grain(img, amp, sigma_px=2.0, seed=0):
     return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
 
 
-def perturb_bleed(img, radius_px):
-    """local-mean color bleed: latent bleed / denoise-overshoot proxy."""
+def perturb_bleed(img, radius_px, alpha=0.15):
+    """local-mean color bleed: latent bleed / denoise-overshoot proxy.
+
+    calibration note (2026-09-21): the first version blended 50% toward
+    the local mean, which is not a proxy for latent bleed, it is half a
+    box blur, and it manufactured catastrophic floors (texture 18+,
+    value_range 60+) that said more about the proxy than the metrics.
+    realistic denoise overshoot is a mild nudge: alpha 0.15, small
+    radii. the strong rungs below are stress curves, not the floor; the
+    floor is read at the calibrated rung (combo), and the honest
+    calibration anchor is real flux pairs (--mode pairs) once the gpu
+    lane produces them.
+    """
     from scipy import ndimage
     a = np.array(img).astype(np.float64)
     r = max(1, int(radius_px))
     out = a.copy()
     for c in range(3):
         out[..., c] = ndimage.uniform_filter(a[..., c], size=2 * r + 1)
-    return Image.fromarray(np.clip((a + out) / 2, 0, 255).astype(np.uint8))
+    return Image.fromarray(
+        np.clip(a * (1 - alpha) + out * alpha, 0, 255).astype(np.uint8))
 
 
 def perturb_unsharp(img, amount):
@@ -168,7 +189,8 @@ def perturb_reencode_paths(imgs, quality=95, single=False, seed=0):
     out = []
     for im in imgs:
         if single:
-            im = perturb_bleed(perturb_grain(perturb_warp(im, 0.5, seed=seed), 0.7, seed=seed), 4)
+            im = perturb_bleed(perturb_grain(perturb_warp(im, 0.5, seed=seed),
+                                             0.7, seed=seed), 2, alpha=0.15)
         buf = io.BytesIO()
         im.save(buf, "JPEG", quality=quality)
         buf.seek(0)
@@ -180,7 +202,8 @@ LADDERS = {
     "resample": ([0.95, 0.90, 0.80], perturb_resample),
     "warp": ([0.25, 0.5, 1.0], perturb_warp),
     "grain": ([0.3, 0.7, 1.5], perturb_grain),
-    "bleed": ([3, 6, 12], perturb_bleed),
+    "bleed": ([2, 4, 8], lambda im, r: perturb_bleed(im, r, alpha=0.15)),
+    "bleed_strong": ([2, 4, 8], lambda im, r: perturb_bleed(im, r, alpha=0.5)),
     "unsharp": ([0.2, 0.4, 0.6], perturb_unsharp),
     "tint": ([1.0, 2.0, 4.0], perturb_tint),
     "webp": ([95, 90, 80], perturb_webp),
@@ -207,6 +230,7 @@ def pairs_perturbed(paths, mode, level):
 
 def floor_report(pairs_iter):
     per_metric = {name: [] for name in METRICS}
+    baselines = {name: [] for name in METRICS}
     n = 0
     for img_a, img_b, label in pairs_iter:
         n += 1
@@ -214,14 +238,25 @@ def floor_report(pairs_iter):
         for name in METRICS:
             if va[name] is None or vb[name] is None:
                 continue
-            per_metric[name].append(abs(vb[name] - va[name]))
+            d = abs(vb[name] - va[name])
+            if name in CIRCULAR:  # axial angle: shortest way around
+                d = min(d, 180.0 - d)
+            per_metric[name].append(d)
+            baselines[name].append(abs(va[name]))
     report = {"n_pairs": n, "metrics": {}}
     for name, deltas in per_metric.items():
         arr = np.array(deltas) if deltas else np.array([0.0])
+        base = float(np.median(baselines[name])) if baselines[name] else 0.0
+        rel = float(np.percentile(arr, 95)) / base if base else None
         report["metrics"][name] = {
             "mean_abs_delta": round(float(arr.mean()), 6),
             "std_delta": round(float(arr.std()), 6),
             "p95_abs_delta": round(float(np.percentile(arr, 95)), 6),
+            # relative floor: p95 delta as a fraction of the median baseline.
+            # absolute deltas lie across corpora (a 5.4 texture floor is 11%
+            # on a baseline-50 raster corpus but 41% on a baseline-13 vector
+            # one); the relative number carries the honest story.
+            "p95_rel_delta": round(rel, 6) if rel is not None else None,
             "n": len(deltas),
         }
     report["verdict"] = {
