@@ -42,7 +42,21 @@
   #wires { position: absolute; top: 0; left: 0; overflow: visible;
     width: 1px; height: 1px; }
   .zone { position: absolute; border: 1.5px dashed #34343c;
-    border-radius: 12px; pointer-events: none; }
+    border-radius: 12px; pointer-events: none;
+    transition: border-color .15s, background-color .15s; }
+  .zone.hot { border-color: #7d9a6a; background: #7d9a6a12; }
+  .zone.flash { border-color: #a4c78e; background: #7d9a6a22; }
+  @keyframes settle { 0% { transform: scale(1.06); }
+    100% { transform: scale(1); } }
+  .node.settle { animation: settle .16s ease-out; }
+  .clasp { position: absolute; width: 11px; height: 11px;
+    border-radius: 50%; background: #3a3a42; border: 2px solid #1f1f24;
+    box-shadow: 0 0 0 1px #34343c; top: 50%;
+    transform: translateY(-50%); pointer-events: none;
+    transition: background .12s; }
+  .clasp.in { left: -7px; }
+  .clasp.out { right: -7px; }
+  .node:hover .clasp { background: #7d9a6a; }
   .zone .zlabel { position: absolute; top: 8px; left: 12px;
     font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
     color: #6d6d76; }
@@ -57,8 +71,9 @@
   .node .head .kind { font-weight: 400; color: #8a8a94; font-size: 10px;
     margin-left: auto; flex-shrink: 0; }
   .node .body { padding: 8px; }
-  .node img { width: 100%; border-radius: 4px; display: block;
-    background: #141416; }
+  .node img { width: 100%; height: 120px; object-fit: cover;
+    border-radius: 4px; display: block; background: #141416; }
+  .node.gen img { height: 190px; }
   .node .strip { display: flex; align-items: center; font-size: 10px;
     color: #b6b6bc; padding: 5px 8px 2px; gap: 5px; }
   .node .strip .sdot { width: 7px; height: 7px; border-radius: 50%;
@@ -158,22 +173,23 @@ const FACTOR_ORDER = ["palette","value","color_zones","shading",
 
 const ZONES = [
   { factor: "subject", label: "subject &middot; the image being made",
-    x: -1420, y: -140, w: 360, h: 300 },
+    x: -1420, y: -180, w: 360, h: 300 },
   { factor: "palette", label: "palette",
-    x: -1000, y: -520, w: 360, h: 300 },
+    x: -1000, y: -840, w: 360, h: 480 },
   { factor: "stroke", label: "stroke",
-    x: -600, y: -520, w: 360, h: 300 },
+    x: -600, y: -840, w: 360, h: 480 },
   { factor: "texture", label: "texture",
-    x: -200, y: -520, w: 360, h: 300 },
+    x: -200, y: -840, w: 360, h: 480 },
   { factor: "edges", label: "edges",
-    x: 200, y: -520, w: 360, h: 300 },
+    x: 200, y: -840, w: 360, h: 480 },
   { factor: "value", label: "value",
-    x: -1000, y: 200, w: 360, h: 300 },
+    x: -1000, y: 330, w: 360, h: 480 },
   { factor: "color_zones", label: "color zones",
-    x: -600, y: 200, w: 360, h: 300 },
+    x: -600, y: 330, w: 360, h: 480 },
   { factor: "shading", label: "shading",
-    x: -200, y: 200, w: 360, h: 300 },
+    x: -200, y: 330, w: 360, h: 480 },
 ];
+const NODE_H = 210;  // fixed image height -> predictable slot math
 
 let nodes = [], seq = 0;   // source nodes only
 const gen = { id: "gen", type: "gen", x: -124, y: -170, img: null,
@@ -186,6 +202,56 @@ const world = $("#world"), canvas = $("#canvas"), svg = $("#wires");
 const nid = () => "n" + (++seq);
 const zoneAt = (x, y) => ZONES.find(z => x >= z.x && x <= z.x + z.w
   && y >= z.y && y <= z.y + z.h) || null;
+// the magnetic part: sections have slots, and a node entering a section
+// clicks into the nearest free one instead of floating loosely.
+function zoneSlots(z) {
+  const cols = [z.x + 22, z.x + 190], rows = [];
+  for (let ry = z.y + 44; ry + NODE_H <= z.y + z.h; ry += 210)
+    rows.push(ry);
+  const out = [];
+  for (const ry of rows) for (const cx of cols) out.push({ x: cx, y: ry });
+  return out;
+}
+function freeSlot(n, z, px, py) {
+  let best = null, bd = Infinity;
+  for (const s of zoneSlots(z)) {
+    if (nodes.some(o => o !== n && Math.abs(o.x - s.x) < 40
+        && Math.abs(o.y - s.y) < 40)) continue;
+    const d = (s.x - px) ** 2 + (s.y - py) ** 2;
+    if (d < bd) { bd = d; best = s; }
+  }
+  return best;
+}
+let hotZone = null;
+function setHot(z) {
+  if (hotZone === z) return;
+  hotZone?.el.classList.remove("hot");
+  hotZone = z;
+  hotZone?.el.classList.add("hot");
+}
+let actx = null;
+function clickSound() {  // the literal click when a node seats into a block
+  try {
+    actx = actx || new (window.AudioContext
+      || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = "triangle"; o.frequency.value = 1450;
+    g.gain.setValueAtTime(0.08, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,
+      actx.currentTime + 0.06);
+    o.connect(g); g.connect(actx.destination);
+    o.start(); o.stop(actx.currentTime + 0.07);
+  } catch (e) { /* audio is garnish, never a blocker */ }
+}
+function snapFx(n, z) {
+  clickSound();
+  z.el?.classList.remove("flash"); void z.el?.offsetWidth;
+  z.el?.classList.add("flash");
+  setTimeout(() => z.el?.classList.remove("flash"), 200);
+  const el = document.getElementById(n.id);
+  if (el) { el.classList.remove("settle"); void el.offsetWidth;
+    el.classList.add("settle"); }
+}
 const factorColor = f =>
   f === "subject" ? SUBJECT_COLOR
   : (FACTOR_COLORS[f] || UNSET_COLOR);
@@ -243,13 +309,15 @@ for (const z of ZONES) {
   d.innerHTML = `<div class="zlabel"><span class="zdot"
     style="background:${z.factor === "subject"
       ? SUBJECT_COLOR : FACTOR_COLORS[z.factor]}"></span>${z.label}</div>`;
+  z.el = d;
   world.appendChild(d);
 }
 
 // ---------- node rendering ----------
 function nodeSig(n) {
-  return JSON.stringify([n.x, n.y, n.factor, n.strength, n.tag || "",
-                         n.d || n.path]);
+  // positions live outside the sig: dragging slides the node without
+  // rebuilding its html, so the settle animation never gets wiped
+  return JSON.stringify([n.factor, n.strength, n.tag || "", n.d || n.path]);
 }
 function draw() {
   const seen = new Set();
@@ -295,6 +363,7 @@ function renderNode(el, n) {
       : "no section &middot; not contributing"}</div>`;
   if (n.tag) h += `<div class="tagline" title="${n.tag
     .replace(/"/g, "&quot;")}">&#128172; ${n.tag}</div>`;
+  h += `<div class="clasp in"></div><div class="clasp out"></div>`;
   h += n.err ? `<div class="err">${n.err}</div>` : "";
   el.innerHTML = h;
   if (!el.dataset.dragWired) {
@@ -307,16 +376,28 @@ function renderNode(el, n) {
       selected?.classList.remove("selected"); selected = el;
       el.classList.add("selected");
       const ox = ev.clientX / view.z - n.x, oy = ev.clientY / view.z - n.y;
+      let inZone = null;  // the section the node is currently seated in
       const mv = e => {
-        n.x = e.clientX / view.z - ox; n.y = e.clientY / view.z - oy;
-        // passing through a section re-assigns the image live -- the
-        // corners are the primary way to say what an image is for
-        const z = zoneAt(n.x + 84, n.y + 70);
-        if (z && z.factor !== n.factor) { n.factor = z.factor; draw(); }
+        const px = e.clientX / view.z - ox, py = e.clientY / view.z - oy;
+        const z = zoneAt(px + 84, py + 103);
+        if (z) {
+          if (inZone !== z) {  // entering a section: it clicks into a slot
+            inZone = z;
+            if (z.factor !== n.factor) n.factor = z.factor;
+            const s = freeSlot(n, z, px, py);
+            if (s) { n.x = s.x; n.y = s.y; snapFx(n, z); }
+            else { n.x = px; n.y = py; }
+          }
+          // while inside: seated in its slot, not chasing the cursor
+        } else {
+          inZone = null;
+          n.x = px; n.y = py;
+        }
+        setHot(z);
         draw();
       };
       const up = () => { window.removeEventListener("mousemove", mv);
-        window.removeEventListener("mouseup", up); };
+        window.removeEventListener("mouseup", up); setHot(null); };
       window.addEventListener("mousemove", mv);
       window.addEventListener("mouseup", up);
       ev.stopPropagation();
@@ -335,7 +416,9 @@ function renderGen(g) {
       : `<div class="hintbox">drop inspirations into the sections,<br>
          right-click them to tune,<br>then generate</div>`}
     <button class="genbtn primary" id="genrun">generate</button>
-    </div>${gen.err ? `<div class="err">${gen.err}</div>` : ""}`;
+    </div><div class="clasp in" style="top:130px"></div>
+    <div class="clasp out" style="top:130px"></div>
+    ${gen.err ? `<div class="err">${gen.err}</div>` : ""}`;
   g.querySelector("#genrun").addEventListener("click", ev => {
     ev.stopPropagation(); run();
   });
@@ -362,9 +445,10 @@ function renderGen(g) {
 function drawWires() {
   let paths = "";
   const wr = world.getBoundingClientRect();
-  const gp = document.querySelector("#gen .head");
-  const target = gp ? { x: (gp.getBoundingClientRect().x + 8 - wr.x)
-      / view.z, y: (gp.getBoundingClientRect().y + 14 - wr.y) / view.z }
+  const gc = document.querySelector("#gen .clasp.in");
+  const gr = gc?.getBoundingClientRect();
+  const target = gr ? { x: (gr.x + gr.width / 2 - wr.x) / view.z,
+      y: (gr.y + gr.height / 2 - wr.y) / view.z }
     : { x: gen.x, y: gen.y };
   for (const n of nodes) {
     const el = document.getElementById(n.id);
@@ -545,10 +629,16 @@ const items = INSPOS; (() => {
         if (e.clientX < r.left || e.clientX > r.right
             || e.clientY < r.top || e.clientY > r.bottom) return;
         const x = (e.clientX - r.left - view.x) / view.z - 84,
-              y = (e.clientY - r.top - view.y) / view.z - 60;
-        const z = zoneAt(x + 84, y + 60);
-        addNode({ type: "source", title: it.path.split("/").pop(),
-          path: it.path, d: it.d, factor: z ? z.factor : null, x, y });
+              y = (e.clientY - r.top - view.y) / view.z - 103;
+        const z = zoneAt(x + 84, y + 103);
+        const nn = { type: "source", title: it.path.split("/").pop(),
+          path: it.path, d: it.d, factor: z ? z.factor : null, x, y };
+        if (z) {
+          const s = freeSlot(nn, z, x, y);
+          if (s) { nn.x = s.x; nn.y = s.y; }
+        }
+        addNode(nn);
+        if (z) snapFx(nn, z);
       };
       window.addEventListener("mousemove", mv);
       window.addEventListener("mouseup", up);
@@ -563,21 +653,22 @@ function addNode(n) {
 }
 
 
-// demo graph: one image per section, each with its own strength and tag
+// demo graph: one image per section, each seated in its section's slot
 addNode({ type: "source", title: "ref_01.webp",
   path: "test_images/ref_01.webp", d: INSPOS[0].d, factor: "subject",
-  x: -1370, y: -80, tag: "the street scene itself, nothing else" });
+  x: -1398, y: -136, tag: "the street scene itself, nothing else" });
 addNode({ type: "source", title: "monet_000_1890.jpg",
   path: "monet/monet_000_1890.jpg", d: INSPOS[4].d, factor: "palette",
-  strength: 0.8, x: -940, y: -460, tag: "just the palette, not the brushwork" });
+  strength: 0.8, x: -978, y: -796,
+  tag: "just the palette, not the brushwork" });
 addNode({ type: "source", title: "van_gogh_019_1888.jpg",
   path: "van_gogh/van_gogh_019_1888.jpg", d: INSPOS[6].d, factor: "stroke",
-  strength: 0.6, x: -540, y: -460 });
+  strength: 0.6, x: -578, y: -796 });
 addNode({ type: "source", title: "monet_022_1903.jpg",
   path: "monet/monet_022_1903.jpg", d: INSPOS[5].d, factor: "texture",
-  strength: 0.4, x: -140, y: -460 });
+  strength: 0.4, x: -178, y: -796 });
 draw();
-view.z = 0.55; centerOn(-300, -130);
+view.z = 0.5; centerOn(-430, -15);
 
 </script>
 </body>
