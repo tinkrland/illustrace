@@ -29,70 +29,79 @@
   aside h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
     color: #8a8a94; margin: 12px 0 6px; }
   aside h2:first-child { margin-top: 0; }
+  .hint { font-size: 11px; color: #8a8a94; margin-top: 10px;
+    line-height: 1.5; }
   #inspos { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .inspo { border-radius: 6px; overflow: hidden; cursor: grab;
     border: 1px solid #2a2a30; aspect-ratio: 1; background: #141416; }
   .inspo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .ops { display: flex; flex-wrap: wrap; gap: 6px; }
-  .ops button { padding: 5px 9px; }
   #canvas { flex: 1; position: relative; overflow: hidden;
-    background: radial-gradient(600px 600px at 30% 20%, #1a1a1e, #141416);
+    background: radial-gradient(700px 700px at 40% 30%, #1a1a1e, #141416);
     cursor: default; }
   #world { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
   #wires { position: absolute; top: 0; left: 0; overflow: visible;
     width: 1px; height: 1px; }
+  .zone { position: absolute; border: 1.5px dashed #34343c;
+    border-radius: 12px; pointer-events: none; }
+  .zone .zlabel { position: absolute; top: 8px; left: 12px;
+    font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    color: #6d6d76; }
+  .zone .zdot { display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
   .node { position: absolute; width: 168px; background: #1f1f24;
     border: 1px solid #34343c; border-radius: 8px; user-select: none; }
   .node.selected { outline: 1.5px solid #7d9a6a; }
   .node .head { padding: 6px 8px; font-weight: 600; font-size: 12px;
     border-bottom: 1px solid #2a2a30; cursor: grab; display: flex;
-    align-items: center; }
+    align-items: center; overflow: hidden; }
   .node .head .kind { font-weight: 400; color: #8a8a94; font-size: 10px;
-    margin-left: auto; }
+    margin-left: auto; flex-shrink: 0; }
   .node .body { padding: 8px; }
-  .node img, .node canvas { width: 100%; border-radius: 4px; display: block;
+  .node img { width: 100%; border-radius: 4px; display: block;
     background: #141416; }
+  .node .strip { display: flex; align-items: center; font-size: 10px;
+    color: #b6b6bc; padding: 5px 8px 2px; gap: 5px; }
+  .node .strip .sdot { width: 7px; height: 7px; border-radius: 50%;
+    flex-shrink: 0; background: #6a6a72; }
+  .node .tagline { font-size: 10px; color: #cdbf6a; padding: 0 8px 6px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .node .err { color: #d08b7c; font-size: 11px; padding: 4px 8px 8px;
     white-space: pre-wrap; }
-  .node .slider-row { display: flex; align-items: center; gap: 6px;
+  .node.gen { width: 248px; }
+  .node.gen .hintbox { color: #8a8a94; padding: 20px 8px; text-align:
+    center; font-size: 11px; line-height: 1.6; }
+  .node.gen .genbtn { margin: 8px; width: calc(100% - 16px); }
+  #menu { position: fixed; z-index: 10; width: 210px; background: #1f1f24;
+    border: 1px solid #34343c; border-radius: 8px; padding: 10px;
+    box-shadow: 0 8px 24px #000000a0; display: none; }
+  #menu .mtitle { font-size: 11px; font-weight: 600; margin-bottom: 8px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #menu .msec { font-size: 9px; text-transform: uppercase;
+    letter-spacing: .08em; color: #8a8a94; margin: 8px 0 4px; }
+  #menu .factors { display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4px; }
+  #menu .factors button { padding: 3px 6px; font-size: 11px; text-align:
+    left; display: flex; align-items: center; gap: 5px; }
+  #menu .factors button.on { background: #4a5b3f; border-color: #5c7050; }
+  #menu .fdot { width: 7px; height: 7px; border-radius: 50%;
+    flex-shrink: 0; background: #6a6a72; }
+  #menu .srow { display: flex; align-items: center; gap: 6px;
     font-size: 11px; color: #b6b6bc; }
-  .node .slider-row input { flex: 1; }
-  .node .del { margin-left: 6px; cursor: pointer; color: #8a8a94;
-    font-size: 12px; }
-  .node .del:hover { color: #d08b7c; }
-  .port { position: absolute; width: 11px; height: 11px; border-radius: 50%;
-    background: #4a4a54; border: 1.5px solid #1f1f24; cursor: crosshair; }
-  .port:hover { background: #7d9a6a; }
-  .port.in { left: -6px; }
-  .port.out { right: -6px; }
-  .port-label { position: absolute; left: 8px; font-size: 9px; color: #8a8a94;
-    pointer-events: none; }
-  #zoom { position: absolute; right: 12px; bottom: 12px; color: #8a8a94;
-    font-size: 11px; background: #1b1b1fd0; padding: 4px 8px;
-    border-radius: 6px; border: 1px solid #2a2a30; }
-  #status { font-size: 11px; color: #8a8a94; min-width: 120px; }
-
-  .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-    margin-right: 6px; flex-shrink: 0; }
-  .ops button { display: flex; align-items: center; }
-  .ref-dots { display: flex; gap: 5px; padding: 6px 0 0; flex-wrap: wrap; }
-  .ref-dots .dot { width: 10px; height: 10px; border-radius: 50%; cursor: pointer;
-    border: 1.5px solid #14141688; flex-shrink: 0; }
-  .ref-dots .dot.open { outline: 1.5px solid #e6e6e6; }
-  .ref-slider { display: flex; align-items: center; gap: 6px; font-size: 10px;
-    color: #b6b6bc; padding-top: 6px; }
-  .ref-slider input { flex: 1; }
-  .ref-slider .oplabel { min-width: 44px; }
-  .tagrow { display: flex; align-items: center; padding-top: 6px; gap: 4px; }
-  .tagicon { cursor: pointer; font-size: 12px; color: #8a8a94;
-    line-height: 1; }
-  .tagicon.filled { color: #cdbf6a; }
-  .tagicon:hover { color: #e6e6e6; }
-  .tagrow .taghint { font-size: 9px; color: #5c5c64; }
-  .tagbox textarea { width: 100%; margin-top: 4px; resize: vertical;
+  #menu .srow input { flex: 1; }
+  #menu textarea { width: 100%; margin-top: 2px; resize: vertical;
     min-height: 34px; background: #141416; border: 1px solid #34343c;
     border-radius: 5px; color: #e6e6e6; font: inherit; font-size: 11px;
     padding: 4px 6px; }
+  #menu .remove { margin-top: 8px; width: 100%; color: #d08b7c; }
+  #zoom { position: absolute; right: 12px; bottom: 12px; color: #8a8a94;
+    font-size: 11px; background: #1b1b1fd0; padding: 4px 8px;
+    border-radius: 6px; border: 1px solid #2a2a30; z-index: 2; }
+  #status { font-size: 11px; color: #8a8a94; min-width: 120px; }
+  .ghost { position: fixed; z-index: 20; pointer-events: none; width: 84px;
+    height: 84px; border-radius: 6px; overflow: hidden;
+    border: 1px solid #5c7050; box-shadow: 0 6px 18px #00000080; }
+  .ghost img { width: 100%; height: 100%; object-fit: cover;
+    display: block; }
 </style>
 </head>
 <body>
@@ -102,14 +111,17 @@
   <div class="spacer"></div>
   <input type="text" id="name" placeholder="preset name">
   <button id="save">save preset</button>
-  <button id="run" class="primary">run graph</button>
+  <button id="run" class="primary">generate</button>
 </header>
 <div id="main">
   <aside>
     <h2>inspo library</h2>
     <div id="inspos">loading...</div>
-    <h2>operators</h2>
-    <div class="ops" id="ops"></div>
+    <div class="hint">drag an image into a section to say what it
+      contributes &mdash; palette corner, stroke corner, and so on.
+      right-click any image to open its menu: which section it feeds,
+      how strongly, and a crit tag. every wire runs to the
+      generation node in the middle.</div>
   </aside>
   <div id="canvas">
     <div id="world">
@@ -118,46 +130,75 @@
     <div id="zoom">100%</div>
   </div>
 </div>
+<div id="menu"></div>
 <script>
 "use strict";
-// ---------- state ----------
-const OPS = ["palette","stroke","texture","edges","value","color_zones","shading"];
-// each op owns a wire/dot color -- the "type of connection" the sketch
-// asked for. base/content wires stay neutral: they aren't a style
-// factor, they're the image being made. (subject/object reference is
-// deliberately not one of these -- illustrace keeps composition/subject
-// transfer a disabled-by-default bucket, so there's no honest color to
-// give it yet.)
-const OP_COLORS = {
+// ---------- model ----------
+// the canvas is flat: inspo images sit in informal sections (subject,
+// palette, stroke, ...) and every image wires straight to the generation
+// node. no intermediate operator nodes in the ui -- the factor chain is
+// derived at run time in a fixed order. sections are informal on
+// purpose: dropping an image in a corner sets what it contributes, but
+// the right-click menu can override anything per image.
+const FACTORS = ["palette","stroke","texture","edges","value",
+                 "color_zones","shading"];
+const FACTOR_COLORS = {
   palette: "#7fd88f", stroke: "#ec7fb0", texture: "#e8a35a",
   edges: "#6fc7d9", value: "#6f95d9", color_zones: "#d9c85a",
   shading: "#b98ce0",
 };
-const BASE_COLOR = "#6a6a72";
+const SUBJECT_COLOR = "#8a8a94";
+const UNSET_COLOR = "#4a4a54";
+// the order factors are applied to the base image at generation time:
+// tonal/color decisions first, surface next, mark-making, edges last.
+const FACTOR_ORDER = ["palette","value","color_zones","shading",
+                      "texture","stroke","edges"];
 
-let nodes = [], edges = [], seq = 0;
+const ZONES = [
+  { factor: "subject", label: "subject &middot; the image being made",
+    x: -1420, y: -140, w: 360, h: 300 },
+  { factor: "palette", label: "palette",
+    x: -1000, y: -520, w: 360, h: 300 },
+  { factor: "stroke", label: "stroke",
+    x: -600, y: -520, w: 360, h: 300 },
+  { factor: "texture", label: "texture",
+    x: -200, y: -520, w: 360, h: 300 },
+  { factor: "edges", label: "edges",
+    x: 200, y: -520, w: 360, h: 300 },
+  { factor: "value", label: "value",
+    x: -1000, y: 200, w: 360, h: 300 },
+  { factor: "color_zones", label: "color zones",
+    x: -600, y: 200, w: 360, h: 300 },
+  { factor: "shading", label: "shading",
+    x: -200, y: 200, w: 360, h: 300 },
+];
+
+let nodes = [], seq = 0;   // source nodes only
+const gen = { id: "gen", type: "gen", x: -124, y: -170, img: null,
+              err: null };
 let view = { x: 0, y: 0, z: 1 };
-let selected = null, dragWire = null;
+let selected = null;
+
 const $ = s => document.querySelector(s);
 const world = $("#world"), canvas = $("#canvas"), svg = $("#wires");
-
 const nid = () => "n" + (++seq);
-const addNode = n => { n.id = n.id || nid(); nodes.push(n); draw(); return n; };
-const addEdge = e => {
-  edges = edges.filter(x => !(x.to === e.to && x.port === e.port));
-  edges.push(e); draw();
-};
-const delNode = id => {
-  nodes = nodes.filter(n => n.id !== id);
-  edges = edges.filter(e => e.from !== id && e.to !== id);
-  draw();
-};
+const zoneAt = (x, y) => ZONES.find(z => x >= z.x && x <= z.x + z.w
+  && y >= z.y && y <= z.y + z.h) || null;
+const factorColor = f =>
+  f === "subject" ? SUBJECT_COLOR
+  : (FACTOR_COLORS[f] || UNSET_COLOR);
 
 // ---------- view transform ----------
 function applyView() {
   world.style.transform =
     `translate(${view.x}px,${view.y}px) scale(${view.z})`;
   $("#zoom").textContent = Math.round(view.z * 100) + "%";
+}
+function centerOn(x, y) {
+  const r = canvas.getBoundingClientRect();
+  view.x = r.width / 2 - x * view.z;
+  view.y = r.height / 2 - y * view.z;
+  applyView();
 }
 canvas.addEventListener("wheel", ev => {
   ev.preventDefault();
@@ -181,23 +222,34 @@ canvas.addEventListener("mousedown", ev => {
   }
   if (selected) { selected.classList.remove("selected"); selected = null; }
 });
+canvas.addEventListener("contextmenu", ev => {
+  ev.preventDefault();
+  const el = ev.target.closest(".node");
+  if (el && el.id !== "gen") {
+    const n = nodes.find(x => x.id === el.id);
+    if (n) { openMenu(n, ev.clientX, ev.clientY); return; }
+  }
+  closeMenu();
+});
 
-// ---------- rendering ----------
-function portPos(n, side, port) {
-  const el = document.getElementById(n.id);
-  const p = el.querySelector(`.port.${side}` +
-    (side === "in" ? `[data-port="${port}"]` : ""));
-  if (!p) return null;
-  const r = p.getBoundingClientRect(), w = world.getBoundingClientRect();
-  return { x: (r.x + r.width / 2 - w.x) / view.z,
-           y: (r.y + r.height / 2 - w.y) / view.z };
+// ---------- zones ----------
+for (const z of ZONES) {
+  const d = document.createElement("div");
+  d.className = "zone";
+  d.style.cssText = `left:${z.x}px;top:${z.y}px;width:${z.w}px;
+    height:${z.h}px`;
+  d.innerHTML = `<div class="zlabel"><span class="zdot"
+    style="background:${z.factor === "subject"
+      ? SUBJECT_COLOR : FACTOR_COLORS[z.factor]}"></span>${z.label}</div>`;
+  world.appendChild(d);
 }
-function wirePath(a, b) {
-  const dx = Math.max(36, Math.abs(b.x - a.x) * 0.5);
-  return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+
+// ---------- node rendering ----------
+function nodeSig(n) {
+  return JSON.stringify([n.x, n.y, n.factor, n.strength, n.tag || "",
+                         n.d || n.path]);
 }
 function draw() {
-  // remove stale elements, keep existing ones
   const seen = new Set();
   for (const n of nodes) {
     seen.add(n.id);
@@ -205,161 +257,62 @@ function draw() {
     if (!el) {
       el = document.createElement("div");
       el.className = "node"; el.id = n.id;
-      world.appendChild(el); wireNode(el, n);
+      el.dataset.dragWired = "";
+      world.appendChild(el);
     }
-    el.style.left = n.x + "px"; el.style.top = n.y + "px";
-    renderNode(el, n);
+    if (el.dataset.sig !== nodeSig(n)) {
+      el.dataset.sig = nodeSig(n);
+      el.style.left = n.x + "px"; el.style.top = n.y + "px";
+      renderNode(el, n);
+    } else {
+      el.style.left = n.x + "px"; el.style.top = n.y + "px";
+    }
   }
   [...world.querySelectorAll(".node")].forEach(el => {
-    if (!seen.has(el.id)) el.remove();
+    if (el.id !== "gen" && !seen.has(el.id)) el.remove();
   });
-  // wires
-  let paths = "";
-  for (const e of edges) {
-    const a = portPos(nodes.find(n => n.id === e.from), "out", null);
-    const target = nodes.find(n => n.id === e.to);
-    const b = portPos(target, "in", e.port);
-    // a ref wire is colored by the operator it's feeding; base/in wires
-    // (the content itself, not a style factor) stay neutral.
-    const color = (e.port === "ref" && target)
-      ? (OP_COLORS[target.op] || BASE_COLOR) : BASE_COLOR;
-    if (a && b) paths +=
-      `<path d="${wirePath(a, b)}" fill="none" stroke="${color}"
-        stroke-width="1.8" vector-effect="non-scaling-stroke"
-        data-edge="${e.from}->${e.to}:${e.port}"
-        style="cursor:pointer" pointer-events="stroke"/>`;
+  // generation node
+  let g = document.getElementById("gen");
+  if (!g) {
+    g = document.createElement("div");
+    g.className = "node gen"; g.id = "gen";
+    world.appendChild(g);
   }
-  if (dragWire && dragWire.cur) paths +=
-    `<path d="${wirePath(dragWire.from, dragWire.cur)}" fill="none"
-      stroke="#8a8a94" stroke-width="1.4"
-      vector-effect="non-scaling-stroke"/>`;
-  svg.innerHTML = paths;
-  svg.querySelectorAll("path[data-edge]").forEach(p =>
-    p.addEventListener("click", () => {
-      const [f, rest] = p.dataset.edge.split("->");
-      const [t, port] = rest.split(":");
-      edges = edges.filter(e =>
-        !(e.from === f && e.to === t && e.port === port));
-      draw();
-    }));
+  renderGen(g);
+  drawWires();
 }
 function renderNode(el, n) {
-  // a source's ref-dots + tag box depend on live edges/downstream strength,
-  // not just this node's own fields -- the cache key has to see all of it,
-  // or a dot could go stale after a wire change.
-  const refEdges = n.type === "source"
-    ? edges.filter(e => e.from === n.id && e.port === "ref") : [];
-  const sig = JSON.stringify([n.strength, n.img || "", n.err || "",
-    refEdges.map(e => e.to + ":" + (nodes.find(x => x.id === e.to)?.strength)),
-    n._openDot, n._tagOpen, n.tag || ""]);
-  if (el.dataset.sig === sig) return;
-  el.dataset.sig = sig;
-  let h = `<div class="head"><span>${n.title || n.type}</span>
-    <span class="kind">${n.type}</span>
-    <span class="del" data-del="${n.id}">&times;</span></div><div class="body">`;
-  if (n.type === "source") {
-    h += `<img src="/api/thumb?path=${encodeURIComponent(n.path)}" draggable="false">`;
-    if (refEdges.length) {
-      // one dot per style factor this reference currently feeds, colored
-      // by that operator -- click a dot to dial its percentage right here,
-      // instead of hunting down the operator node it's wired to.
-      h += `<div class="ref-dots">`;
-      for (const e of refEdges) {
-        const op = nodes.find(x => x.id === e.to);
-        if (!op) continue;
-        h += `<div class="dot${n._openDot === op.id ? " open" : ""}"
-          style="background:${OP_COLORS[op.op] || BASE_COLOR}"
-          data-dot="${op.id}"
-          title="${op.op} · ${Math.round((op.strength ?? 1) * 100)}%">
-          </div>`;
-      }
-      h += `</div>`;
-      const openOp = nodes.find(x => x.id === n._openDot);
-      if (openOp) h += `<div class="ref-slider">
-          <span class="oplabel">${openOp.op}</span>
-          <input type="range" min="0" max="1" step="0.05"
-            value="${openOp.strength ?? 1}" data-dotstrength="${openOp.id}">
-          <span data-dotval="${openOp.id}">
-            ${Math.round((openOp.strength ?? 1) * 100)}%</span></div>`;
-    }
-    // crit tag: a free-text note pinned to this specific reference, not
-    // the whole graph -- "just the brushwork, not the palette" lives here.
-    h += `<div class="tagrow"><span class="tagicon${n.tag ? " filled" : ""}"
-        data-tagicon="${n.id}" title="crit tag for this image">&#128172;</span>
-        <span class="taghint">${n.tag ? "tag set" : "crit tag"}</span></div>`;
-    if (n._tagOpen) h += `<div class="tagbox"><textarea data-tagbox="${n.id}"
-        placeholder="e.g. just the brushwork, not the palette"
-        >${n.tag || ""}</textarea></div>`;
-  } else if (n.type === "op") {
-    h += `<div class="slider-row">strength
-      <input type="range" min="0" max="1" step="0.05" value="${n.strength ?? 1}"
-        data-strength="${n.id}">
-      <span data-sval="${n.id}">${Math.round((n.strength ?? 1) * 100)}%</span></div>`;
-  } else if (n.type === "preview") {
-    h += n.img
-      ? `<img src="${n.img}" draggable="false">`
-      : `<div style="color:#8a8a94;padding:26px 8px;text-align:center">
-         wire an image<br>and run</div>`;
-  }
-  h += `</div>${n.err ? `<div class="err">${n.err}</div>` : ""}`;
-  // ports
-  if (n.type === "op")
-    h += `<div class="port in" data-port="base"
-           style="top:34px"></div><div class="port-label"
-           style="top:30px">base</div>
-          <div class="port in" data-port="ref" style="top:58px"></div>
-          <div class="port-label" style="top:54px">ref</div>`;
-  if (n.type === "preview")
-    h += `<div class="port in" data-port="in" style="top:50%"></div>`;
-  if (n.type === "source" || n.type === "op")
-    h += `<div class="port out" style="top:50%"></div>`;
+  const f = n.factor;
+  let h = `<div class="head"><span>${n.title}</span>
+    <span class="kind">inspo</span></div><div class="body">
+    <img src="${imgSrc(n)}" draggable="false"></div>
+    <div class="strip"><span class="sdot"
+      style="background:${factorColor(f)}"></span>
+    ${f ? (f === "subject" ? "subject &middot; the base"
+      : f + " &middot; " + Math.round((n.strength ?? 1) * 100) + "%")
+      : "no section &middot; not contributing"}</div>`;
+  if (n.tag) h += `<div class="tagline" title="${n.tag
+    .replace(/"/g, "&quot;")}">&#128172; ${n.tag}</div>`;
+  h += n.err ? `<div class="err">${n.err}</div>` : "";
   el.innerHTML = h;
-  el.querySelector(`[data-del="${n.id}"]`)
-    ?.addEventListener("click", () => delNode(n.id));
-  el.querySelector(`[data-strength="${n.id}"]`)?.addEventListener("input", ev => {
-    n.strength = parseFloat(ev.target.value);
-    el.querySelector(`[data-sval="${n.id}"]`).textContent =
-      Math.round(n.strength * 100) + "%";
-  });
-  el.querySelectorAll("[data-dot]").forEach(d => d.addEventListener("click", ev => {
-    ev.stopPropagation();
-    n._openDot = n._openDot === d.dataset.dot ? null : d.dataset.dot;
-    draw();
-  }));
-  el.querySelector("[data-dotstrength]")?.addEventListener("input", ev => {
-    const op = nodes.find(x => x.id === ev.target.dataset.dotstrength);
-    op.strength = parseFloat(ev.target.value);
-    el.querySelector(`[data-dotval="${op.id}"]`).textContent =
-      Math.round(op.strength * 100) + "%";
-    // this dot mirrors the operator node's own slider -- keep both in sync
-    // without a full redraw so the drag stays smooth.
-    const opEl = document.getElementById(op.id);
-    const opSlider = opEl?.querySelector(`[data-strength="${op.id}"]`);
-    if (opSlider) { opSlider.value = op.strength;
-      opEl.querySelector(`[data-sval="${op.id}"]`).textContent =
-        Math.round(op.strength * 100) + "%"; }
-  });
-  el.querySelector(`[data-tagicon="${n.id}"]`)?.addEventListener("click", ev => {
-    ev.stopPropagation(); n._tagOpen = !n._tagOpen; draw();
-  });
-  const tagbox = el.querySelector(`[data-tagbox="${n.id}"]`);
-  tagbox?.addEventListener("input", ev => { n.tag = ev.target.value; });
-  tagbox?.addEventListener("mousedown", ev => ev.stopPropagation());
   if (!el.dataset.dragWired) {
-    // wired once per element, not once per render -- renderNode now runs
-    // far more often (dots, tag box) and this used to stack a fresh drag
-    // listener on every one of those, piling up duplicate handlers.
     el.dataset.dragWired = "1";
     el.addEventListener("mousedown", ev => {
-      if (ev.target.closest(".port") || ev.target.closest("input")
-          || ev.target.closest(".dot") || ev.target.closest(".tagicon")
-          || ev.target.closest("textarea")) return;
+      if (ev.button !== 0) return;
+      if (ev.target.closest("input") || ev.target.closest("textarea"))
+        return;
+      closeMenu();
       selected?.classList.remove("selected"); selected = el;
       el.classList.add("selected");
       const ox = ev.clientX / view.z - n.x, oy = ev.clientY / view.z - n.y;
-      const mv = e => { n.x = e.clientX / view.z - ox;
-        n.y = e.clientY / view.z - oy; el.style.left = n.x + "px";
-        el.style.top = n.y + "px"; draw(); };
+      const mv = e => {
+        n.x = e.clientX / view.z - ox; n.y = e.clientY / view.z - oy;
+        // passing through a section re-assigns the image live -- the
+        // corners are the primary way to say what an image is for
+        const z = zoneAt(n.x + 84, n.y + 70);
+        if (z && z.factor !== n.factor) { n.factor = z.factor; draw(); }
+        draw();
+      };
       const up = () => { window.removeEventListener("mousemove", mv);
         window.removeEventListener("mouseup", up); };
       window.addEventListener("mousemove", mv);
@@ -368,85 +321,215 @@ function renderNode(el, n) {
     });
   }
 }
-function wireNode(el, n) {  // port dragging (created once per element)
-  el.addEventListener("mousedown", ev => {
-    const port = ev.target.closest(".port"); if (!port) return;
-    ev.preventDefault(); ev.stopPropagation();
-    const out = port.classList.contains("out");
-    if (!out) {  // clicking an input: remove its existing edge
-      edges = edges.filter(e => !(e.to === n.id && e.port === port.dataset.port));
-      draw(); return;
-    }
-    dragWire = { from: portPos(n, "out", null), cur: null };
-    const mv = e => {
-      const r = world.getBoundingClientRect();
-      dragWire.cur = { x: (e.clientX - r.x) / view.z,
-                       y: (e.clientY - r.y) / view.z };
-      draw();
-    };
-    const up = e => {
-      const el2 = document.elementFromPoint(e.clientX, e.clientY)
-        ?.closest(".port.in");
-      if (el2) {
-        const target = el2.closest(".node").id;
-        addEdge({ from: n.id, to: target, port: el2.dataset.port });
-      }
-      dragWire = null; draw();
-      window.removeEventListener("mousemove", mv);
-      window.removeEventListener("mouseup", up);
-    };
-    window.addEventListener("mousemove", mv);
-    window.addEventListener("mouseup", up);
+function renderGen(g) {
+  const sig = JSON.stringify([gen.img || "", gen.err || ""]);
+  if (g.dataset.sig === sig) { g.style.left = gen.x + "px";
+    g.style.top = gen.y + "px"; return; }
+  g.dataset.sig = sig;
+  g.style.left = gen.x + "px"; g.style.top = gen.y + "px";
+  g.innerHTML = `<div class="head"><span>generation</span>
+    <span class="kind">the preset</span></div><div class="body">
+    ${gen.img ? `<img src="${gen.img}" draggable="false">`
+      : `<div class="hintbox">drop inspirations into the sections,<br>
+         right-click them to tune,<br>then generate</div>`}
+    <button class="genbtn primary" id="genrun">generate</button>
+    </div>${gen.err ? `<div class="err">${gen.err}</div>` : ""}`;
+  g.querySelector("#genrun").addEventListener("click", ev => {
+    ev.stopPropagation(); run();
   });
+  if (!g.dataset.dragWired) {
+    g.dataset.dragWired = "1";
+    g.addEventListener("mousedown", ev => {
+      if (ev.button !== 0) return;
+      if (ev.target.closest("button")) return;
+      closeMenu();
+      selected?.classList.remove("selected"); selected = g;
+      g.classList.add("selected");
+      const ox = ev.clientX / view.z - gen.x,
+            oy = ev.clientY / view.z - gen.y;
+      const mv = e => { gen.x = e.clientX / view.z - ox;
+        gen.y = e.clientY / view.z - oy; draw(); };
+      const up = () => { window.removeEventListener("mousemove", mv);
+        window.removeEventListener("mouseup", up); };
+      window.addEventListener("mousemove", mv);
+      window.addEventListener("mouseup", up);
+      ev.stopPropagation();
+    });
+  }
+}
+function drawWires() {
+  let paths = "";
+  const wr = world.getBoundingClientRect();
+  const gp = document.querySelector("#gen .head");
+  const target = gp ? { x: (gp.getBoundingClientRect().x + 8 - wr.x)
+      / view.z, y: (gp.getBoundingClientRect().y + 14 - wr.y) / view.z }
+    : { x: gen.x, y: gen.y };
+  for (const n of nodes) {
+    const el = document.getElementById(n.id);
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    const a = { x: (r.x + r.width - wr.x) / view.z,
+                y: (r.y + r.height / 2 - wr.y) / view.z };
+    const unset = !n.factor;
+    paths += `<path d="${wirePath(a, target)}" fill="none"
+      stroke="${factorColor(n.factor)}" stroke-width="1.8"
+      ${unset ? 'stroke-dasharray="4 4"' : ""}
+      vector-effect="non-scaling-stroke" data-src="${n.id}"
+      style="cursor:pointer" pointer-events="stroke"/>`;
+  }
+  svg.innerHTML = paths;
+  svg.querySelectorAll("path[data-src]").forEach(p =>
+    p.addEventListener("click", () => {
+      const n = nodes.find(x => x.id === p.dataset.src);
+      if (n) { const r = p.getBoundingClientRect();
+        openMenu(n, r.x + 10, r.y - 10); }
+    }));
+}
+function wirePath(a, b) {
+  const dx = Math.max(36, Math.abs(b.x - a.x) * 0.5);
+  return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+}
+function imgSrc(n) {
+  return n.d || "/api/thumb?path=" + encodeURIComponent(n.path);
 }
 
-// ---------- graph io ----------
-const graphJSON = () => ({
-  nodes: nodes.map(n => {
-    const o = { id: n.id, type: n.type };
-    if (n.type === "source") { o.path = n.path; if (n.tag) o.tag = n.tag; }
-    if (n.type === "op") { o.op = n.op; o.strength = n.strength ?? 1; }
-    return o;
-  }),
-  edges: edges.map(e => ({ from: e.from, to: e.to, port: e.port })),
+// ---------- context menu ----------
+const menu = $("#menu");
+let menuFor = null;
+function openMenu(n, cx, cy) {
+  menuFor = n;
+  const isSubject = n.factor === "subject";
+  const factors = ["subject", ...FACTORS, "none"];
+  let h = `<div class="mtitle">${n.title}</div>
+    <div class="msec">contributes to</div><div class="factors">`;
+  for (const f of factors) {
+    const on = (n.factor || "none") === f ? " on" : "";
+    const c = f === "subject" ? SUBJECT_COLOR
+      : f === "none" ? UNSET_COLOR : FACTOR_COLORS[f];
+    h += `<button data-f="${f}" class="${on}">
+      <span class="fdot" style="background:${c}"></span>
+      ${f === "none" ? "nothing" : f}</button>`;
+  }
+  h += `</div>`;
+  if (!isSubject && n.factor && n.factor !== "none") {
+    h += `<div class="msec">strength</div>
+      <div class="srow"><input type="range" min="0" max="1" step="0.05"
+        value="${n.strength ?? 1}" id="mstrength">
+        <span id="msval">${Math.round((n.strength ?? 1) * 100)}%</span>
+      </div>`;
+  }
+  h += `<div class="msec">crit tag</div>
+    <textarea id="mtag" placeholder="e.g. just the brushwork, not the
+    palette">${n.tag || ""}</textarea>
+    <button class="remove" id="mremove">remove image</button>`;
+  menu.innerHTML = h;
+  menu.style.display = "block";
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  menu.style.left = Math.min(cx, innerWidth - mw - 8) + "px";
+  menu.style.top = Math.min(cy, innerHeight - mh - 8) + "px";
+  menu.querySelectorAll("[data-f]").forEach(b =>
+    b.addEventListener("click", () => {
+      const f = b.dataset.f;
+      n.factor = f === "none" ? null : f;
+      if (n.factor && n.factor !== "subject" && n.strength == null)
+        n.strength = 1;
+      draw(); openMenu(n, parseInt(menu.style.left),
+        parseInt(menu.style.top));
+    }));
+  menu.querySelector("#mstrength")?.addEventListener("input", ev => {
+    n.strength = parseFloat(ev.target.value);
+    menu.querySelector("#msval").textContent =
+      Math.round(n.strength * 100) + "%";
+    draw();
+  });
+  menu.querySelector("#mtag").addEventListener("input", ev => {
+    n.tag = ev.target.value; draw();
+  });
+  menu.querySelector("#mremove").addEventListener("click", () => {
+    nodes = nodes.filter(x => x.id !== n.id); closeMenu(); draw();
+  });
+}
+function closeMenu() { menu.style.display = "none"; menuFor = null; }
+document.addEventListener("mousedown", ev => {
+  if (menu.style.display === "block"
+      && !ev.target.closest("#menu")) closeMenu();
 });
-$("#run").addEventListener("click", async () => {
-  $("#status").textContent = "running...";
+document.addEventListener("keydown", ev => {
+  if (ev.key === "Escape") closeMenu();
+  if ((ev.key === "Delete" || ev.key === "Backspace") && selected
+      && selected.id !== "gen"
+      && document.activeElement.tagName !== "INPUT"
+      && document.activeElement.tagName !== "TEXTAREA") {
+    nodes = nodes.filter(x => x.id !== selected.id);
+    selected = null; draw();
+  }
+});
+
+// ---------- graph expansion + execution ----------
+function buildGraph() {
+  // sections -> the deterministic factor chain the executor runs:
+  // subject image as base, then one op per inspo image, in the fixed
+  // factor order, each image keeping its own strength and crit tag.
+  const byFactor = {};
+  for (const n of nodes)
+    (byFactor[n.factor] = byFactor[n.factor] || []).push(n);
+  const subject = (byFactor.subject || [])[0];
+  if (!subject) return null;
+  const gnodes = [], gedges = [];
+  gnodes.push({ id: subject.id, type: "source", path: subject.path,
+    factor: "subject", tag: subject.tag || undefined });
+  let cur = subject.id;
+  for (const f of FACTOR_ORDER) {
+    for (const s of byFactor[f] || []) {
+      gnodes.push({ id: s.id, type: "source", path: s.path, factor: f,
+        strength: s.strength ?? 1, tag: s.tag || undefined });
+      const opId = "op_" + s.id;
+      gnodes.push({ id: opId, type: "op", op: f,
+        strength: s.strength ?? 1 });
+      gedges.push({ from: cur, to: opId, port: "base" });
+      gedges.push({ from: s.id, to: opId, port: "ref" });
+      cur = opId;
+    }
+  }
+  gnodes.push({ id: "p_gen", type: "preview" });
+  gedges.push({ from: cur, to: "p_gen", port: "in" });
+  return { nodes: gnodes, edges: gedges };
+}
+async function run() {
+  const g = buildGraph();
+  if (!g) { $("#status").textContent =
+    "drop an image into the subject section first"; return; }
+  const extra = nodes.filter(n => n.factor === "subject").length - 1;
+  $("#status").textContent = "rendering...";
   const t0 = performance.now();
   const r = await fetch("/api/run", { method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ graph: graphJSON() }) }).then(r => r.json());
+    body: JSON.stringify({ graph: g }) }).then(r => r.json());
   const ms = Math.round(performance.now() - t0);
-  for (const n of nodes) n.err = r.errors[n.id] || null;
-  let k = 0;
-  for (const [id, url] of Object.entries(r.images || {})) {
-    const n = nodes.find(n => n.id === id);
-    if (n) { n.img = url; k++; const el = document.getElementById(id);
-      el.dataset.rendered = ""; }
-  }
+  gen.img = (r.images || {}).p_gen || null;
+  gen.err = (r.errors || {}).p_gen || null;
+  for (const n of nodes) n.err = null;
   draw();
-  $("#status").textContent =
-    Object.keys(r.errors || {}).length
-      ? `${k} render(s), ${Object.keys(r.errors).length} error(s), ${ms}ms`
-      : `${k} render(s) in ${ms}ms`;
-});
+  $("#status").textContent = gen.img
+    ? `rendered in ${ms}ms${extra ? ` (${extra} extra subject image[s]
+      unused)` : ""}`
+    : (gen.err || "render failed");
+}
+$("#run").addEventListener("click", run);
 $("#save").addEventListener("click", async () => {
+  const g = buildGraph();
+  if (!g) { $("#status").textContent =
+    "drop an image into the subject section first"; return; }
   const name = $("#name").value.trim() || "preset";
   const r = await fetch("/api/save", { method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, graph: graphJSON() }) }).then(r => r.json());
+    body: JSON.stringify({ name, graph: g }) }).then(r => r.json());
   $("#status").textContent = r.ok
     ? `saved ${r.name} (${r.renders} render${r.renders === 1 ? "" : "s"})`
     : "save failed";
 });
-document.addEventListener("keydown", ev => {
-  if ((ev.key === "Delete" || ev.key === "Backspace") && selected
-      && document.activeElement.tagName !== "INPUT") {
-    delNode(selected.id); selected = null;
-  }
-});
 
-// ---------- library + boot ----------
+// ---------- library ----------
 fetch("/api/inspos").then(r => r.json()).then(items => {
   const el = $("#inspos");
   el.innerHTML = "";
@@ -454,33 +537,44 @@ fetch("/api/inspos").then(r => r.json()).then(items => {
     const d = document.createElement("div");
     d.className = "inspo";
     d.title = `${it.painter}/${it.path}`;
-    d.innerHTML = `<img loading="lazy"
+    d.innerHTML = `<img loading="lazy" draggable="false"
       src="/api/thumb?path=${encodeURIComponent(it.path)}">`;
     d.addEventListener("mousedown", ev => {
       ev.preventDefault();
-      const r = canvas.getBoundingClientRect();
-      const x = (r.width / 2 - view.x) / view.z - 84,
-            y = (r.height / 2 - view.y) / view.z - 60 + items.indexOf(it) * 0;
-      addNode({ type: "source", title: it.path.split("/").pop(),
-        path: it.path, x, y });
+      const ghost = document.createElement("div");
+      ghost.className = "ghost";
+      ghost.innerHTML = `<img src="/api/thumb?path=${
+        encodeURIComponent(it.path)}">`;
+      document.body.appendChild(ghost);
+      const mv = e => { ghost.style.left = e.clientX - 42 + "px";
+        ghost.style.top = e.clientY - 42 + "px"; };
+      mv(ev);
+      const up = e => {
+        window.removeEventListener("mousemove", mv);
+        window.removeEventListener("mouseup", up);
+        ghost.remove();
+        const r = canvas.getBoundingClientRect();
+        if (e.clientX < r.left || e.clientX > r.right
+            || e.clientY < r.top || e.clientY > r.bottom) return;
+        const x = (e.clientX - r.left - view.x) / view.z - 84,
+              y = (e.clientY - r.top - view.y) / view.z - 60;
+        const z = zoneAt(x + 84, y + 60);
+        addNode({ type: "source", title: it.path.split("/").pop(),
+          path: it.path, factor: z ? z.factor : null, x, y });
+      };
+      window.addEventListener("mousemove", mv);
+      window.addEventListener("mouseup", up);
     });
     el.appendChild(d);
   }
 });
-for (const op of OPS) {
-  const b = document.createElement("button");
-  b.innerHTML = `<span class="swatch" style="background:${OP_COLORS[op]}">
-    </span>${op}`;
-  b.addEventListener("mousedown", ev => {
-    ev.preventDefault();
-    const r = canvas.getBoundingClientRect();
-    addNode({ type: "op", op, title: op, strength: 1,
-      x: (r.width / 2 - view.x) / view.z - 84,
-      y: (r.height / 2 - view.y) / view.z - 40 });
-  });
-  $("#ops").appendChild(b);
+function addNode(n) {
+  n.id = nid();
+  if (n.factor && n.factor !== "subject") n.strength = n.strength ?? 1;
+  nodes.push(n); draw();
 }
-applyView();
+
+centerOn(0, -100);
 </script>
 </body>
 </html>
