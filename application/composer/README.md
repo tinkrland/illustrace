@@ -28,3 +28,9 @@ images load from `data/test_images/` and `data/<painter>/` (monet,
 van_gogh, hokusai — routed by filename prefix), so the repo folder must
 stay intact. the library is 101 deduped inspos; refresh with
 `engine/ingest_painter.py` for any wikidata painter.
+
+## the executable sibling
+
+[composer_server](../composer_server/) is the execution layer: the same
+node concept, but the graph runs the real operators and renders actual
+assets on an infinite canvas.

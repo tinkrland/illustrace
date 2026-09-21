@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>illustrace composer</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow: hidden;
+    font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
+    background: #141416; color: #e6e6e6; }
+  header { display: flex; gap: 10px; align-items: center;
+    padding: 8px 12px; background: #1b1b1f; border-bottom: 1px solid #2a2a30;
+    z-index: 3; }
+  header h1 { font-size: 14px; font-weight: 600; color: #d8d8dc; }
+  header .spacer { flex: 1; }
+  button { font: inherit; background: #26262c; color: #e6e6e6;
+    border: 1px solid #34343c; border-radius: 6px; padding: 5px 12px;
+    cursor: pointer; }
+  button:hover { background: #2f2f37; }
+  button.primary { background: #4a5b3f; border-color: #5c7050; }
+  button.primary:hover { background: #556848; }
+  input[type=text] { font: inherit; background: #141416;
+    border: 1px solid #34343c; border-radius: 6px; padding: 5px 8px;
+    color: #e6e6e6; width: 150px; }
+  #main { display: flex; height: calc(100% - 42px); }
+  aside { width: 208px; background: #1b1b1f; border-right: 1px solid #2a2a30;
+    overflow-y: auto; padding: 10px; flex-shrink: 0; }
+  aside h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+    color: #8a8a94; margin: 12px 0 6px; }
+  aside h2:first-child { margin-top: 0; }
+  #inspos { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .inspo { border-radius: 6px; overflow: hidden; cursor: grab;
+    border: 1px solid #2a2a30; aspect-ratio: 1; background: #141416; }
+  .inspo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ops { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ops button { padding: 5px 9px; }
+  #canvas { flex: 1; position: relative; overflow: hidden;
+    background: radial-gradient(600px 600px at 30% 20%, #1a1a1e, #141416);
+    cursor: default; }
+  #world { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+  #wires { position: absolute; top: 0; left: 0; overflow: visible;
+    width: 1px; height: 1px; }
+  .node { position: absolute; width: 168px; background: #1f1f24;
+    border: 1px solid #34343c; border-radius: 8px; user-select: none; }
+  .node.selected { outline: 1.5px solid #7d9a6a; }
+  .node .head { padding: 6px 8px; font-weight: 600; font-size: 12px;
+    border-bottom: 1px solid #2a2a30; cursor: grab; display: flex;
+    align-items: center; }
+  .node .head .kind { font-weight: 400; color: #8a8a94; font-size: 10px;
+    margin-left: auto; }
+  .node .body { padding: 8px; }
+  .node img, .node canvas { width: 100%; border-radius: 4px; display: block;
+    background: #141416; }
+  .node .err { color: #d08b7c; font-size: 11px; padding: 4px 8px 8px;
+    white-space: pre-wrap; }
+  .node .slider-row { display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: #b6b6bc; }
+  .node .slider-row input { flex: 1; }
+  .node .del { margin-left: 6px; cursor: pointer; color: #8a8a94;
+    font-size: 12px; }
+  .node .del:hover { color: #d08b7c; }
+  .port { position: absolute; width: 11px; height: 11px; border-radius: 50%;
+    background: #4a4a54; border: 1.5px solid #1f1f24; cursor: crosshair; }
+  .port:hover { background: #7d9a6a; }
+  .port.in { left: -6px; }
+  .port.out { right: -6px; }
+  .port-label { position: absolute; left: 8px; font-size: 9px; color: #8a8a94;
+    pointer-events: none; }
+  #zoom { position: absolute; right: 12px; bottom: 12px; color: #8a8a94;
+    font-size: 11px; background: #1b1b1fd0; padding: 4px 8px;
+    border-radius: 6px; border: 1px solid #2a2a30; }
+  #status { font-size: 11px; color: #8a8a94; min-width: 120px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>illustrace composer</h1>
+  <span id="status">ready</span>
+  <div class="spacer"></div>
+  <input type="text" id="name" placeholder="preset name">
+  <button id="save">save preset</button>
+  <button id="run" class="primary">run graph</button>
+</header>
+<div id="main">
+  <aside>
+    <h2>inspo library</h2>
+    <div id="inspos">loading...</div>
+    <h2>operators</h2>
+    <div class="ops" id="ops"></div>
+  </aside>
+  <div id="canvas">
+    <div id="world">
+      <svg id="wires"></svg>
+    </div>
+    <div id="zoom">100%</div>
+  </div>
+</div>
+<script>
+"use strict";
+// ---------- state ----------
+const OPS = ["palette","stroke","texture","edges","value","color_zones","shading"];
+let nodes = [], edges = [], seq = 0;
+let view = { x: 0, y: 0, z: 1 };
+let selected = null, dragWire = null;
+const $ = s => document.querySelector(s);
+const world = $("#world"), canvas = $("#canvas"), svg = $("#wires");
+
+const nid = () => "n" + (++seq);
+const addNode = n => { n.id = n.id || nid(); nodes.push(n); draw(); return n; };
+const addEdge = e => {
+  edges = edges.filter(x => !(x.to === e.to && x.port === e.port));
+  edges.push(e); draw();
+};
+const delNode = id => {
+  nodes = nodes.filter(n => n.id !== id);
+  edges = edges.filter(e => e.from !== id && e.to !== id);
+  draw();
+};
+
+// ---------- view transform ----------
+function applyView() {
+  world.style.transform =
+    `translate(${view.x}px,${view.y}px) scale(${view.z})`;
+  $("#zoom").textContent = Math.round(view.z * 100) + "%";
+}
+canvas.addEventListener("wheel", ev => {
+  ev.preventDefault();
+  const k = ev.deltaY < 0 ? 1.12 : 1 / 1.12;
+  const nz = Math.min(3, Math.max(0.15, view.z * k));
+  const r = canvas.getBoundingClientRect();
+  const mx = ev.clientX - r.left, my = ev.clientY - r.top;
+  view.x = mx - (mx - view.x) * (nz / view.z);
+  view.y = my - (my - view.y) * (nz / view.z);
+  view.z = nz; applyView();
+}, { passive: false });
+canvas.addEventListener("mousedown", ev => {
+  if (ev.target === canvas || ev.target === world) {
+    const sx = ev.clientX - view.x, sy = ev.clientY - view.y;
+    const mv = e => { view.x = e.clientX - sx; view.y = e.clientY - sy;
+      applyView(); };
+    const up = () => { window.removeEventListener("mousemove", mv);
+      window.removeEventListener("mouseup", up); };
+    window.addEventListener("mousemove", mv);
+    window.addEventListener("mouseup", up);
+  }
+  if (selected) { selected.classList.remove("selected"); selected = null; }
+});
+
+// ---------- rendering ----------
+function portPos(n, side, port) {
+  const el = document.getElementById(n.id);
+  const p = el.querySelector(`.port.${side}` +
+    (side === "in" ? `[data-port="${port}"]` : ""));
+  if (!p) return null;
+  const r = p.getBoundingClientRect(), w = world.getBoundingClientRect();
+  return { x: (r.x + r.width / 2 - w.x) / view.z,
+           y: (r.y + r.height / 2 - w.y) / view.z };
+}
+function wirePath(a, b) {
+  const dx = Math.max(36, Math.abs(b.x - a.x) * 0.5);
+  return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+}
+function draw() {
+  // remove stale elements, keep existing ones
+  const seen = new Set();
+  for (const n of nodes) {
+    seen.add(n.id);
+    let el = document.getElementById(n.id);
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "node"; el.id = n.id;
+      world.appendChild(el); wireNode(el, n);
+    }
+    el.style.left = n.x + "px"; el.style.top = n.y + "px";
+    renderNode(el, n);
+  }
+  [...world.querySelectorAll(".node")].forEach(el => {
+    if (!seen.has(el.id)) el.remove();
+  });
+  // wires
+  let paths = "";
+  for (const e of edges) {
+    const a = portPos(nodes.find(n => n.id === e.from), "out", null);
+    const b = portPos(nodes.find(n => n.id === e.to), "in", e.port);
+    if (a && b) paths +=
+      `<path d="${wirePath(a, b)}" fill="none" stroke="#5c7050"
+        stroke-width="1.6" vector-effect="non-scaling-stroke"
+        data-edge="${e.from}->${e.to}:${e.port}"
+        style="cursor:pointer" pointer-events="stroke"/>`;
+  }
+  if (dragWire && dragWire.cur) paths +=
+    `<path d="${wirePath(dragWire.from, dragWire.cur)}" fill="none"
+      stroke="#8a8a94" stroke-width="1.4"
+      vector-effect="non-scaling-stroke"/>`;
+  svg.innerHTML = paths;
+  svg.querySelectorAll("path[data-edge]").forEach(p =>
+    p.addEventListener("click", () => {
+      const [f, rest] = p.dataset.edge.split("->");
+      const [t, port] = rest.split(":");
+      edges = edges.filter(e =>
+        !(e.from === f && e.to === t && e.port === port));
+      draw();
+    }));
+}
+function renderNode(el, n) {
+  if (el.dataset.rendered === "ok" && el.dataset.strength === String(n.strength)
+      && !n.img && n.type !== "preview") return;
+  el.dataset.rendered = "ok"; el.dataset.strength = n.strength ?? "";
+  let h = `<div class="head"><span>${n.title || n.type}</span>
+    <span class="kind">${n.type}</span>
+    <span class="del" data-del="${n.id}">&times;</span></div><div class="body">`;
+  if (n.type === "source") {
+    h += `<img src="/api/thumb?path=${encodeURIComponent(n.path)}" draggable="false">`;
+  } else if (n.type === "op") {
+    h += `<div class="slider-row">strength
+      <input type="range" min="0" max="1" step="0.05" value="${n.strength ?? 1}"
+        data-strength="${n.id}">
+      <span data-sval="${n.id}">${Math.round((n.strength ?? 1) * 100)}%</span></div>`;
+  } else if (n.type === "preview") {
+    h += n.img
+      ? `<img src="${n.img}" draggable="false">`
+      : `<div style="color:#8a8a94;padding:26px 8px;text-align:center">
+         wire an image<br>and run</div>`;
+  }
+  h += `</div>${n.err ? `<div class="err">${n.err}</div>` : ""}`;
+  // ports
+  if (n.type === "op")
+    h += `<div class="port in" data-port="base"
+           style="top:34px"></div><div class="port-label"
+           style="top:30px">base</div>
+          <div class="port in" data-port="ref" style="top:58px"></div>
+          <div class="port-label" style="top:54px">ref</div>`;
+  if (n.type === "preview")
+    h += `<div class="port in" data-port="in" style="top:50%"></div>`;
+  if (n.type === "source" || n.type === "op")
+    h += `<div class="port out" style="top:50%"></div>`;
+  el.innerHTML = h;
+  el.querySelector(`[data-del="${n.id}"]`)
+    ?.addEventListener("click", () => delNode(n.id));
+  el.querySelector(`[data-strength="${n.id}"]`)?.addEventListener("input", ev => {
+    n.strength = parseFloat(ev.target.value);
+    el.querySelector(`[data-sval="${n.id}"]`).textContent =
+      Math.round(n.strength * 100) + "%";
+  });
+  el.addEventListener("mousedown", ev => {
+    if (ev.target.closest(".port") || ev.target.closest("input")) return;
+    selected?.classList.remove("selected"); selected = el;
+    el.classList.add("selected");
+    const ox = ev.clientX / view.z - n.x, oy = ev.clientY / view.z - n.y;
+    const mv = e => { n.x = e.clientX / view.z - ox;
+      n.y = e.clientY / view.z - oy; el.style.left = n.x + "px";
+      el.style.top = n.y + "px"; draw(); };
+    const up = () => { window.removeEventListener("mousemove", mv);
+      window.removeEventListener("mouseup", up); };
+    window.addEventListener("mousemove", mv);
+    window.addEventListener("mouseup", up);
+    ev.stopPropagation();
+  });
+}
+function wireNode(el, n) {  // port dragging (created once per element)
+  el.addEventListener("mousedown", ev => {
+    const port = ev.target.closest(".port"); if (!port) return;
+    ev.preventDefault(); ev.stopPropagation();
+    const out = port.classList.contains("out");
+    if (!out) {  // clicking an input: remove its existing edge
+      edges = edges.filter(e => !(e.to === n.id && e.port === port.dataset.port));
+      draw(); return;
+    }
+    dragWire = { from: portPos(n, "out", null), cur: null };
+    const mv = e => {
+      const r = world.getBoundingClientRect();
+      dragWire.cur = { x: (e.clientX - r.x) / view.z,
+                       y: (e.clientY - r.y) / view.z };
+      draw();
+    };
+    const up = e => {
+      const el2 = document.elementFromPoint(e.clientX, e.clientY)
+        ?.closest(".port.in");
+      if (el2) {
+        const target = el2.closest(".node").id;
+        addEdge({ from: n.id, to: target, port: el2.dataset.port });
+      }
+      dragWire = null; draw();
+      window.removeEventListener("mousemove", mv);
+      window.removeEventListener("mouseup", up);
+    };
+    window.addEventListener("mousemove", mv);
+    window.addEventListener("mouseup", up);
+  });
+}
+
+// ---------- graph io ----------
+const graphJSON = () => ({
+  nodes: nodes.map(n => {
+    const o = { id: n.id, type: n.type };
+    if (n.type === "source") o.path = n.path;
+    if (n.type === "op") { o.op = n.op; o.strength = n.strength ?? 1; }
+    return o;
+  }),
+  edges: edges.map(e => ({ from: e.from, to: e.to, port: e.port })),
+});
+$("#run").addEventListener("click", async () => {
+  $("#status").textContent = "running...";
+  const t0 = performance.now();
+  const r = await fetch("/api/run", { method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ graph: graphJSON() }) }).then(r => r.json());
+  const ms = Math.round(performance.now() - t0);
+  for (const n of nodes) n.err = r.errors[n.id] || null;
+  let k = 0;
+  for (const [id, url] of Object.entries(r.images || {})) {
+    const n = nodes.find(n => n.id === id);
+    if (n) { n.img = url; k++; const el = document.getElementById(id);
+      el.dataset.rendered = ""; }
+  }
+  draw();
+  $("#status").textContent =
+    Object.keys(r.errors || {}).length
+      ? `${k} render(s), ${Object.keys(r.errors).length} error(s), ${ms}ms`
+      : `${k} render(s) in ${ms}ms`;
+});
+$("#save").addEventListener("click", async () => {
+  const name = $("#name").value.trim() || "preset";
+  const r = await fetch("/api/save", { method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, graph: graphJSON() }) }).then(r => r.json());
+  $("#status").textContent = r.ok
+    ? `saved ${r.name} (${r.renders} render${r.renders === 1 ? "" : "s"})`
+    : "save failed";
+});
+document.addEventListener("keydown", ev => {
+  if ((ev.key === "Delete" || ev.key === "Backspace") && selected
+      && document.activeElement.tagName !== "INPUT") {
+    delNode(selected.id); selected = null;
+  }
+});
+
+// ---------- library + boot ----------
+fetch("/api/inspos").then(r => r.json()).then(items => {
+  const el = $("#inspos");
+  el.innerHTML = "";
+  for (const it of items) {
+    const d = document.createElement("div");
+    d.className = "inspo";
+    d.title = `${it.painter}/${it.path}`;
+    d.innerHTML = `<img loading="lazy"
+      src="/api/thumb?path=${encodeURIComponent(it.path)}">`;
+    d.addEventListener("mousedown", ev => {
+      ev.preventDefault();
+      const r = canvas.getBoundingClientRect();
+      const x = (r.width / 2 - view.x) / view.z - 84,
+            y = (r.height / 2 - view.y) / view.z - 60 + items.indexOf(it) * 0;
+      addNode({ type: "source", title: it.path.split("/").pop(),
+        path: it.path, x, y });
+    });
+    el.appendChild(d);
+  }
+});
+for (const op of OPS) {
+  const b = document.createElement("button");
+  b.textContent = op;
+  b.addEventListener("mousedown", ev => {
+    ev.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    addNode({ type: "op", op, title: op, strength: 1,
+      x: (r.width / 2 - view.x) / view.z - 84,
+      y: (r.height / 2 - view.y) / view.z - 40 });
+  });
+  $("#ops").appendChild(b);
+}
+applyView();
+</script>
+</body>
+</html>
