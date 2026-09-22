@@ -1,0 +1,15 @@
+{
+  "candidate": "../data/test_images/ref_01.webp",
+  "region_mode": "whole",
+  "mask_fallback": "heuristic_foreground",
+  "reference_aggregation": "mean",
+  "references": {
+    "palette": ["../data/test_images/ref_02.png"],
+    "value": ["../data/test_images/ref_02.png"],
+    "color_zones": ["../data/test_images/ref_02.png"],
+    "shading": ["../data/test_images/ref_03.png"],
+    "texture": ["../data/test_images/ref_03.png"],
+    "stroke": ["../data/test_images/ref_04.png"],
+    "edges": ["../data/test_images/ref_04.png"]
+  }
+}

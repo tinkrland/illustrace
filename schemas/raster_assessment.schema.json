@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://illustrace.local/schemas/raster_assessment.schema.json",
+  "title": "illustrace raster assessment spec",
+  "type": "object",
+  "required": ["candidate", "references"],
+  "additionalProperties": false,
+  "properties": {
+    "candidate": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "subject_mask": {"type": "string", "minLength": 1},
+    "region_mode": {
+      "type": "string",
+      "enum": ["whole", "subject", "background"],
+      "default": "whole"
+    },
+    "mask_fallback": {
+      "type": "string",
+      "enum": ["heuristic_foreground", "whole_frame"],
+      "default": "heuristic_foreground"
+    },
+    "reference_aggregation": {
+      "type": "string",
+      "enum": ["mean", "best"],
+      "default": "mean"
+    },
+    "references": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "palette": {"$ref": "#/$defs/pathList"},
+        "value": {"$ref": "#/$defs/pathList"},
+        "color_zones": {"$ref": "#/$defs/pathList"},
+        "shading": {"$ref": "#/$defs/pathList"},
+        "texture": {"$ref": "#/$defs/pathList"},
+        "stroke": {"$ref": "#/$defs/pathList"},
+        "edges": {"$ref": "#/$defs/pathList"}
+      }
+    }
+  },
+  "$defs": {
+    "pathList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}
